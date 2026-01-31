@@ -1,0 +1,10 @@
+# Archive and Backups
+archive/backups/
+
+# Sensitive files
+github-recovery-codes.txt
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
