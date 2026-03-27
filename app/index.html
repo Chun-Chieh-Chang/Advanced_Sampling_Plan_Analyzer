@@ -10,51 +10,55 @@
         rel="stylesheet">
     <style>
         :root {
-            /* Default theme: Dark Teal */
-            --bg: #0f1c26;
-            --panel: #1c2a36;
-            --panel-2: #111c26;
-            --border: #405466;
-            --text: #e6e9ee;
-            --muted: #9fb0bf;
-            --primary: #1783FF;
-            --primary-2: #0e61bf;
-            --card: #ecf0f1;
-            --card-text: #2c3e50;
+            /* Default theme: Premium Dark (Slate 900) */
+            --bg: #0F172A;
+            --panel: #1E293B;
+            --panel-2: #111827;
+            --border: #334155;
+            --text: #F1F5F9;
+            --muted: #94A3B8;
+            --primary: #60A5FA;
+            --primary-2: #3B82F6;
+            --card: #FFFFFF;
+            --card-text: #111827;
             --radius: 12px;
             --gap: 16px;
             --left: 360px;
             --chart-h: 650px;
 
             /* Gradient backgrounds for themes */
-            --bg-gradient-1: #223649;
-            --bg-gradient-2: #0f1c26;
-            --panel-gradient-1: #1c2a36;
-            --panel-gradient-2: #182531;
+            --bg-gradient-1: #1e293b;
+            --bg-gradient-2: #0F172A;
+            --panel-gradient-1: #1E293B;
+            --panel-gradient-2: #0F172A;
 
-            /* RGB values for rgba() CSS functions */
-            --primary-rgb: 23, 131, 255;
-            --primary-2-rgb: 14, 97, 191;
+            /* RGB values for rgba() CSS functions - Royal Blue base */
+            --primary-rgb: 96, 165, 250;
+            --primary-2-rgb: 59, 130, 246;
+            --error-color: #F87171;
+            --success-color: #34D399;
         }
 
-        /* Light Theme */
+        /* Light Theme (Cool Gray 50) */
         [data-theme="light"] {
-            --bg: #f8f9fa;
-            --panel: #ffffff;
-            --panel-2: #f1f3f4;
-            --border: #adb5bd;
-            --text: #212529;
-            --muted: #495057;
-            --primary: #0d6efd;
-            --primary-2: #0b5ed7;
-            --card: #ffffff;
-            --card-text: #212529;
-            --bg-gradient-1: #e9ecef;
-            --bg-gradient-2: #f8f9fa;
-            --panel-gradient-1: #ffffff;
-            --panel-gradient-2: #f8f9fa;
-            --primary-rgb: 13, 110, 253;
-            --primary-2-rgb: 11, 94, 215;
+            --bg: #F9FAFB;
+            --panel: #FFFFFF;
+            --panel-2: #F3F4F6;
+            --border: #E5E7EB;
+            --text: #111827;
+            --muted: #6B7280;
+            --primary: #3B82F6;
+            --primary-2: #2563EB;
+            --card: #FFFFFF;
+            --card-text: #111827;
+            --bg-gradient-1: #F3F4F6;
+            --bg-gradient-2: #F9FAFB;
+            --panel-gradient-1: #FFFFFF;
+            --panel-gradient-2: #F9FAFB;
+            --primary-rgb: 59, 130, 246;
+            --primary-2-rgb: 37, 99, 235;
+            --error-color: #EF4444;
+            --success-color: #10B981;
         }
 
         /* Dark Gray Theme */
@@ -603,6 +607,13 @@
             text-align: center;
             box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.04), inset 0 -2px 0 rgba(0, 0, 0, 0.1);
             transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Fix for radio buttons inheriting global input box-shadow, which causes a horizontal line artifact */
+        input[type="radio"] {
+            box-shadow: none !important;
+            width: auto; /* Ensure radio buttons don't stretch */
+            cursor: pointer;
         }
 
         /* Theme selector specific styling */
@@ -1230,7 +1241,7 @@
                                 <div class="chart-toolbar">
                                     <button class="btn" id="export_png">Export PNG</button>
                                     <button class="btn" id="export_csv">Export Data</button>
-                                    <button class="btn" data-help-for="distribution" title="使用說明">Help</button>
+                                    <button class="btn" data-help-for="distribution" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
                                         <input id="x_max" type="number" value="5" title="Defect Rate Max (%)"
@@ -1302,7 +1313,7 @@
                                     <button class="btn" id="plan_export_png">Export PNG</button>
                                     <button class="btn" id="plan_export_csv">Export Data</button>
                                     <button class="btn" id="plan_import_btn">Import from pages</button>
-                                    <button class="btn" data-help-for="plan" title="使用說明">Help</button>
+                                    <button class="btn" data-help-for="plan" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
                                         <input id="plan_x_axis_max_input" type="number" value="5"
@@ -1371,7 +1382,7 @@
                                     <button class="btn" id="rev_export_png">Export PNG</button>
                                     <button class="btn" id="rev_export_csv">Export Data</button>
                                     <button class="btn" id="rev_export_plan">Export to Plan Comparison</button>
-                                    <button class="btn" data-help-for="reverse" title="使用說明">Help</button>
+                                    <button class="btn" data-help-for="reverse" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
                                         <input id="rev_x_max" type="number" value="5"
@@ -1403,9 +1414,9 @@
                                     <div class="group"><label>AQL</label>
                                         <select id="ss_aql" data-default="0.4"></select>
                                     </div>
-                                    <div class="group" style="grid-column: 1 / span 2;"><label>Custom AQL
+                                    <div class="group custom-aql-group" style="grid-column: 1 / span 2;"><label>Custom AQL
                                             (%)</label><input id="ss_aql_custom" type="number" step="0.01" value="1.0"
-                                            disabled></div>
+                                            placeholder="e.g. 0.65" title="Click to enable custom AQL input" disabled></div>
                                     <div class="group" style="grid-column: 1 / span 2;"><label>Inspection State</label>
                                         <select id="ss_state_select">
                                             <option value="normal">Normal</option>
@@ -1461,7 +1472,7 @@
                                     <button class="btn" id="ss_export_png">Export PNG</button>
                                     <button class="btn" id="ss_export_csv">Export Data</button>
                                     <button class="btn" id="ss_export_plan">Export to Plan Comparison</button>
-                                    <button class="btn" data-help-for="kaiyi" title="使用說明">Help</button>
+                                    <button class="btn" data-help-for="kaiyi" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
                                         <input id="ss_x_max" type="number" value="5"
@@ -1506,9 +1517,9 @@
                                     <div class="group" id="c0_aql_group"><label>AQL</label>
                                         <select id="c0_aql"></select>
                                     </div>
-                                    <div class="group" id="c0_aql_custom_group" style="grid-column: 1 / span 2;">
+                                    <div class="group custom-aql-group" id="c0_aql_custom_group" style="grid-column: 1 / span 2;">
                                         <label>Custom AQL (%)</label><input id="c0_aql_custom" type="number"
-                                            step="0.001" value="1.0" disabled>
+                                            step="0.001" value="1.0" placeholder="e.g. 0.40" title="Click to enable custom AQL input" disabled>
                                     </div>
                                     <div class="group" style="grid-column: 1 / span 2;"><label>Distribution</label>
                                         <select id="c0_dist_select">
@@ -1551,7 +1562,7 @@
                                     <button class="btn" id="c0_export_png_toolbar">Export PNG</button>
                                     <button class="btn" id="c0_export_csv_toolbar">Export Data</button>
                                     <button class="btn" id="c0_export_plan">Export to Plan Comparison</button>
-                                    <button class="btn" data-help-for="c0" title="使用說明">Help</button>
+                                    <button class="btn" data-help-for="c0" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
                                         <input id="c0_x_max" type="number" value="5"
@@ -1714,7 +1725,7 @@
                                     <button class="btn" id="aql_ltpd_export_png_toolbar">Export PNG</button>
                                     <button class="btn" id="aql_ltpd_export_csv_toolbar">Export Data</button>
                                     <button class="btn" id="aql_ltpd_export_plan">Export to Plan Comparison</button>
-                                    <button class="btn" data-help-for="aql-ltpd" title="使用說明">Help</button>
+                                    <button class="btn" data-help-for="aql-ltpd" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
                                         <input id="aql_ltpd_x_max" type="number" value="10"
@@ -3454,6 +3465,16 @@
 
         c0AqlSel?.addEventListener('change', () => {
             c0AqlCustomEl.disabled = c0AqlSel.value !== 'custom';
+            if (!c0AqlCustomEl.disabled) c0AqlCustomEl.focus();
+        });
+        // Quick enable for custom AQL input
+        document.querySelector('#c0_aql_custom_group')?.addEventListener('mousedown', function(e) {
+            if (c0AqlCustomEl.disabled) {
+                e.preventDefault();
+                c0AqlSel.value = 'custom';
+                c0AqlSel.dispatchEvent(new Event('change'));
+                c0AqlCustomEl.focus();
+            }
         });
         c0LookupBtn?.addEventListener('click', doC0Lookup);
         c0ClearBtn?.addEventListener('click', () => {
@@ -3830,7 +3851,19 @@
             if (c == null) { if (ssChart) { ssChart.data.datasets = []; ssChart.update(); } return; }
             drawSsChart(N, n, c, aqlStr, code, level, dist);
         }
-        ssAqlSel?.addEventListener('change', () => { ssAqlCustomEl.disabled = ssAqlSel.value !== 'custom'; });
+        ssAqlSel?.addEventListener('change', () => { 
+            ssAqlCustomEl.disabled = ssAqlSel.value !== 'custom'; 
+            if (!ssAqlCustomEl.disabled) ssAqlCustomEl.focus();
+        });
+        // Quick enable for custom AQL input
+        ssAqlCustomEl?.closest('.custom-aql-group')?.addEventListener('mousedown', function(e) {
+            if (ssAqlCustomEl.disabled) {
+                e.preventDefault();
+                ssAqlSel.value = 'custom';
+                ssAqlSel.dispatchEvent(new Event('change'));
+                ssAqlCustomEl.focus();
+            }
+        });
         ssLookupBtn?.addEventListener('click', doSsLookup);
         ssClearBtn?.addEventListener('click', () => {
             ssLotEl.value = '500'; populateInspectionLevels(); populateAqlLevels(); ssAqlCustomEl.value = '1.0'; ssDistSel.value = 'binom'; ssStateSel.value = 'normal';
@@ -4443,113 +4476,102 @@
 
         // AQL-LTPD Optimization Algorithm
         function calculateOptimalAqlLtpdPlan(aql, ltpd, lotSize, distribution, optimizationTarget, alpha, beta) {
-            // Input validation
             if (aql >= ltpd) {
                 throw new Error('AQL must be less than LTPD');
             }
-            if (alpha <= 0 || alpha >= 1 || beta <= 0 || beta >= 1) {
-                throw new Error('Risk values must be between 0 and 1');
-            }
 
-            const idealPaAql = 1 - alpha; // Ideal acceptance probability at AQL
-            const idealPaLtpd = beta;     // Ideal acceptance probability at LTPD
+            const idealPaAql = 1 - alpha;
+            const idealPaLtpd = beta;
+            const pAql = aql / 100;
+            const pLtpd = ltpd / 100;
 
             let bestPlan = null;
             let bestScore = Infinity;
-            let feasiblePlans = []; // Track plans that satisfy constraints
+            let feasiblePlans = [];
 
-            // Search space: n from 1 to 500, c from 0 to n
             for (let n = 1; n <= 500; n++) {
-                for (let c = 0; c <= n; c++) {
-                    try {
-                        // Calculate Pa at AQL and LTPD points
-                        const paAql = calculateAcceptanceProbability(n, c, aql / 100, lotSize, distribution);
-                        const paLtpd = calculateAcceptanceProbability(n, c, ltpd / 100, lotSize, distribution);
+                let paAql, paLtpd;
 
-                        // Calculate actual risks
-                        const actualAlpha = 1 - paAql;
-                        const actualBeta = paLtpd;
+                // O(N^2) optimization using iterative CDF
+                if (distribution === 'binom') {
+                    let curPmfAql = Math.pow(1 - pAql, n);
+                    let curPmfLtpd = Math.pow(1 - pLtpd, n);
+                    paAql = curPmfAql;
+                    paLtpd = curPmfLtpd;
 
-                        // Calculate score based on optimization target
-                        let score;
-                        switch (optimizationTarget) {
-                            case 'minimize_n':
-                                // Minimize sample size while satisfying risk constraints
-                                if (actualAlpha <= alpha && actualBeta <= beta) {
-                                    score = n; // Lower n is better
-                                } else {
-                                    continue; // Skip if constraints not satisfied
-                                }
-                                break;
-                            case 'balance':
-                                // Balance AQL-LTPD performance with penalty for constraint violations
-                                const aqlDeviation = Math.abs(paAql - idealPaAql);
-                                const ltpdDeviation = Math.abs(paLtpd - idealPaLtpd);
-
-                                // Add penalty for constraint violations
-                                let constraintPenalty = 0;
-                                if (actualAlpha > alpha) {
-                                    constraintPenalty += (actualAlpha - alpha) * 10; // Heavy penalty
-                                }
-                                if (actualBeta > beta) {
-                                    constraintPenalty += (actualBeta - beta) * 10; // Heavy penalty
-                                }
-
-                                score = aqlDeviation + ltpdDeviation + constraintPenalty;
-                                break;
-                            case 'max_producer':
-                                // Maximize producer protection (minimize actual alpha)
-                                score = actualAlpha;
-                                break;
-                            case 'max_consumer':
-                                // Maximize consumer protection (minimize actual beta)
-                                score = actualBeta;
-                                break;
-                            default:
-                                score = n; // Default to minimize sample size
+                    for (let c = 0; c <= n; c++) {
+                        if (c > 0) {
+                            curPmfAql *= (n - c + 1) * pAql / (c * (1 - pAql));
+                            curPmfLtpd *= (n - c + 1) * pLtpd / (c * (1 - pLtpd));
+                            paAql += curPmfAql;
+                            paLtpd += curPmfLtpd;
                         }
+                        processPlan(n, c, paAql, paLtpd);
+                    }
+                } else if (distribution === 'pois') {
+                    const lambdaAql = n * pAql;
+                    const lambdaLtpd = n * pLtpd;
+                    let curPmfAql = Math.exp(-lambdaAql);
+                    let curPmfLtpd = Math.exp(-lambdaLtpd);
+                    paAql = curPmfAql;
+                    paLtpd = curPmfLtpd;
 
-                        // Track feasible plans (those that satisfy constraints)
-                        const isFeasible = (actualAlpha <= alpha && actualBeta <= beta);
-                        if (isFeasible) {
-                            feasiblePlans.push({
-                                n: n,
-                                c: c,
-                                paAql: paAql,
-                                paLtpd: paLtpd,
-                                actualAlpha: actualAlpha,
-                                actualBeta: actualBeta,
-                                score: score
-                            });
+                    for (let c = 0; c <= n; c++) {
+                        if (c > 0) {
+                            curPmfAql *= lambdaAql / c;
+                            curPmfLtpd *= lambdaLtpd / c;
+                            paAql += curPmfAql;
+                            paLtpd += curPmfLtpd;
                         }
-
-                        // Update best plan if this is better
-                        if (score < bestScore) {
-                            bestScore = score;
-                            bestPlan = {
-                                n: n,
-                                c: c,
-                                paAql: paAql,
-                                paLtpd: paLtpd,
-                                actualAlpha: actualAlpha,
-                                actualBeta: actualBeta,
-                                score: score
-                            };
-                        }
-                    } catch (e) {
-                        // Skip invalid combinations
-                        continue;
+                        processPlan(n, c, paAql, paLtpd);
+                    }
+                } else {
+                    for (let c = 0; c <= n; c++) {
+                        paAql = calculateAcceptanceProbability(n, c, pAql, lotSize, distribution);
+                        paLtpd = calculateAcceptanceProbability(n, c, pLtpd, lotSize, distribution);
+                        processPlan(n, c, paAql, paLtpd);
                     }
                 }
             }
 
-            // For minimize_n optimization, ensure we get the smallest feasible n
+            function processPlan(n, c, paAql, paLtpd) {
+                const actualAlpha = 1 - paAql;
+                const actualBeta = paLtpd;
+
+                let score;
+                switch (optimizationTarget) {
+                    case 'minimize_n':
+                        if (actualAlpha <= alpha && actualBeta <= beta) {
+                            score = n;
+                        } else {
+                            return;
+                        }
+                        break;
+                    case 'balance':
+                        const aqlDeviation = Math.abs(paAql - idealPaAql);
+                        const ltpdDeviation = Math.abs(paLtpd - idealPaLtpd);
+                        let constraintPenalty = 0;
+                        if (actualAlpha > alpha) constraintPenalty += (actualAlpha - alpha) * 10;
+                        if (actualBeta > beta) constraintPenalty += (actualBeta - beta) * 10;
+                        score = aqlDeviation + ltpdDeviation + constraintPenalty;
+                        break;
+                    case 'max_producer': score = actualAlpha; break;
+                    case 'max_consumer': score = actualBeta; break;
+                    default: score = n;
+                }
+
+                if (actualAlpha <= alpha && actualBeta <= beta) {
+                    feasiblePlans.push({ n, c, paAql, paLtpd, actualAlpha, actualBeta, score });
+                }
+
+                if (score < bestScore) {
+                    bestScore = score;
+                    bestPlan = { n, c, paAql, paLtpd, actualAlpha, actualBeta, score };
+                }
+            }
+
             if (optimizationTarget === 'minimize_n' && feasiblePlans.length > 0) {
-                // Find the plan with minimum n among feasible plans
-                const minNPlan = feasiblePlans.reduce((min, plan) =>
-                    plan.n < min.n ? plan : min
-                );
-                return minNPlan;
+                return feasiblePlans.reduce((min, plan) => plan.n < min.n ? plan : min);
             }
 
             return bestPlan;
@@ -4614,8 +4636,8 @@
             // Add boundary condition checks
             if (k < 0) return 0;
             if (k >= n) return 1;
-            if (p <= 0) return k === 0 ? 1 : 0;
-            if (p >= 1) return 1;
+            if (p <= 0) return 1;
+            if (p >= 1) return 0;
 
             // For very small p, use more precise calculation to avoid numerical issues
             if (p < 1e-10) {
@@ -4637,11 +4659,12 @@
             if (p === 0) return k === 0 ? 1 : 0;
             if (p === 1) return k === n ? 1 : 0;
 
-            let result = 1;
+            // Use iteratively calculated PMF for stability: P(k) = P(0) * C(n,k) * (p/(1-p))^k
+            let pmf = Math.pow(1 - p, n);
             for (let i = 1; i <= k; i++) {
-                result *= (n - i + 1) * p / (i * (1 - p));
+                pmf *= (n - i + 1) * p / (i * (1 - p));
             }
-            return result * Math.pow(1 - p, n - k);
+            return pmf;
         }
 
         function poissonCDF(k, lambda) {
@@ -5161,7 +5184,7 @@
                 wrap.style.zIndex = '9999';
                 wrap.style.alignItems = 'center';
                 wrap.style.justifyContent = 'center';
-                wrap.innerHTML = '\n                <div class="tutorial-overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.5);"></div>\n                <div class="tutorial-content" style="position:relative; max-width:900px; width:90%; background:var(--panel); border:1px solid var(--border); border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.35); overflow:hidden;">\n                    <div class="tutorial-header" style="display:flex; align-items:center; justify-content:space-between;">\n                        <h2 style="margin:0; font-size:1.3rem;">使用說明</h2>\n                        <div>\n                            <button class="btn" id="help-close-btn">Close</button>\n                        </div>\n                    </div>\n                    <div style="padding:18px 24px 8px; border-bottom:1px solid var(--border);">\n                        <div id="help-tabs" style="display:flex; gap:8px; flex-wrap:wrap;"></div>\n                    </div>\n                    <div id="help-content" style="padding:18px 24px; max-height:60vh; overflow:auto;"></div>\n                </div>';
+                wrap.innerHTML = '\n                <div class="tutorial-overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.5);"></div>\n                <div class="tutorial-content" style="position:relative; max-width:900px; width:90%; background:var(--panel); border:1px solid var(--border); border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.35); overflow:hidden;">\n                    <div class="tutorial-header" style="display:flex; align-items:center; justify-content:space-between;">\n                        <h2 style="margin:0; font-size:1.3rem;">User Instructions</h2>\n                        <div>\n                            <button class="btn" id="help-close-btn">Close</button>\n                        </div>\n                    </div>\n                    <div style="padding:18px 24px 8px; border-bottom:1px solid var(--border);">\n                        <div id="help-tabs" style="display:flex; gap:8px; flex-wrap:wrap;"></div>\n                    </div>\n                    <div id="help-content" style="padding:18px 24px; max-height:60vh; overflow:auto;"></div>\n                </div>';
                 document.body.appendChild(wrap);
                 helpModal = wrap;
             }
@@ -5176,57 +5199,57 @@
 
             var helpData = {
                 'distribution': {
-                    tabs: ['概述', '輸入參數', '輸出與圖表', '使用時機'],
+                    tabs: ['Overview', 'Parameters', 'Charts', 'Usage'],
                     sections: [
-                        '<p>此頁用於比較超幾何、二項、卜瓦松三種分佈下，同一抽樣計畫的OC/AOQ/ATI行為。</p>',
-                        '<ul><li>N: 批量大小 (Hypergeometric 必填)</li><li>n: 抽樣數</li><li>c: 可接受不良數</li><li>AQL(%): 可接受品質水準</li><li>x軸上限(%): 缺點率顯示範圍</li></ul>',
-                        '<ul><li>OC曲線: y=Pa(接受機率)</li><li>AOQ曲線: 平均輸出品質(%)</li><li>ATI曲線: 平均總檢數</li><li>匯出: PNG/CSV</li></ul>',
-                        '<ul><li>比較不同分佈假設的影響</li><li>想快速檢視AQL標記位置與曲線陡峭度</li></ul>'
+                        '<p>Compare OC/AOQ/ATI behavior for Hypergeometric, Binomial, and Poisson distributions under the same sampling plan.</p>',
+                        '<ul><li>N: Lot Size (Required for Hypergeometric)</li><li>n: Sample Size</li><li>c: Acceptance Number</li><li>AQL(%): Acceptable Quality Level</li><li>X-axis Max (%): Defect rate display range</li></ul>',
+                        '<ul><li>OC Curve: y=Pa (Probability of Acceptance)</li><li>AOQ Curve: Average Outgoing Quality (%)</li><li>ATI Curve: Average Total Inspection</li><li>Export: PNG/CSV</li></ul>',
+                        '<ul><li>Compare the impact of different distribution assumptions</li><li>Quickly view AQL markers and curve steepness</li></ul>'
                     ]
                 },
                 'plan': {
-                    tabs: ['概述', '輸入參數', '輸出與圖表', '使用時機'],
+                    tabs: ['Overview', 'Parameters', 'Output', 'Usage'],
                     sections: [
-                        '<p>疊加多個抽樣計畫以視覺化比較OC/AOQ/ATI。</p>',
-                        '<ul><li>n, c, AQL(%), 標籤、x軸上限</li></ul>',
-                        '<ul><li>曲線清單與圖例、AQL標記</li><li>支援PNG/CSV、從各頁匯入</li></ul>',
-                        '<ul><li>方案評比、向利害關係人展示差異</li></ul>'
+                        '<p>Overlay multiple sampling plans to visualize and compare their OC/AOQ/ATI behavior.</p>',
+                        '<ul><li>n, c, AQL(%), Labels, X-axis Max</li></ul>',
+                        '<ul><li>Plan list and legend, AQL markers</li><li>Support for PNG/CSV and importing from other pages</li></ul>',
+                        '<ul><li>Evaluate multiple plan options and demonstrate differences to stakeholders</li></ul>'
                     ]
                 },
                 'reverse': {
-                    tabs: ['概述', '輸入參數', '輸出與圖表', '使用時機'],
+                    tabs: ['Overview', 'Parameters', 'Output', 'Usage'],
                     sections: [
-                        '<p>固定三個參數，反解剩餘一個 (AQL、n、c、N、或目標Pa)。</p>',
-                        '<ul><li>目標參數、N、n、c、AQL(%)、目標Pa(%)、分佈</li></ul>',
-                        '<ul><li>計算所得計畫 (n,c) 與OC圖</li><li>可匯出至比較頁</li></ul>',
-                        '<ul><li>當有既定風險點(如AQL95%)，想求合適n或c</li></ul>'
+                        '<p>Fix three parameters to solve for the remaining one (AQL, n, c, N, or target Pa).</p>',
+                        '<ul><li>Target parameter, N, n, c, AQL(%), Target Pa(%), Distribution</li></ul>',
+                        '<ul><li>Calculated plan (n, c) and OC chart</li><li>Exportable to Comparison page</li></ul>',
+                        '<ul><li>Find appropriate n or c when specific risk points (e.g., AQL 95%) are required</li></ul>'
                     ]
                 },
                 'kaiyi': {
-                    tabs: ['概述', '輸入參數', '輸出與圖表', '使用時機'],
+                    tabs: ['Overview', 'Parameters', 'Output', 'Usage'],
                     sections: [
-                        '<p>依 ANSI/ASQ Z1.4 進行AQL抽樣表查詢。</p>',
-                        '<ul><li>N、AQL、檢驗水準、檢驗狀態(正常/放寬/加嚴)</li></ul>',
-                        '<ul><li>輸出代碼字母、樣本量、Ac/Re、及在AQL的Pa/Pr/Pc</li><li>OC圖與匯出</li></ul>',
-                        '<ul><li>需遵循標準抽樣制度時</li></ul>'
+                        '<p>Lookup AQL sampling plans based on ANSI/ASQ Z1.4 standard.</p>',
+                        '<ul><li>Lot Size (N), AQL, Inspection Level, Inspection State (Normal/Tightened/Reduced)</li></ul>',
+                        '<ul><li>Output Code Letter, Sample Size, Ac/Re, and Pa/Pr/Pc at AQL</li><li>OC Curve and Export</li></ul>',
+                        '<ul><li>When compliance with standard sampling systems is required</li></ul>'
                     ]
                 },
                 'c0': {
-                    tabs: ['概述', '輸入參數', '輸出與輸出', '使用時機'],
+                    tabs: ['Overview', 'Parameters', 'Output', 'Usage'],
                     sections: [
-                        '<p>查詢 C=0 (零接受) 抽樣表 (Squeglia)。</p>',
-                        '<ul><li>N、AQL或自定AQL、分佈</li></ul>',
-                        '<ul><li>輸出 n、c=0、對應LTPD@Pa=10% 等</li></ul>',
-                        '<ul><li>高風險關鍵缺陷、嚴格把關場景</li></ul>'
+                        '<p>Lookup C=0 (Zero Acceptance) sampling plans according to Squeglia\'s table.</p>',
+                        '<ul><li>Lot Size (N), AQL or custom AQL, Distribution</li></ul>',
+                        '<ul><li>Output n, c=0, and corresponding LTPD at Pa=10%</li></ul>',
+                        '<ul><li>High-risk critical defects or strict quality control scenarios</li></ul>'
                     ]
                 },
                 'aql-ltpd': {
-                    tabs: ['概述', '輸入參數', '輸出與圖表', '使用時機'],
+                    tabs: ['Overview', 'Parameters', 'Output', 'Usage'],
                     sections: [
-                        '<p>同時滿足AQL與LTPD限制，透過數學最佳化找出計畫。</p>',
-                        '<ul><li>AQL(%)、LTPD(%)、N、分佈、最佳化目標、α/β、x軸上限</li></ul>',
-                        '<ul><li>輸出 n、c、效率分數、AOQL/ASN、OC圖與匯出</li></ul>',
-                        '<ul><li>需在規格化兩端風險間取得平衡時</li></ul>'
+                        '<p>Design optimal sampling plans that satisfy both AQL and LTPD constraints using mathematical optimization.</p>',
+                        '<ul><li>AQL(%), LTPD(%), N, Distribution, Optimization Target, alpha/beta, X-axis Max</li></ul>',
+                        '<ul><li>Output n, c, Efficiency Score, AOQL/ASN, OC Curve, and Export</li></ul>',
+                        '<ul><li>Balance risks at both ends of the quality spectrum (Producer and Consumer)</li></ul>'
                     ]
                 }
             };
