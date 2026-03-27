@@ -1289,7 +1289,7 @@
                                 <div class="btn-row" style="display: flex; flex-direction: column; gap: 8px;">
                                     <button class="btn" id="clear-all-btn" style="width: 100%;">Clear All Plans</button>
                                 </div>
-                                <div class="btn-row" style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                                <div class="btn-row" style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
                                     <button class="btn" id="show-oc-btn" style="width: 100%;">Show OC Curves</button>
                                     <button class="btn" id="show-aoq-btn" style="width: 100%;">Show AOQ Curves</button>
                                     <button class="btn" id="show-ati-btn" style="width: 100%;">Show ATI Curves</button>
@@ -2104,8 +2104,8 @@
                     }
                 },
                 scales: {
-                    x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, max: xMaxInit, grid: { color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } },
-                    y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid } }
+                    x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, max: xMaxInit, grid: { display: true, color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } },
+                    y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid } }
                 }
             },
             plugins: [ocCrosshairPlugin]
@@ -2340,9 +2340,9 @@
             if (planChart) return planChart;
             var legendLabels = { color: getEnhancedThemeColors().text, filter: function (item, chart) { var ds = chart.datasets && chart.datasets[item.datasetIndex]; return !(ds && ds.type === 'scatter'); } };
             var plugins = { legend: { display: true, labels: legendLabels } };
-            var xScale = { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } };
+            var xScale = { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } };
             var yTicks = { callback: function (v) { return (v * 100).toFixed(0) + '%'; } };
-            var yScale = { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: Object.assign({}, yTicks, { color: getEnhancedThemeColors().text }), grid: { color: getEnhancedThemeColors().grid } };
+            var yScale = { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: Object.assign({}, yTicks, { color: getEnhancedThemeColors().text }), grid: { display: true, color: getEnhancedThemeColors().grid } };
             var scales = { x: xScale, y: yScale };
             // crosshair and tooltip: enable tooltip for all datasets
             plugins.tooltip = {
@@ -2858,8 +2858,8 @@
                         }
                     },
                     scales: {
-                        x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text }, border: { color: getEnhancedThemeColors().grid } },
-                        y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid }, border: { color: getEnhancedThemeColors().grid } }
+                        x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text }, border: { color: getEnhancedThemeColors().grid } },
+                        y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid }, border: { color: getEnhancedThemeColors().grid } }
                     }
                 },
                 plugins: [revCrosshairPlugin]
@@ -3289,8 +3289,8 @@
                         }
                     },
                     scales: {
-                        x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } },
-                        y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid } }
+                        x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } },
+                        y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid } }
                     }
                 },
                 plugins: [c0CrosshairPlugin]
@@ -3732,8 +3732,8 @@
                         }
                     },
                     scales: {
-                        x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } },
-                        y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { color: getEnhancedThemeColors().grid } }
+                        x: { type: 'linear', title: { display: true, text: 'Defect Rate (p%)', color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid }, ticks: { color: getEnhancedThemeColors().text } },
+                        y: { min: 0, max: 1, title: { display: true, text: 'Acceptance Probability (Pa%)', color: getEnhancedThemeColors().text }, ticks: { callback: function (v) { return (v * 100).toFixed(0) + '%'; }, color: getEnhancedThemeColors().text }, grid: { display: true, color: getEnhancedThemeColors().grid } }
                     }
                 }, plugins: [ssCrosshairPlugin]
             });
@@ -5047,7 +5047,7 @@
                                 text: 'Defect Rate (%)',
                                 color: getEnhancedThemeColors().text
                             },
-                            grid: { color: getEnhancedThemeColors().grid },
+                            grid: { display: true, color: getEnhancedThemeColors().grid },
                             ticks: { color: getEnhancedThemeColors().text },
                             border: { color: getEnhancedThemeColors().grid }
                         },
@@ -5063,7 +5063,7 @@
                                 callback: function (v) { return (v * 100).toFixed(0) + '%'; },
                                 color: getEnhancedThemeColors().text
                             },
-                            grid: { color: getEnhancedThemeColors().grid },
+                            grid: { display: true, color: getEnhancedThemeColors().grid },
                             border: { color: getEnhancedThemeColors().grid }
                         }
                     }

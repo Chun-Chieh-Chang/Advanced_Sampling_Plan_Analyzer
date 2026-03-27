@@ -1,3 +1,16 @@
+## [2026-03-27] - Phase 5.6: UI Standardization (Spacing & Chart Grids)
+### RCA (Root Cause Analysis):
+- **Problem 1**: Uneven button spacing in the "Multiple Plan Comparison" sidebar.
+- **Problem 2**: Inconsistent chart grid lines (some showed grids, others were blank).
+- **Cause 1**: A hardcoded `margin-top: 16px` on the second button row in the Comparison sidebar created a larger gap than the internal `gap: 8px`.
+- **Cause 2**: Chart configuration lacked explicit `display: true` for grid lines, leading to rendering variations across different charts/browsers.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: 
+    - Standardized sidebar button row `margin-top` to `8px` for uniform vertical spacing.
+    - Explicitly enabled grid lines (`grid: { display: true }`) for all six charts: `ocChart`, `planChart`, `revChart`, `c0Chart`, `ssChart`, and `aqlLtpdChart`.
+- **Status**: Completed.
+- **Verification**: Visual inspection confirmed uniform spacing and consistent grid visibility across all modules.
+
 ## [2026-03-27] - Phase 5.4: Multi-Plan Comparison Calculation & UI Fix
 ### RCA (Root Cause Analysis):
 - **Problem**: Manual plan entry in Comparison tab produced "weird" curves for large sample sizes.
