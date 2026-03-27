@@ -10,6 +10,20 @@
 - **Status**: Completed.
 - **Verification**: Verified $n \le N$ blocking and correct curve rendering for $n=1.3M, N=1.5M$.
 
+## [2026-03-27] - Phase 5.5: MECE UI Refactoring (Import Consolidation)
+### RCA (Root Cause Analysis):
+- **Phase 5.5: UI/UX Consistency & MECE Optimization**
+  - **RCA**: Identified redundant "Import" buttons in Multi-Plan Comparison (sidebar vs toolbar) sharing the same ID `plan_import_btn`, causing the toolbar button to fail.
+  - **CAPA**: Removed sidebar Import button; renamed toolbar button to "Import from Other Pages" for clarity. Added "Export to Plan Comparison" to Probability Distribution tab.
+  - **Verification**: Browser testing confirmed seamless export from Distribution tab and import into Comparison tab. Sidebar redundancy successfully removed.
+  - **Status**: Completed 2026-03-27.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: 
+    - Removed the redundant sidebar button to follow MECE principle.
+    - Repurposed and renamed the toolbar button to "Import from Other Pages".
+- **Status**: Completed.
+- **Verification**: Verified via DOM inspection and functional testing.
+
 ## [2026-03-27] - Phase 5.3: UI/UX Asset Fix (Favicon 404)
 ### RCA (Root Cause Analysis):
 - **Problem**: Browser reported `favicon.ico:1 Failed to load resource: the server responded with a status of 404`.

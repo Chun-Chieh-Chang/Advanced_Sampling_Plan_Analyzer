@@ -1243,6 +1243,7 @@
                                 <div class="chart-toolbar">
                                     <button class="btn" id="export_png">Export PNG</button>
                                     <button class="btn" id="export_csv">Export Data</button>
+                                    <button class="btn primary" id="dist_export_plan" title="Export this plan to Multi-Plan Comparison page">Export to Plan Comparison</button>
                                     <button class="btn" data-help-for="distribution" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
@@ -1286,7 +1287,6 @@
                             <div class="panel">
                                 <h3>Actions</h3>
                                 <div class="btn-row" style="display: flex; flex-direction: column; gap: 8px;">
-                                    <button class="btn primary" id="plan_import_btn" style="width: 100%;">Import Exported Plans</button>
                                     <button class="btn" id="clear-all-btn" style="width: 100%;">Clear All Plans</button>
                                 </div>
                                 <div class="btn-row" style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
@@ -1318,7 +1318,7 @@
                                 <div class="chart-toolbar">
                                     <button class="btn" id="plan_export_png">Export PNG</button>
                                     <button class="btn" id="plan_export_csv">Export Data</button>
-                                    <button class="btn" id="plan_import_btn">Import from pages</button>
+                                    <button class="btn" id="plan_import_btn" title="Import plans exported from other tabs">Import from Other Pages</button>
                                     <button class="btn" data-help-for="plan" title="User Instructions">Help</button>
                                     <div style="margin-left:auto" class="btn-row">
                                         <label style="color:var(--text); font-size:0.9em;">Defect Rate Max (%)</label>
@@ -2273,6 +2273,47 @@
 
         // initial draw
         updateDistributionChart();
+
+        // export distribution plan to queue
+        (function () {
+            var btn = document.getElementById('dist_export_plan');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                let N = parseInt(document.getElementById('dist_lot_size').value || '0', 10);
+                let n = parseInt(document.getElementById('dist_n').value || '0', 10);
+                let c = parseInt(document.getElementById('dist_c').value || '0', 10);
+
+                if (isNaN(N) || N < 1 || isNaN(n) || n < 1 || isNaN(c) || c < 0) {
+                    alert('Please enter valid parameters (N, n, c).');
+                    return;
+                }
+                if (n > N) {
+                   alert('Sample size (n) cannot be larger than Lot size (N).');
+                   return;
+                }
+
+                // Determine which distribution to export (prefer active ones in order: Hyper, Binom, Pois)
+                let dist = 'binom';
+                if (distState.hyper) dist = 'hyper';
+                else if (distState.binom) dist = 'binom';
+                else if (distState.pois) dist = 'pois';
+
+                window.planComparisonQueue = window.planComparisonQueue || [];
+                var distName = dist === 'hyper' ? 'Hypergeometric' : (dist === 'binom' ? 'Binomial' : 'Poisson');
+                var label = 'Dist. Page Plan (n=' + n + ', c=' + c + ', ' + distName + ')';
+
+                window.planComparisonQueue.push({
+                    n: n,
+                    c: c,
+                    aql: null,
+                    label: label,
+                    dist: dist,
+                    N: N,
+                    source: 'distribution'
+                });
+                alert('Plan (n=' + n + ', c=' + c + ') exported to Comparison queue. Switch to Multiple Plan Comparison to import.');
+            });
+        })();
 
         // ===== Multiple Plan Comparison functionality =====
         const planCanvasEl = document.getElementById('ocChartPLAN');
