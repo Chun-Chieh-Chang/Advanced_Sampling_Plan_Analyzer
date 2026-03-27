@@ -1,3 +1,14 @@
+## [2026-03-27] - Phase 5.3: UI/UX Asset Fix (Favicon 404)
+### RCA (Root Cause Analysis):
+- **Problem**: Browser reported `favicon.ico:1 Failed to load resource: the server responded with a status of 404`.
+- **Cause**: The application lacked a favicon asset and an explicit `<link rel="icon">` in the HTML, causing browsers to default to a missing `/favicon.ico`.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: 
+    - Generated a professional, vector-based SVG favicon (`assets/images/favicon.svg`) representing a statistical distribution curve.
+    - Updated `app/index.html` with `<link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">`.
+- **Status**: Completed.
+- **Verification**: Verified correct HTML pathing and asset existence.
+
 ## [2026-03-27] - Phase 5.2: RCA & CAPA for CI Setup Failure
 ### RCA (Root Cause Analysis):
 - **Problem**: GHA `Setup Node` step failed with "Dependencies lock file is not found".
