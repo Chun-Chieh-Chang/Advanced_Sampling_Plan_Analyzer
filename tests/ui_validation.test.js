@@ -1,9 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { JSDOM } from 'jsdom';
 import fs from 'fs';
-import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
-const html = fs.readFileSync(path.resolve(__dirname, '../app/index.html'), 'utf8');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const html = fs.readFileSync(resolve(__dirname, '../app/index.html'), 'utf8');
 
 describe('UI Validation (JSDOM)', () => {
     let dom;
@@ -23,8 +27,8 @@ describe('UI Validation (JSDOM)', () => {
         const labels = Array.from(tabs).map(item => item.textContent.trim());
         
         expect(labels).toContain('AQL-LTPD Balanced Plan');
-        expect(labels).toContain('AQL Plan Table Lookup'); // Fixed name from index.html
-        expect(labels).toContain('C=0 Plan Table Lookup'); // Fixed name
+        expect(labels).toContain('AQL Plan Table Lookup');
+        expect(labels).toContain('C=0 Plan Table Lookup');
         expect(labels).toContain('Probability Distribution');
         expect(labels).toContain('Reverse Sampling Query');
         expect(labels).toContain('Multiple Plan Comparison');
@@ -39,7 +43,6 @@ describe('UI Validation (JSDOM)', () => {
     });
 
     it('should apply the Color Master Palette variables', () => {
-        // Checking for the variables we INTEND to have or already have
         expect(html).toContain('--bg');
         expect(html).toContain('--panel');
         expect(html).toContain('--text');

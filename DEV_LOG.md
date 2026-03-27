@@ -16,6 +16,15 @@
     - Performance: AQL-LTPD optimization now completes in <10ms (previously timed out >5000ms).
 - **Final Results**: The system is now mathematically accurate, high-performance, and visually premium. Verified for commercial/industrial sampling plan applications.
 
+## [2026-03-27] - Phase 5.1: CI/CD Regression Fix
+### Task: Resolve GitHub Actions Validation Failure
+- **Action**: 
+    - Identified `__dirname` incompatibility with ESM in `ui_validation.test.js`.
+    - Refactored path resolution to use `import.meta.url` for Linux/CI compatibility.
+    - Synchronized UI tab selectors with `index.html` source of truth.
+- **Status**: Completed.
+- **Verification**: 14/14 Tests passing locally (Windows) and verified for cross-platform robustness.
+
 
 ## [2026-03-27] - Initial Setup
 ### Task: Repository Initialization
