@@ -1,3 +1,12 @@
+## [2026-03-27] - Phase 5.2: RCA & CAPA for CI Setup Failure
+### RCA (Root Cause Analysis):
+- **Problem**: GHA `Setup Node` step failed with "Dependencies lock file is not found".
+- **Cause**: `.github/workflows/deploy.yml` requested `cache: 'npm'` but the repository lacks a `package-lock.json` file.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: Removed `cache: 'npm'` from `.github/workflows/deploy.yml`.
+- **Status**: Implemented.
+- **Verification**: Pending GHA run.
+
 ## [2026-03-27] - Phase 3-5: Software Validation (確效) & Premium UI
 ### Task: Rigorous Statistical Validation & UI/UX Optimization
 - **Action**: 
