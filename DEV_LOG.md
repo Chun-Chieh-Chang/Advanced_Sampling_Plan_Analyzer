@@ -1,3 +1,15 @@
+## [2026-03-27] - Phase 5.4: Multi-Plan Comparison Calculation & UI Fix
+### RCA (Root Cause Analysis):
+- **Problem**: Manual plan entry in Comparison tab produced "weird" curves for large sample sizes.
+- **Cause**: Lot Size ($N$) was hardcoded to 10,000 for manual entries. When $n > 10,000$, AOQ became negative and ATI became nonsensical.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: 
+    - Added "Lot Size (N)" input field to manual entry section.
+    - Implemented validation to prevent $n > N$.
+    - Applied "Progressive Disclosure" UI pattern (collapsible `<details>` section) to maintain a clean interface.
+- **Status**: Completed.
+- **Verification**: Verified $n \le N$ blocking and correct curve rendering for $n=1.3M, N=1.5M$.
+
 ## [2026-03-27] - Phase 5.3: UI/UX Asset Fix (Favicon 404)
 ### RCA (Root Cause Analysis):
 - **Problem**: Browser reported `favicon.ico:1 Failed to load resource: the server responded with a status of 404`.

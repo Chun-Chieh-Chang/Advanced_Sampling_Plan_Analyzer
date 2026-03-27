@@ -1267,28 +1267,32 @@
                     <div class="content">
                         <aside class="left">
                             <div class="panel">
-                                <h3>Parameters</h3>
-                                <div class="parameters">
-                                    <div class="group"><label>Sample Size (n)</label><input id="plan_n_input"
-                                            type="number" value="125"></div>
-                                    <div class="group"><label>Acceptance No. (c)</label><input id="plan_c_input"
-                                            type="number" value="1"></div>
-                                    <div class="group"><label>AQL (%)</label><input id="plan_aql_input" type="number"
-                                            step="0.01" placeholder="optional"></div>
-                                    <div class="group"><label>Plan Label</label><input id="plan_label_input" type="text"
-                                            placeholder="e.g., Plan A"></div>
-                                </div>
+                                <h3 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:12px">Manual Entry</h3>
+                                <details id="manual-plan-details" style="margin-bottom: 16px;">
+                                    <summary style="cursor: pointer; font-weight: 600; color: var(--accent); margin-bottom: 8px; padding: 8px; border-radius: 4px; background: var(--border); list-style: none; display: flex; align-items: center; gap: 8px;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;"><path d="M12 5v14M5 12h14"/></svg>
+                                        Add Custom Plan
+                                    </summary>
+                                    <div class="parameters" style="margin-top: 12px; display: flex; flex-direction: column; gap: 12px;">
+                                        <div class="group"><label>Lot Size (N)</label><input id="plan_lot_size_input" type="number" placeholder="e.g., 10000" value="10000"></div>
+                                        <div class="group"><label>Sample Size (n)</label><input id="plan_n_input" type="number" value="125"></div>
+                                        <div class="group"><label>Acceptance No. (c)</label><input id="plan_c_input" type="number" value="1"></div>
+                                        <div class="group"><label>AQL (%)</label><input id="plan_aql_input" type="number" step="0.01" placeholder="optional"></div>
+                                        <div class="group"><label>Plan Label</label><input id="plan_label_input" type="text" placeholder="e.g., Plan A"></div>
+                                        <button class="btn primary" id="add-plan-btn" style="width: 100%; margin-top: 8px;">Add to Comparison</button>
+                                    </div>
+                                </details>
                             </div>
                             <div class="panel">
                                 <h3>Actions</h3>
-                                <div class="btn-row">
-                                    <button class="btn primary" id="add-plan-btn">Add Plan</button>
-                                    <button class="btn" id="clear-all-btn">Clear All</button>
+                                <div class="btn-row" style="display: flex; flex-direction: column; gap: 8px;">
+                                    <button class="btn primary" id="plan_import_btn" style="width: 100%;">Import Exported Plans</button>
+                                    <button class="btn" id="clear-all-btn" style="width: 100%;">Clear All Plans</button>
                                 </div>
-                                <div class="btn-row" style="margin-top: 8px;">
-                                    <button class="btn" id="show-oc-btn">Show OC Curves</button>
-                                    <button class="btn" id="show-aoq-btn">Show AOQ Curves</button>
-                                    <button class="btn" id="show-ati-btn">Show ATI Curves</button>
+                                <div class="btn-row" style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                                    <button class="btn" id="show-oc-btn" style="width: 100%;">Show OC Curves</button>
+                                    <button class="btn" id="show-aoq-btn" style="width: 100%;">Show AOQ Curves</button>
+                                    <button class="btn" id="show-ati-btn" style="width: 100%;">Show ATI Curves</button>
                                 </div>
                             </div>
                             <div class="panel">
@@ -2274,6 +2278,7 @@
         const planCanvasEl = document.getElementById('ocChartPLAN');
         const planCtx = planCanvasEl ? planCanvasEl.getContext('2d') : null;
         let planChart = null;
+        const planLotSizeInput = document.getElementById('plan_lot_size_input');
         const planNInput = document.getElementById('plan_n_input');
         const planCInput = document.getElementById('plan_c_input');
         const planAqlInput = document.getElementById('plan_aql_input');
@@ -2602,7 +2607,7 @@
                 li.style.borderRadius = '8px';
                 var aqlTxt = (p.aql == null ? 'No AQL' : ('AQL=' + (+p.aql).toFixed(2) + '%'));
                 var distTxt = p.dist ? (p.dist === 'hyper' ? 'Hypergeometric' : (p.dist === 'binom' ? 'Binomial' : 'Poisson')) : 'Binomial';
-                var nTxt = p.N && p.dist === 'hyper' ? ', N=' + p.N : '';
+                var nTxt = p.N ? ', N=' + p.N : '';
                 li.innerHTML = '<span style="color:' + p.color + '">' + p.label + ': n=' + p.n + ', c=' + p.c + ', ' + aqlTxt + ' (' + distTxt + nTxt + ')</span><button class="btn" data-del="' + i + '">×</button>';
                 planListEl.appendChild(li);
             }
@@ -2610,13 +2615,35 @@
         if (planListEl) { planListEl.addEventListener('click', function (e) { var t = e.target; if (t && t.getAttribute('data-del')) { var idx = +t.getAttribute('data-del'); samplingPlans.splice(idx, 1); updatePlanChart(currentCurveType); } }); }
         if (addPlanBtn) {
             addPlanBtn.addEventListener('click', function () {
-                const n = parseInt(planNInput.value, 10), c = parseInt(planCInput.value, 10); const aqlStr = planAqlInput.value.trim(); const label = (planLabelInput.value.trim() || `Plan ${planCounter++}`);
-                if (!(n > 0) || !(c >= 0) || n < c) { alert('Please enter valid n and c (n>0, c>=0, n>=c).'); return; }
-                let aql = null; if (aqlStr !== '') { const num = parseFloat(aqlStr); if (!(num >= 0)) { alert('AQL must be a non-negative number.'); return; } aql = num; }
+                const n = parseInt(planNInput.value, 10), c = parseInt(planCInput.value, 10);
+                const N = parseInt(planLotSizeInput.value, 10) || 10000;
+                const aqlStr = planAqlInput.value.trim();
+                const label = (planLabelInput.value.trim() || `Plan ${planCounter++}`);
+
+                if (!(n > 0) || !(c >= 0) || n < c) {
+                    alert('Please enter valid n and c (n>0, c>=0, n>=c).');
+                    return;
+                }
+                if (n > N) {
+                    alert('Sample size (n) cannot be larger than Lot size (N).');
+                    return;
+                }
+
+                let aql = null;
+                if (aqlStr !== '') {
+                    const num = parseFloat(aqlStr);
+                    if (!(num >= 0)) {
+                        alert('AQL must be a non-negative number.');
+                        return;
+                    }
+                    aql = num;
+                }
                 const color = planColors[samplingPlans.length % planColors.length];
                 // Manually added plans default to binomial distribution
-                samplingPlans.push({ n, c, aql, label, color, dist: 'binom', N: 10000, source: 'manual' });
-                planLabelInput.value = ''; planAqlInput.value = ''; updatePlanChart(currentCurveType);
+                samplingPlans.push({ n, c, aql, label, color, dist: 'binom', N, source: 'manual' });
+                planLabelInput.value = '';
+                planAqlInput.value = '';
+                updatePlanChart(currentCurveType);
             });
         }
         if (clearAllBtn) { clearAllBtn.addEventListener('click', function () { samplingPlans = []; planCounter = 1; updatePlanChart(currentCurveType); }); }
