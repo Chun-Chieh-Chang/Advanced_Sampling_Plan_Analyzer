@@ -72,7 +72,18 @@
 - **Status**: Completed.
 - **Verification**:
   - Verified `body`, `.btn`, `.tab`, and `.group label` CSS selectors.
-- **Next Steps**: Push to repository.
+- **Next Steps**: Completed.
+
+## [2026-03-28] - Phase 12: Chart Color Palette & Sequential Loop Optimization
+
+### Task: Multi-Plan Comparison Color Enhancement
+- **Action**:
+  - Reorganized `planColors` array to follow the user-requested sequence: **Red, Orange, Yellow, Green, Blue, Purple**.
+  - Updated hex colors to Tailwind-inspired vibrant hues (`#EF4444`, `#F97316`, `#FACC15`, `#22C55E`, `#3B82F6`, `#A855F7`, `#06B6D4`, `#EC4899`) for maximum contrast and professional polish.
+  - Confirmed the use of `idx % planColors.length` for automatic sequential looping of colors when adding new plans.
+- **Status**: Completed.
+- **Verification**: Verified the `planColors` array in `index.html`.
+- **Next Steps**: Final push to repository.
 
 ## [2026-03-28] - Phase 9: Real-Time UI Reactivity & Data Validation
 
