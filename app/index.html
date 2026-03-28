@@ -2307,19 +2307,24 @@
                 var datasets = [];
                 for (var i = 0; i < (srcData.datasets ? srcData.datasets.length : 0); i++) {
                     var ds = srcData.datasets[i] || {};
-                    var cleanData = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
-                    var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) : 0;
-                    datasets.push({ 
-                        label: ds.label || '', 
-                        data: cleanData, 
-                        borderColor: ds.borderColor || '#1783FF', 
-                        backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', 
-                        borderDash: (ds.borderDash || []).map(function(v) { return v * scale; }),
-                        borderWidth: (ds.borderWidth || 2) * scale, 
-                        pointRadius: pointRadius * scale, 
-                        tension: ds.tension || 0.1,
-                        fill: ds.fill // Crucial for shaded areas like Continue (Pc)
-                    });
+                    // Deep clone the dataset object
+                    var dsClone = Object.assign({}, ds);
+                    
+                    // Sanitize and scale
+                    dsClone.data = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
+                    if (ds.borderDash) {
+                        dsClone.borderDash = ds.borderDash.map(function(v) { return v * scale; });
+                    }
+                    dsClone.borderWidth = (ds.borderWidth || 2) * scale;
+                    var pr = ds.type === 'scatter' ? (ds.pointRadius || 4) : (ds.pointRadius || 0);
+                    dsClone.pointRadius = pr * scale;
+                    
+                    // Force fill property and background for the Pc area specifically to be safe
+                    if (ds.label === 'Continue (Pc)') {
+                        dsClone.fill = '-1';
+                    }
+                    
+                    datasets.push(dsClone);
                 }
                 var xTitleObj = (((chart.options || {}).scales || {}).x || {}).title || {};
                 var yTitleObj = (((chart.options || {}).scales || {}).y || {}).title || {};
@@ -2350,7 +2355,8 @@
                                 font: { size: baseFontSize * scale } 
                             } 
                         }, 
-                        tooltip: { enabled: false } 
+                        tooltip: { enabled: false },
+                        filler: { propagate: true } // Explicitly enable filler for shaded regions
                     },
                     scales: { 
                         x: { 
@@ -2396,33 +2402,35 @@
                 var chartConfig = { type: type, data: { datasets: datasets }, options: options, plugins: [bgPlugin] };
                 var tempChart = new Chart(offCanvas, chartConfig);
                 
-                var filename = baseName + '.png';
-                // Small delay to ensure render is complete even with animation:false
-                setTimeout(function() {
-                    try {
-                        // Using toDataURL (Base64) for maximum compatibility with all browsers
-                        // Using data:application/octet-stream as a specialized MIME type to FORCE Chrome 
-                        // and other browsers to trigger the download handler instead of opening it as an image.
-                        var url = offCanvas.toDataURL('image/png').replace(/^data:image\/[^;]+/, 'data:application/octet-stream');
-                        
-                        var a = document.createElement('a');
-                        a.href = url;
-                        a.download = filename;
-                        
-                        // Chrome specifically requires the link to be appended to the document to allow a.click()
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        
-                        console.log('Export download triggered via octet-stream for:', filename);
-                        tempChart.destroy();
-                        document.body.style.cursor = 'default';
-                    } catch (err) {
-                        console.error('Final export stage failed:', err);
-                        document.body.style.cursor = 'default';
-                        alert('Image generation failed.');
-                    }
-                }, 100);
+                // CRITICAL: Force rendering immediately for filler plugin to finish its layout
+                tempChart.render();
+                tempChart.update();
+                
+                // EXTREMELY CRITICAL for Chrome: Do NOT use setTimeout or async toBlob here.
+                // Keep the download trigger in the same synchronous execution path as the button click
+                // to preserve the "User Gesture" required for a.download to work (otherwise you get UUID names).
+                try {
+                    // Using toDataURL (Base64) synchronously. 150KB is safe for modern browsers.
+                    var url = offCanvas.toDataURL('image/png');
+                    
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    
+                    document.body.appendChild(a);
+                    a.click();
+                    // Slight delay before removing if needed, but removeChild is usually safe
+                    document.body.removeChild(a);
+                    
+                    console.log('Export download triggered synchronously for:', filename);
+                    // Dispose properly
+                    tempChart.destroy();
+                    document.body.style.cursor = 'default';
+                } catch (err) {
+                    console.error('Final export stage failed:', err);
+                    document.body.style.cursor = 'default';
+                    alert('Image generation failed.');
+                }
             } catch (e) {
                 console.error('Export core error:', e);
                 document.body.style.cursor = 'default';
