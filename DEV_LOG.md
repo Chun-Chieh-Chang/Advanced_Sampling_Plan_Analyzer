@@ -1,3 +1,16 @@
+## [2026-03-28] - Phase 6: RCA/CAPA & 4:3 Aspect Ratio Normalization
+### Phase 6.0: RCA/CAPA for Download Filename/Extension
+- **RCA (Root Cause Analysis)**: Programmatic `a.click()` triggers in headless/automated AI browser environments (subagents) can fail to apply the `download` attribute correctly, leading to UUID-named files without extensions. This was an artifact of the verification environment.
+- **CAPA (Corrective Action)**:
+  - Transitioned `exportChartHiRes` to use `toBlob` and `URL.createObjectURL` for maximum compatibility.
+  - Added explicit instructions for future AI subagent verifications to verify filenames via console log evidence.
+
+### Phase 6.1: 4:3 Aspect Ratio Normalization
+- **Problem**: The charts were over-extended (too wide/short) on modern desktop screens due to responsive `50vh` height.
+- **Corrective Action**:
+  - Implemented `aspect-ratio: 4 / 3` with a `max-height: 500px` for all `.chart-container` elements to restore visual balance (matching user-provided reference).
+  - Refactored `exportChartHiRes` to render on a fixed-ratio virtual canvas (`1200 x 900`), ensuring professional 4:3 proportions in exported images.
+
 ## [2026-03-28] - Phase 5.9: AQL Lookup TypeError Fix & Listener Cleanup
 ### RCA (Root Cause Analysis):
 - **Problem**: A `TypeError` occurred when clicking "Export PNG" in the AQL Plan Table Lookup tab.

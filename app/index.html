@@ -546,13 +546,21 @@
             gap: var(--gap);
         }
 
+        .chart-container {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            max-height: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
         .left {
             width: var(--left);
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
             gap: var(--gap);
-            height: var(--chart-h);
+            max-height: 500px;
             overflow-y: auto;
             padding-right: 6px;
         }
@@ -2348,13 +2356,14 @@
             document.body.style.cursor = 'wait';
             
             try {
+                // Fixed 4:3 Aspect Ratio for Export (Professional Standard)
+                var exportW = 1200;
+                var exportH = 900;
                 var scale = 3;
-                var srcCanvas = chart.canvas;
-                var srcW = srcCanvas.offsetWidth || srcCanvas.width;
-                var srcH = srcCanvas.offsetHeight || srcCanvas.height;
+                
                 var offCanvas = document.createElement('canvas'); 
-                offCanvas.width = srcW * scale; 
-                offCanvas.height = srcH * scale;
+                offCanvas.width = exportW * scale; 
+                offCanvas.height = exportH * scale;
                 var offCtx = offCanvas.getContext('2d');
                 var type = (chart.config && chart.config.type) ? chart.config.type : 'line';
                 var srcData = chart.data || {};
@@ -2420,14 +2429,33 @@
                 // Small delay to ensure render is complete even with animation:false
                 setTimeout(function() {
                     try {
-                        var url = offCanvas.toDataURL('image/png');
-                        var a = document.createElement('a');
-                        a.href = url;
-                        a.download = filename;
-                        a.click();
-                        console.log('Export download triggered for:', filename);
-                        tempChart.destroy();
-                        document.body.style.cursor = 'default';
+                        if (offCanvas.toBlob) {
+                            offCanvas.toBlob(function(blob) {
+                                var url = URL.createObjectURL(blob);
+                                var a = document.createElement('a');
+                                a.href = url;
+                                a.download = filename;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+                                console.log('Export download triggered for:', filename);
+                                tempChart.destroy();
+                                document.body.style.cursor = 'default';
+                            }, 'image/png');
+                        } else {
+                            // Fallback for older browsers
+                            var url = offCanvas.toDataURL('image/png');
+                            var a = document.createElement('a');
+                            a.href = url;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            console.log('Export download triggered (fallback) for:', filename);
+                            tempChart.destroy();
+                            document.body.style.cursor = 'default';
+                        }
                     } catch (err) {
                         console.error('Final export stage failed:', err);
                         document.body.style.cursor = 'default';
