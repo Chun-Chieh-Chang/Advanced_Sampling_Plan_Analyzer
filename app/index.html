@@ -2423,22 +2423,23 @@
                         
                         var url = URL.createObjectURL(blob);
                         var a = document.createElement('a');
-                        a.href = url;
                         a.download = filename;
+                        a.rel = 'noopener'; // safety 
+                        a.target = '_blank';
+                        a.href = url;
                         
-                        // Chrome security requires the link to be in the DOM for programmatic click to be most reliable 
-                        // even in async callbacks.
-                        a.style.display = 'none';
-                        document.body.appendChild(a);
-                        a.click();
-                        
-                        // Slightly delay removal and revocation to ensure the browser has started the download handshake
+                        // Use native MouseEvent instead of a.click() to ensure Chrome does not strip the 
+                        // download attribute when triggering programmatically from async callbacks.
                         setTimeout(function() {
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                        }, 2000);
+                            a.dispatchEvent(new MouseEvent('click'));
+                        }, 0);
                         
-                        console.log('Export download triggered successfully for:', filename);
+                        // FileSaver.js waits 40s to ensure the browser has fully registered the object URL and download
+                        setTimeout(function() {
+                            URL.revokeObjectURL(url);
+                        }, 40000);
+                        
+                        console.log('Export download triggered successfully via MouseEvent for:', filename);
                         
                         // Dispose properly
                         tempChart.destroy();
