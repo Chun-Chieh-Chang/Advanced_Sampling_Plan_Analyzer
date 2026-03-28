@@ -37,8 +37,8 @@
             /* RGB values for rgba() CSS functions - Royal Blue base */
             --primary-rgb: 96, 165, 250;
             --primary-2-rgb: 59, 130, 246;
-            --error-color: #F87171;
-            --success-color: #34D399;
+            --error-color: #FCA5A5; /* High-contrast red for dark bg */
+            --success-color: #6EE7B7; /* High-contrast green for dark bg */
         }
 
         /* Light Theme (Cool Gray 50) */
@@ -59,8 +59,8 @@
             --panel-gradient-2: #F9FAFB;
             --primary-rgb: 59, 130, 246;
             --primary-2-rgb: 37, 99, 235;
-            --error-color: #EF4444;
-            --success-color: #10B981;
+            --error-color: #DC2626; /* Deep red for light bg */
+            --success-color: #059669; /* Deep green for light bg */
         }
 
         /* Dark Gray Theme */
@@ -214,7 +214,7 @@
         [data-theme="light-blue"] .btn.primary,
         [data-theme="light-yellow"] .btn.primary,
         [data-theme="light-pink"] .btn.primary {
-            color: var(--text) !important;
+            color: #000000 !important; /* Absolute black for maximum contrast on primary colors in light mode */
             text-shadow: none !important;
         }
 
@@ -742,7 +742,8 @@
         /* Error text styling with theme-aware contrast */
         .error-text {
             margin-top: 8px;
-            font-size: 0.9rem;
+            font-size: 14px;
+            font-weight: 600; /* Bold error text for better readability */
             display: none;
             color: var(--error-color, #f5b7b1);
         }
@@ -2316,7 +2317,8 @@
                         borderDash: (ds.borderDash || []).map(function(v) { return v * scale; }),
                         borderWidth: (ds.borderWidth || 2) * scale, 
                         pointRadius: pointRadius * scale, 
-                        tension: ds.tension || 0.1 
+                        tension: ds.tension || 0.1,
+                        fill: ds.fill // Crucial for shaded areas like Continue (Pc)
                     });
                 }
                 var xTitleObj = (((chart.options || {}).scales || {}).x || {}).title || {};
