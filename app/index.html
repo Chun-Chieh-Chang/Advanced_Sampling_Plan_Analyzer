@@ -2409,6 +2409,7 @@
                 // EXTREMELY CRITICAL for Chrome: Do NOT use setTimeout or async toBlob here.
                 // Keep the download trigger in the same synchronous execution path as the button click
                 // to preserve the "User Gesture" required for a.download to work (otherwise you get UUID names).
+                var filename = baseName + '.png'; 
                 try {
                     // Using toDataURL (Base64) synchronously. 150KB is safe for modern browsers.
                     var url = offCanvas.toDataURL('image/png');
