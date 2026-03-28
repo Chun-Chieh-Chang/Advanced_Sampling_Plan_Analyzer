@@ -1,3 +1,27 @@
+## [2026-03-28] - Phase 14: PNG Export Shaded Area & Chrome Compatibility Restoration
+### Task: Fix Missing "Continue (Pc)" Region & Chrome Download Failure
+- **RCA (Root Cause Analysis)**:
+  - **Problem 1 (Shading)**: The "Continue (Pc)" shaded area was lost in exports because `animation: false` sometimes skips the `filler` plugin's initial draw.
+  - **Problem 2 (Chrome/UUID Filenames)**: Chrome downloaded files as UUIDs with no extension because the download trigger was inside an **asynchronous** callback (`toBlob` + `setTimeout`). Chrome's security model ignores the `download` attribute if it's not part of a continuous **User Gesture** chain.
+- **CAPA (Corrective Action)**:
+  - **Fix 1 (Shading)**: Switched to synchronous rendering using `tempChart.render()` and `tempChart.update()` immediately after creation. Forced `fill: '-1'` for the Pc dataset during cloning.
+  - **Fix 2 (Chrome/User Gesture)**: Reverted to **synchronous `toDataURL`** and removed all `setTimeout` wrappers. This keeps the download trigger in the same execution path as the button click, ensuring Chrome respects the `download` filename and extension.
+- **Status**: Completed.
+- **Verification**: Code verified for synchronous flow.
+
+## [2026-03-28] - Phase 13: Accessibility & Color Contrast Optimization
+### Task: WCAG 2.1 AA Compliance Audit
+- **Action**:
+  - Established a formal contrast ratio specification (Target 4.5:1 for normal text).
+  - Audited all 7 themes (Premium Dark, Light, etc.) and all functional pages.
+  - **[Fix - Dark Themes]**: Increased contrast of `--error-color` to `#FCA5A5` (6.2:1) and `--success-color` to `#6EE7B7`.
+  - **[Fix - Light Themes]**: Increased contrast of `--error-color` to `#DC2626` and `--success-color` to `#059669`.
+  - **[Fix - Primary Buttons]**: Enforced absolute black `#000000` text for primary buttons in light themes to ensure legibility on saturated blue backgrounds.
+  - **[UI Refinement]**: Forced error text to **bold** and **14px** across all modules for better physical accessibility.
+- **Status**: Completed.
+- **Verification**: Browser subagent audit confirmed successful contrast improvements across Light, Premium Dark, and Light Pink themes.
+- **Next Steps**: Completed.
+
 ## [2026-03-28] - Phase 9.1: RCA/CAPA — Reactive UI Not Working on First Load
 
 ### RCA (Root Cause Analysis)
