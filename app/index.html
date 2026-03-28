@@ -2429,17 +2429,21 @@
                 // Small delay to ensure render is complete even with animation:false
                 setTimeout(function() {
                     try {
-                        // Using toDataURL (Base64) for maximum compatibility with all browsers & download managers
-                        // Data URLs are traditionally better at preserving the 'download' attribute than Blobs
-                        var url = offCanvas.toDataURL('image/png');
+                        // Using toDataURL (Base64) for maximum compatibility with all browsers
+                        // Using data:application/octet-stream as a specialized MIME type to FORCE Chrome 
+                        // and other browsers to trigger the download handler instead of opening it as an image.
+                        var url = offCanvas.toDataURL('image/png').replace(/^data:image\/[^;]+/, 'data:application/octet-stream');
+                        
                         var a = document.createElement('a');
                         a.href = url;
                         a.download = filename;
+                        
+                        // Chrome specifically requires the link to be appended to the document to allow a.click()
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
                         
-                        console.log('Export download triggered via DataURL for:', filename);
+                        console.log('Export download triggered via octet-stream for:', filename);
                         tempChart.destroy();
                         document.body.style.cursor = 'default';
                     } catch (err) {
