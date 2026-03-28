@@ -2371,15 +2371,15 @@
                 for (var i = 0; i < (srcData.datasets ? srcData.datasets.length : 0); i++) {
                     var ds = srcData.datasets[i] || {};
                     var cleanData = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
-                    var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) * scale : (ds.pointRadius || 0) * scale;
+                    var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) : 0;
                     datasets.push({ 
                         label: ds.label || '', 
                         data: cleanData, 
                         borderColor: ds.borderColor || '#1783FF', 
                         backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', 
                         borderDash: (ds.borderDash || []).map(function(v) { return v * scale; }),
-                        borderWidth: (ds.borderWidth || 2) * scale, 
-                        pointRadius: pointRadius, 
+                        borderWidth: (ds.borderWidth || 3) * scale, 
+                        pointRadius: pointRadius * scale, 
                         tension: ds.tension || 0.1 
                     });
                 }
@@ -2400,24 +2400,53 @@
                 var options = {
                     responsive: false, maintainAspectRatio: false, animation: false, devicePixelRatio: 1,
                     layout: { padding: { left: padPx, right: padPx, top: padPx, bottom: padPx } },
-                    plugins: { legend: { display: true, labels: { color: exportColors.text, font: { size: 12 * scale } } }, tooltip: { enabled: false } },
+                    plugins: { 
+                        legend: { 
+                            display: true, 
+                            labels: { 
+                                color: exportColors.text, 
+                                font: { size: 14 * scale, weight: 'bold' } 
+                            } 
+                        }, 
+                        tooltip: { enabled: false } 
+                    },
                     scales: { 
                         x: { 
                             type: 'linear', 
-                            title: { display: !!xTitleObj.text, text: xTitleObj.text || 'Defect Rate (p%)', color: exportColors.text, font: { size: 12 * scale } }, 
+                            title: { 
+                                display: !!xTitleObj.text, 
+                                text: xTitleObj.text || 'Defect Rate (p%)', 
+                                color: exportColors.text, 
+                                font: { size: 14 * scale, weight: 'bold' } 
+                            }, 
                             grid: { color: exportColors.grid }, 
-                            ticks: { color: exportColors.text, font: { size: 12 * scale } }, 
+                            ticks: { 
+                                color: exportColors.text, 
+                                font: { size: 14 * scale } 
+                            }, 
                             border: { color: exportColors.grid } 
                         }, 
                         y: { 
                             min: yMin, max: yMax, 
-                            title: { display: !!yTitleObj.text, text: yTitleObj.text || 'Acceptance Probability (Pa%)', color: exportColors.text, font: { size: 12 * scale } }, 
+                            title: { 
+                                display: !!yTitleObj.text, 
+                                text: yTitleObj.text || 'Acceptance Probability (Pa%)', 
+                                color: exportColors.text, 
+                                font: { size: 14 * scale, weight: 'bold' } 
+                            }, 
                             grid: { color: exportColors.grid }, 
-                            ticks: { color: exportColors.text, font: { size: 12 * scale }, callback: yTicksCallback }, 
+                            ticks: { 
+                                color: exportColors.text, 
+                                font: { size: 14 * scale }, 
+                                callback: yTicksCallback 
+                            }, 
                             border: { color: exportColors.grid } 
                         } 
                     }, 
-                    elements: { line: { borderWidth: 2 * scale }, point: { radius: 4 * scale } }
+                    elements: { 
+                        line: { borderWidth: 3 * scale }, 
+                        point: { radius: 4 * scale } 
+                    }
                 };
                 
                 // Use the canvas element directly instead of context to ensure Chart.js handles sizing correctly

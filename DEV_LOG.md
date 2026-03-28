@@ -9,7 +9,14 @@
 - **Problem**: The charts were over-extended (too wide/short) on modern desktop screens due to responsive `50vh` height.
 - **Corrective Action**:
   - Implemented `aspect-ratio: 4 / 3` with a `max-height: 500px` for all `.chart-container` elements to restore visual balance (matching user-provided reference).
-  - Refactored `exportChartHiRes` to render on a fixed-ratio virtual canvas (`1200 x 900`), ensuring professional 4:3 proportions in exported images.
+  - Refactored `exportChartHiRes` to render on a fixed-ratio virtual canvas (`1240 x 930`), ensuring professional 4:3 proportions in exported images.
+
+### Phase 6.2: Visual Weight Refinement (Mar 28, 2026)
+- **Problem**: In high-resolution exports (3x scale), the default fonts and lines appeared "thin" and "less comfortable" compared to the legacy version.
+- **Corrective Action**:
+  - Increased base export font sizes to **14px** (scaled to 42px).
+  - Increased OC curve `borderWidth` to **3px** (scaled to 9px) for better visual prominence.
+  - Added **bold** weight to legend labels and axis titles to restore the professional, high-contrast visual balance of the legacy dark theme.
 
 ## [2026-03-28] - Phase 5.9: AQL Lookup TypeError Fix & Listener Cleanup
 ### RCA (Root Cause Analysis):
