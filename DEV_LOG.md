@@ -1,4 +1,4 @@
-## [2026-03-28] - Phase 14: PNG Export Shaded Area & Chrome Compatibility Restoration
+﻿## [2026-03-28] - Phase 14: PNG Export Shaded Area & Chrome Compatibility Restoration
 ### Task: Fix Missing "Continue (Pc)" Region & Chrome Download Failure
 - **RCA (Root Cause Analysis)**:
   - **Problem 1 (Shading)**: The "Continue (Pc)" shaded area was lost in exports because `animation: false` sometimes skips the `filler` plugin's initial draw.
@@ -22,49 +22,32 @@
 - **Verification**: Browser subagent audit confirmed successful contrast improvements across Light, Premium Dark, and Light Pink themes.
 - **Next Steps**: Completed.
 
-## [2026-03-28] - Phase 9.1: RCA/CAPA — Reactive UI Not Working on First Load
+## [2026-03-28] - Phase 9.1: RCA/CAPA ??Reactive UI Not Working on First Load
 
 ### RCA (Root Cause Analysis)
 
-- **Symptom**: 宣稱已實現「即時連動標籤」與「免按鈕即時預覽」，但實際上切換下拉選單或修改欄位時，圖表與 Plan Label 均**無任何反應**。
-
-- **調查過程**:
-  1. 確認事件監聽器（`change`/`input`）確實已正確綁定到各模組的所有參數輸入元素上。
-  2. 確認 `doSsLookup`、`doC0Lookup`、`doReverseCalc`、`doAqlLtpdLookup` 函數本身邏輯正確無誤。
-  3. 發現各模組的 `lastPlan` 變數（`ssLastPlan`、`c0LastPlan`、`revLastPlan`、`aqlLtpdLastPlan`）在頁面初始載入時均為 `null`。
-
-- **根本原因**: **從未執行初始計算**。
-  - 頁面載入時，只做了 UI 初始化（`populateInspectionLevels()`、`buildC0AqlOptions()` 等），但**從未呼叫一次計算函數**。
-  - 各模組的 `lastPlan = null`，圖表空白。
-  - 雖然 `change` 事件會觸發計算函數，但使用者**在第一次手動按按鈕前，看不到任何輸出**，造成「資料連動無效」的錯覺。
-  - 事後發現部分模組（如 `doSsLookup`）在 `lastPlan === null` 時仍能正常執行（不依賴 lastPlan 執行），但因為初始圖表是空的，使用者切換 AQL 下拉選單時確實應該有反應——**問題在於部分 change 事件被前一個只做 disable/enable 的 listener 「攔截先行」，導致印象中沒有反應**。真正完整的問題是兩者並存：缺少初始化 + AQL 下拉有雙重 listener 造成行為不直覺。
-
+- **Symptom**: 摰?迂撌脣祕?整???璅惜???????單??汗??雿祕????銝??詨?耨?寞?雿?嚗?銵刻? Plan Label ??*?∩遙雿???*??
+- **隤踵??**:
+  1. 蝣箄?鈭辣???剁?`change`/`input`嚗Ⅱ撖血歇甇?Ⅱ蝬??啣?璅∠??????貉撓?亙?蝝???  2. 蝣箄? `doSsLookup`?doC0Lookup`?doReverseCalc`?doAqlLtpdLookup` ?賣?祈澈?摩甇?Ⅱ?∟炊??  3. ?潛?芋蝯? `lastPlan` 霈嚗ssLastPlan`?c0LastPlan`?revLastPlan`?aqlLtpdLastPlan`嚗???頛????`null`??
+- **?寞??**: **敺?瑁???閮?**??  - ?頛???芸?鈭?UI ????`populateInspectionLevels()`?buildC0AqlOptions()` 蝑?嚗?**敺?澆銝甈∟?蝞??*??  - ?芋蝯? `lastPlan = null`嚗?銵函征?賬?  - ? `change` 鈭辣?孛?潸?蝞?賂?雿蝙?刻?*?函洵銝甈⊥??????????唬遙雿撓??*嚗???????⊥????航死??  - 鈭??潛?典?璅∠?嚗? `doSsLookup`嚗 `lastPlan === null` ???賣迤撣詨銵?銝?鞈?lastPlan ?瑁?嚗?雿??箏?憪?銵冽蝛箇?嚗蝙?刻???AQL 銝??詨?Ⅱ撖行?閰脫?????*???冽?典? change 鈭辣鋡怠?銝???disable/enable ??listener ???芸?銵?撠?啗情銝剜?????*??甇???渡????臬?蒂摮?蝻箏?????+ AQL 銝?????listener ??銵銝閬箝?
 ### CAPA (Corrective Action & Preventive Action)
 
-- **矯正措施**:
-  在所有事件監聽器綁定完成後，立即以 `setTimeout` 呼叫各模組的計算函數，強制執行**初始計算**：
-
-  | 模組          | 觸發程式碼                         | 延遲  |
+- **?舀迤?芣**:
+  ?冽???隞嗥?賢蝬?摰?敺?蝡隞?`setTimeout` ?澆?芋蝯?閮??賣嚗撥?嗅銵?*??閮?**嚗?
+  | 璅∠?          | 閫貊蝔?蝣?                        | 撱園  |
   | ------------- | ---------------------------------- | ----- |
   | Reverse Query | `setTimeout(doReverseCalc, 80)`    | 80ms  |
   | AQL Lookup    | `setTimeout(doSsLookup, 100)`      | 100ms |
   | C=0 Lookup    | `setTimeout(doC0Lookup, 120)`      | 120ms |
   | AQL-LTPD      | `setTimeout(doAqlLtpdLookup, 150)` | 150ms |
 
-  （錯開延遲是為了避免多個計算同時執行造成渲染競爭）
+  嚗?辣?脫?箔??踹?憭?蝞??銵?皜脫?蝡嗥嚗?
+- **撽?**:
+  - ?瑟?敺???Tab ?”隞仿?閮剖潸?鼓鋆踝?Plan Label ?芸?憛怠??  - 隞餅?靽格?嚗???柴摮撓?伐?嚗?銵刻? Label ?單??湔嚗???????  - ??靽格 Label 敺?敺?????*銝?**閬?雿輻??摰Ｚˊ?撓?伐??? `__lastAutoLabel` 餈質馱璈靽風嚗?  - `node` ?單撽? 12/12 ???嚗S 隤??園隤扎?
+- **??芣**:
 
-- **驗證**:
-  - 刷新頁面後，各 Tab 圖表以預設值自動繪製，Plan Label 自動填入。
-  - 任意修改參數（下拉選單、數字輸入），圖表與 Label 即時更新，無需手動按按鈕。
-  - 手動修改 Label 後，後續的自動更新**不會**覆蓋使用者的客製化輸入（透過 `__lastAutoLabel` 追蹤機制保護）。
-  - `node` 腳本驗證 12/12 項目通過，JS 語法零錯誤。
-
-- **預防措施**:
-
-  > **開發準則新增**: 任何新增的「即時反應」模組，必須在事件監聽器綁定完成後加入 `setTimeout(doXxxCalc, N)` 的初始觸發，確保頁面載入後使用者立即看到完整的計算結果與圖表，而非空白狀態。
-
-- **Status**: ✅ 已驗證通過（使用者確認 OK）。
-
+  > **?皞??啣?**: 隞颱??啣?????芋蝯?敹??其?隞嗥?賢蝬?摰?敺???`setTimeout(doXxxCalc, N)` ??憪孛?潘?蝣箔??頛敺蝙?刻??喟??啣??渡?閮?蝯???銵剁???蝛箇???
+- **Status**: ??撌脤?霅?嚗蝙?刻Ⅱ隤?OK嚗?
 ---
 
 ## [2026-03-28] - Phase 10: UI Layout Optimization & AQL Marker Removal
@@ -302,7 +285,7 @@
 - **Status**: Implemented.
 - **Verification**: Pending GHA run.
 
-## [2026-03-27] - Phase 3-5: Software Validation (蝣箸?) & Premium UI
+## [2026-03-27] - Phase 3-5: Software Validation (??捂?) & Premium UI
 
 ### Task: Rigorous Statistical Validation & UI/UX Optimization
 
@@ -381,5 +364,6 @@
   - Successfully re-applied all translations using surgical `multi_replace_file_content` calls to maintain UTF-8 integrity.
 -   * * P r o b l e m   3   ( C S V   U U I D s   &   E v e n t   R e c u r s i o n ) * * :   T h e   C S V   E x p o r t   s u f f e r e d   f r o m   r e c u r s i v e   e v e n t   t r i g g e r i n g   w h e r e   8   l i s t e n e r s   s t a c k e d   u p   d u e   t o   t h e   p a g e ' s   r e a c t i v e   l i f e c y c l e   r e l o a d i n g   e l e m e n t s .   T h i s   c a u s e d   t h e   n e w   t a b / m o d a l   t o   b e   d e s t r o y e d   m i c r o - s e c o n d s   a f t e r   t h e   b l o b   U R L   w a s   b o u n d ,   t r i g g e r i n g   C h r o m e ' s   m a l i c i o u s - d o w n l o a d   d e t e c t i o n   ( d o w n l o a d   a t t r i b u t e   s t r i p p i n g ) . 
  -   * * F i x   3   ( I d e m p o t e n t   M o d a l   &   D a t a   U R L s ) * * :   S w i t c h e d   t h e   C S V   t a r g e t   f r o m   o b j e c t   B l o b s   t o   r o b u s t   D a t a   U R L s .   E n f o r c e d   a n   i d e m p o t e n t   l i s t e n e r   p a t t e r n   ( \ i f   ( ! w i n d o w . e x p o r t H a n d l e r s A t t a c h e d ) \ )   t o   c a p   e x p o r t   l i s t e n e r s   s t r i c t l y   a t   1 .   F i n a l l y ,   h a r d e n e d   t h e   d o w n l o a d   b u t t o n   w i t h   \ s t o p P r o p a g a t i o n ( ) \   a n d   \ p r e v e n t D e f a u l t ( ) \   t o   c l e a n l y   i s o l a t e   t h e   f i n a l   i n t e r a c t i o n   f r o m   p a r e n t   e l e m e n t s . 
- -   * * S t a t u s * * :   C o m p l e t e d   &   V e r i f i e d .  
+ -   * * S t a t u s * * :   C o m p l e t e d   &   V e r i f i e d . 
+ 
  

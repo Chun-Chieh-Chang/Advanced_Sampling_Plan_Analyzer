@@ -561,8 +561,8 @@
             display: flex;
             flex-direction: column;
             gap: var(--gap);
-            max-height: 500px;
-            overflow-y: auto;
+            height: var(--chart-h);
+            overflow-y: hidden;
             padding-right: 6px;
         }
 
@@ -578,6 +578,13 @@
 
         .left::-webkit-scrollbar-track {
             background: transparent;
+        }
+
+        .left > .panel:last-child {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .panel {
