@@ -2479,9 +2479,9 @@
             { pngId: 'c0_export_png_toolbar', csvId: 'c0_export_csv_toolbar', chart: () => typeof c0Chart !== 'undefined' ? c0Chart : null, name: 'c0_lookup' },
             { pngId: 'aql_ltpd_export_png_toolbar', csvId: 'aql_ltpd_export_csv_toolbar', chart: () => typeof aqlLtpdChart !== 'undefined' ? aqlLtpdChart : null, name: 'aql_ltpd_balanced' }
         ];
-
-        exportConfigs.forEach(cfg => {
-            const pngBtn = document.getElementById(cfg.pngId);
+        if (!window.exportHandlersAttached) {
+            exportConfigs.forEach(cfg => {
+                const pngBtn = document.getElementById(cfg.pngId);
             const csvBtn = document.getElementById(cfg.csvId);
             
             if (pngBtn) {
@@ -2513,13 +2513,12 @@
                             }
                         });
                         const filename = cfg.name + '.csv';
-                        // Add BOM for proper UTF-8 handling in Excel
-                        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-                        const url = URL.createObjectURL(blob);
+                        // Use Data URL for CSV - much more stable for small text files in Chrome's download manager
+                        const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
                         
                         // Option B: Lightbox Overlay (Modal) on the current page
-                        // This guarantees 100% same-origin context so Chrome never ignores the 'download' attribute
                         const overlay = document.createElement('div');
+                        overlay.id = 'csv_export_overlay';
                         overlay.style.position = 'fixed';
                         overlay.style.top = '0';
                         overlay.style.left = '0';
@@ -2556,29 +2555,16 @@
                         closeBtn.style.color = '#94a3b8';
                         closeBtn.style.fontSize = '24px';
                         closeBtn.style.cursor = 'pointer';
-                        closeBtn.onclick = () => {
+                        closeBtn.onclick = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             document.body.removeChild(overlay);
                         };
                         modalBox.appendChild(closeBtn);
                         
-                        // Title
-                        const title = document.createElement('h2');
-                        title.innerText = 'CSV Data Export Ready';
-                        title.style.margin = '0 0 10px 0';
-                        title.style.color = '#f8fafc';
-                        modalBox.appendChild(title);
-
-                        // Desc
-                        const desc = document.createElement('p');
-                        desc.innerText = 'Click the button below to natively save your file. This bypasses Chrome download limits.';
-                        desc.style.color = '#94a3b8';
-                        desc.style.marginBottom = '20px';
-                        desc.style.textAlign = 'center';
-                        modalBox.appendChild(desc);
-
-                        // The ACTUAL download link that the user manually clicks
+                        // ACTUAL download link
                         const downLink = document.createElement('a');
-                        downLink.href = url;
+                        downLink.href = csvContent;
                         downLink.download = filename;
                         downLink.innerText = '↓ Download ' + filename;
                         downLink.style.display = 'inline-block';
@@ -2589,9 +2575,14 @@
                         downLink.style.fontWeight = 'bold';
                         downLink.style.borderRadius = '6px';
                         downLink.style.marginBottom = '25px';
-                        // Auto-close overlay after download click
-                        downLink.onclick = () => {
-                            setTimeout(() => document.body.removeChild(overlay), 500);
+                        downLink.style.cursor = 'pointer';
+                        
+                        // CRITICAL: Stop propagation to prevent re-triggering the parent export logic
+                        downLink.onclick = (e) => {
+                            e.stopPropagation();
+                            console.log('User initiated final CSV download for:', filename);
+                            // Optional: auto-close after 1s
+                            setTimeout(() => { if (overlay.parentNode) document.body.removeChild(overlay); }, 1000);
                         };
                         modalBox.appendChild(downLink);
 
@@ -2623,8 +2614,10 @@
                 };
             }
         });
-        // Unified export handlers are active above. Legacy listeners removed.
-        // Left-side export buttons removed; use toolbar buttons only
+        window.exportHandlersAttached = true;
+    }
+    // Unified export handlers are active above. Legacy listeners removed.
+    // Left-side export buttons removed; use toolbar buttons only
 
         // initial draw
         updateDistributionChart();
