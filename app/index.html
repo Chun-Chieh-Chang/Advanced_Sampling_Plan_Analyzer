@@ -1179,6 +1179,23 @@
         </header>
         <div class="main-layout">
             <aside class="sidebar">
+                <div class="panel theme-panel" style="margin-bottom: 20px;">
+                    <h3>Theme</h3>
+                    <div class="parameters" style="grid-template-columns: 1fr;">
+                        <div class="group">
+                            <label>Color Theme</label>
+                            <select id="theme_selector" class="theme-selector" title="Select color theme">
+                                <option value="light" style="background-color: #F9FAFB; color: #111827;">Light</option>
+                                <option value="light-blue" style="background-color: #e3f2fd; color: #0d47a1;">Light Blue</option>
+                                <option value="light-yellow" style="background-color: #fffef7; color: #3e2723;">Light Yellow</option>
+                                <option value="light-pink" style="background-color: #fce4ec; color: #4a148c;">Light Pink</option>
+                                <option value="dark-teal" style="background-color: #0F172A; color: #F1F5F9;">Dark Teal</option>
+                                <option value="dark-blue" style="background-color: #0d1421; color: #ecf0f1;">Dark Blue</option>
+                                <option value="dark-gray" style="background-color: #1a1a1a; color: #e0e0e0;">Dark Gray</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <nav class="tabs">
                     <div class="tab active" data-target="distribution">Probability Distribution</div>
                     <div class="tab" data-target="kaiyi">AQL Plan Table Lookup</div>
@@ -1198,23 +1215,6 @@
                     </div>
                     <div class="content">
                         <aside class="left">
-                            <div class="panel">
-                                <h3>Theme</h3>
-                                <div class="parameters">
-                                    <div class="group" style="grid-column: 1 / span 2;">
-                                        <label>Color Theme</label>
-                                        <select id="theme_selector" class="theme-selector" title="Select color theme">
-                                            <option value="light">Light</option>
-                                            <option value="light-blue">Light Blue</option>
-                                            <option value="light-yellow">Light Yellow</option>
-                                            <option value="light-pink">Light Pink</option>
-                                            <option value="dark-teal">Dark Teal</option>
-                                            <option value="dark-blue">Dark Blue</option>
-                                            <option value="dark-gray">Dark Gray</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="panel">
                                 <h3>Parameters</h3>
                                 <div class="parameters">
@@ -2785,66 +2785,8 @@
                     tension: 0.1
                 });
 
-                // Add AQL marker if available (only for OC curves)
-                if (curveType === 'oc' && plan.aql != null && isFinite(+plan.aql)) {
-                    var aqlX = +plan.aql; if (aqlX >= 0) {
-                        var paAtAql = computePlanPa(dist, N, plan.n, plan.c, aqlX / 100);
-                        datasets.push({
-                            type: 'scatter',
-                            // Hide from legend; use tooltip only
-                            label: '',
-                            data: [{ x: aqlX, y: paAtAql }],
-                            pointRadius: 5,
-                            pointHoverRadius: 6,
-                            showLine: false,
-                            borderColor: color,
-                            pointBackgroundColor: color,
-                            pointBorderColor: '#ffffff',
-                            pointBorderWidth: 1,
-                            _aqlLabel: 'AQL'
-                        });
-                    }
-                } else if (curveType === 'ati' && plan.aql != null && isFinite(+plan.aql)) {
-                    // Add AQL marker for ATI curves with correct ATI value
-                    var aqlX = +plan.aql; if (aqlX >= 0) {
-                        var paAtAql = computePlanPa(dist, N, plan.n, plan.c, aqlX / 100);
-                        var atiAtAql = plan.n + (1 - paAtAql) * (N - plan.n);
-                        datasets.push({
-                            type: 'scatter',
-                            // Hide from legend; use tooltip only
-                            label: '',
-                            data: [{ x: aqlX, y: atiAtAql }],
-                            pointRadius: 5,
-                            pointHoverRadius: 6,
-                            showLine: false,
-                            borderColor: color,
-                            pointBackgroundColor: color,
-                            pointBorderColor: '#ffffff',
-                            pointBorderWidth: 1,
-                            _aqlLabel: 'AQL'
-                        });
-                    }
-                } else if (curveType === 'aoq' && plan.aql != null && isFinite(+plan.aql)) {
-                    // Add AQL marker for AOQ curves with correct AOQ value
-                    var aqlX = +plan.aql; if (aqlX >= 0) {
-                        var paAtAql = computePlanPa(dist, N, plan.n, plan.c, aqlX / 100);
-                        var aoqAtAql = (aqlX / 100) * paAtAql * (N - plan.n) / N * 100;
-                        datasets.push({
-                            type: 'scatter',
-                            // Hide from legend; use tooltip only
-                            label: '',
-                            data: [{ x: aqlX, y: aoqAtAql }],
-                            pointRadius: 5,
-                            pointHoverRadius: 6,
-                            showLine: false,
-                            borderColor: color,
-                            pointBackgroundColor: color,
-                            pointBorderColor: '#ffffff',
-                            pointBorderWidth: 1,
-                            _aqlLabel: 'AQL'
-                        });
-                    }
-                }
+
+
             }
             planChart.data.datasets = datasets;
 
@@ -5331,29 +5273,12 @@
                     datasets: [{
                         label: currentLabel,
                         data: pValues.map((p, i) => ({ x: p, y: paValues[i] })),
-                        borderColor: customColor,
-                        backgroundColor: customColor + '40',
-                        borderDash: customDash,
+                        borderColor: accentColor,
+                        backgroundColor: accentColor + '40',
+                        borderDash: [],
                         borderWidth: 2,
                         pointRadius: 0,
-                        tension: 0.1
-                    }, {
-                        label: 'AQL Point',
-                        data: [{ x: parseFloat(aqlLtpdElements.aqlInput?.value || 1), y: plan.paAql }],
-                        type: 'scatter',
-                        backgroundColor: 'rgba(46, 204, 113, 0.8)',
-                        borderColor: '#2ecc71',
-                        pointRadius: 8,
-                        pointHoverRadius: 10
-                    }, {
-                        label: 'LTPD Point',
-                        data: [{ x: parseFloat(aqlLtpdElements.ltpdInput?.value || 5), y: plan.paLtpd }],
-                        type: 'scatter',
-                        backgroundColor: 'rgba(231, 76, 60, 0.8)',
-                        borderColor: '#e74c3c',
-                        pointRadius: 8,
-                        pointHoverRadius: 10
-                    }]
+                    },]
                 },
                 options: {
                     responsive: true,
