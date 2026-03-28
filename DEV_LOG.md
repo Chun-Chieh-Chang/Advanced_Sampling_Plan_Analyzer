@@ -2,7 +2,7 @@
 ### Phase 6.0: RCA/CAPA for Download Filename/Extension
 - **RCA (Root Cause Analysis)**: Programmatic `a.click()` triggers in headless/automated AI browser environments (subagents) can fail to apply the `download` attribute correctly, leading to UUID-named files without extensions. This was an artifact of the verification environment.
 - **CAPA (Corrective Action)**:
-  - Transitioned `exportChartHiRes` to use `toBlob` and `URL.createObjectURL` for maximum compatibility.
+  - **Fallback Implementation**: Switched `exportChartHiRes` from `toBlob` back to `toDataURL` (Base64). While Blobs are more modern, `toDataURL` historically has better success rates at preserving the `download` attribute when intercepted by Windows-based download managers (like IDM).
   - Added explicit instructions for future AI subagent verifications to verify filenames via console log evidence.
 
 ### Phase 6.1: 4:3 Aspect Ratio Normalization
