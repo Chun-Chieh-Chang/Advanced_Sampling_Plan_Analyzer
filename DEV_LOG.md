@@ -4,7 +4,8 @@
     - Removed all "Curve Styling" panels (Color Pickers/Line Styles) from all 6 modules to reduce UI clutter.
     - Added "Plan Label" input fields to the parameters panel of each module.
     - Standardized default chart colors using `getEnhancedThemeColors()`.
-    - **Comfort Normalization**: Reverted high-resolution export parameters to legacy "comfortable" values: 12px font (Effective 36px), 2px line width (6px), and regular font weights.
+    - **[UI Refinement]**: Unified font size of plan cards in the comparison list to **0.85rem** for visual consistency with the distribution help panel.
+    - **[Export Restoration]**: Reverted high-resolution export parameters (12px font, 2px line width, regular font weight) to legacy values for optimal comfort and professional readability.
     - Maintained professional 1200x900 (4:3) export resolution with 3x scaling factor.
 - **Status**: Completed.
 - **Verification**: 

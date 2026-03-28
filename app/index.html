@@ -2867,7 +2867,7 @@
                 var aqlTxt = (p.aql == null ? 'No AQL' : ('AQL=' + (+p.aql).toFixed(2) + '%'));
                 var distTxt = p.dist ? (p.dist === 'hyper' ? 'Hypergeometric' : (p.dist === 'binom' ? 'Binomial' : 'Poisson')) : 'Binomial';
                 var nTxt = p.N ? ', N=' + p.N : '';
-                li.innerHTML = '<span style="color:' + p.color + '">' + p.label + ': n=' + p.n + ', c=' + p.c + ', ' + aqlTxt + ' (' + distTxt + nTxt + ')</span><button class="btn" data-del="' + i + '">×</button>';
+                li.innerHTML = '<span style="color:' + p.color + '; font-size: 0.85rem;">' + p.label + ': n=' + p.n + ', c=' + p.c + ', ' + aqlTxt + ' (' + distTxt + nTxt + ')</span><button class="btn" data-del="' + i + '">×</button>';
                 planListEl.appendChild(li);
             }
         }
