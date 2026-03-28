@@ -1,3 +1,18 @@
+## [2026-03-28] - Phase 5.7: Theme-Aware Chart Styling & Customization
+### RCA (Root Cause Analysis):
+- **Problem 1**: Exported high-res PNG images always had a dark background, making them unsuitable for light-colored documents or presentations.
+- **Problem 2**: Users lacked the ability to customize OC curve colors and line styles for better visual distinction.
+- **Cause 1**: The `exportChartHiRes` function used the browser's current theme state without explicitly setting a background color on the temporary canvas.
+- **Cause 2**: Chart datasets had hardcoded styling properties (colors and solid lines) that weren't connected to UI controls.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: 
+    - Updated `exportChartHiRes` and added `getExportThemeColors` to dynamically apply a white background for light themes and a dark background for dark themes during export.
+    - Integrated "Curve Styling" sidebar controls (HTML color inputs and select dropdowns) across all six sampling plan modules.
+    - Modified chart update functions (`updateDistributionChart`, `drawSsChart`, etc.) to retrieve and apply user-selected styles in real-time.
+    - Refined the "Multiple Plan Comparison" page to support global line styling and custom colors for manual plan entry.
+- **Status**: Completed.
+- **Verification**: Browser verification confirmed correct real-time styling updates and theme-aware exports (verified as white background on light theme).
+
 ## [2026-03-27] - Phase 5.6: UI Standardization (Spacing & Chart Grids)
 ### RCA (Root Cause Analysis):
 - **Problem 1**: Uneven button spacing in the "Multiple Plan Comparison" sidebar.

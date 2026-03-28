@@ -1231,6 +1231,24 @@
                             </div>
 
                             <div class="panel">
+                                <h3>Curve Styling</h3>
+                                <div class="parameters">
+                                    <div class="group">
+                                        <label>Curve Color</label>
+                                        <input type="color" id="dist_curve_color" value="#3b82f6" style="width:100%; height:38px; padding:2px; cursor:pointer;">
+                                    </div>
+                                    <div class="group">
+                                        <label>Line Style</label>
+                                        <select id="dist_curve_dash">
+                                            <option value="solid" selected>Solid</option>
+                                            <option value="dashed">Dashed</option>
+                                            <option value="dotted">Dotted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel">
                                 <h3>Learning</h3>
                                 <button class="btn primary glass-button" id="start-tutorial-btn" style="width: 100%;">
                                     🎓 Start Interactive Tutorial
@@ -1381,6 +1399,23 @@
                                 <div id="rev_error" class="error-text"></div>
                                 <div id="rev_info" class="info-text"></div>
                             </div>
+                            <div class="panel">
+                                <h3>Curve Styling</h3>
+                                <div class="parameters">
+                                    <div class="group">
+                                        <label>Curve Color</label>
+                                        <input type="color" id="rev_curve_color" value="#3b82f6" style="width:100%; height:38px; padding:2px; cursor:pointer;">
+                                    </div>
+                                    <div class="group">
+                                        <label>Line Style</label>
+                                        <select id="rev_curve_dash">
+                                            <option value="solid" selected>Solid</option>
+                                            <option value="dashed">Dashed</option>
+                                            <option value="dotted">Dotted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </aside>
                         <main class="right">
                             <div class="chart-card">
@@ -1471,6 +1506,23 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="panel">
+                                <h3>Curve Styling</h3>
+                                <div class="parameters">
+                                    <div class="group">
+                                        <label>Curve Color</label>
+                                        <input type="color" id="ss_curve_color" value="#3b82f6" style="width:100%; height:38px; padding:2px; cursor:pointer;">
+                                    </div>
+                                    <div class="group">
+                                        <label>Line Style</label>
+                                        <select id="ss_curve_dash">
+                                            <option value="solid" selected>Solid</option>
+                                            <option value="dashed">Dashed</option>
+                                            <option value="dotted">Dotted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </aside>
                         <main class="right">
                             <div class="chart-card">
@@ -1557,6 +1609,23 @@
                                             type="text" value="-" disabled></div>
                                     <div class="group" style="grid-column: 1 / span 2;"><label>LTPD at
                                             Pa=10%</label><input id="c0_result_lq10" type="text" value="-" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel">
+                                <h3>Curve Styling</h3>
+                                <div class="parameters">
+                                    <div class="group">
+                                        <label>Curve Color</label>
+                                        <input type="color" id="c0_curve_color" value="#3b82f6" style="width:100%; height:38px; padding:2px; cursor:pointer;">
+                                    </div>
+                                    <div class="group">
+                                        <label>Line Style</label>
+                                        <select id="c0_curve_dash">
+                                            <option value="solid" selected>Solid</option>
+                                            <option value="dashed">Dashed</option>
+                                            <option value="dotted">Dotted</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1723,6 +1792,23 @@
                                 <div id="aql_ltpd_notes" class="notes-text">Enter AQL and LTPD values to calculate the
                                     optimal sampling plan.</div>
                             </div>
+                            <div class="panel">
+                                <h3>Curve Styling</h3>
+                                <div class="parameters">
+                                    <div class="group">
+                                        <label>Curve Color</label>
+                                        <input type="color" id="aql_ltpd_curve_color" value="#3b82f6" style="width:100%; height:38px; padding:2px; cursor:pointer;">
+                                    </div>
+                                    <div class="group">
+                                        <label>Line Style</label>
+                                        <select id="aql_ltpd_curve_dash">
+                                            <option value="solid" selected>Solid</option>
+                                            <option value="dashed">Dashed</option>
+                                            <option value="dotted">Dotted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </aside>
 
                         <main class="right">
@@ -1853,6 +1939,13 @@
                     background: getCssVar('--panel-2') || getCssVar('--panel') || '#111c26'
                 };
             }
+        }
+
+        // Helper for curve dash styles
+        function getDashArray(style) {
+            if (style === 'dashed') return [6, 4];
+            if (style === 'dotted') return [2, 2];
+            return [];
         }
 
         function updateChartColors() {
@@ -2172,17 +2265,48 @@
             ocChart.options.scales.x.max = maxX;
             const datasets = [];
 
+            // Get custom styles
+            const customColor = document.getElementById('dist_curve_color')?.value || '#3b82f6';
+            const customDash = getDashArray(document.getElementById('dist_curve_dash')?.value || 'solid');
+
             if (distState.hyper) {
                 const data = pValuesPercent.map(px => ({ x: px, y: getPaHyper(N, n, c, px / 100) }));
-                datasets.push({ label: 'Hypergeometric', data, borderColor: 'rgba(241,196,15,1)', backgroundColor: 'rgba(241,196,15,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 });
+                datasets.push({ 
+                    label: 'Hypergeometric', 
+                    data, 
+                    borderColor: distState.binom || distState.pois ? 'rgba(241,196,15,1)' : customColor, 
+                    backgroundColor: distState.binom || distState.pois ? 'rgba(241,196,15,0.25)' : 'transparent',
+                    borderDash: distState.binom || distState.pois ? [] : customDash,
+                    borderWidth: 2, 
+                    pointRadius: 0, 
+                    tension: 0.1 
+                });
             }
             if (distState.binom) {
                 const data = pValuesPercent.map(px => ({ x: px, y: getPaBinomial(n, c, px / 100) }));
-                datasets.push({ label: 'Binomial', data, borderColor: 'rgba(46,204,113,1)', backgroundColor: 'rgba(46,204,113,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 });
+                datasets.push({ 
+                    label: 'Binomial', 
+                    data, 
+                    borderColor: distState.hyper || distState.pois ? 'rgba(46,204,113,1)' : customColor, 
+                    backgroundColor: distState.hyper || distState.pois ? 'rgba(46,204,113,0.25)' : 'transparent',
+                    borderDash: distState.hyper || distState.pois ? [6, 4] : customDash,
+                    borderWidth: 2, 
+                    pointRadius: 0, 
+                    tension: 0.1 
+                });
             }
             if (distState.pois) {
                 const data = pValuesPercent.map(px => ({ x: px, y: getPaPoisson(n, c, px / 100) }));
-                datasets.push({ label: 'Poisson', data, borderColor: 'rgba(231,76,60,1)', backgroundColor: 'rgba(231,76,60,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 });
+                datasets.push({ 
+                    label: 'Poisson', 
+                    data, 
+                    borderColor: distState.hyper || distState.binom ? 'rgba(231,76,60,1)' : customColor, 
+                    backgroundColor: distState.hyper || distState.binom ? 'rgba(231,76,60,0.25)' : 'transparent',
+                    borderDash: distState.hyper || distState.binom ? [2, 2] : customDash,
+                    borderWidth: 2, 
+                    pointRadius: 0, 
+                    tension: 0.1 
+                });
             }
 
             ocChart.data.datasets = datasets;
@@ -2195,14 +2319,24 @@
             // Prefer panel-2; fallback to panel; final fallback to a dark tone
             return getCssVar('--panel-2') || getCssVar('--panel') || '#111c26';
         }
-        // Enhanced theme color function for export with consistent dark theme colors
+        // Enhanced theme color function for export with theme-aware colors
         function getExportThemeColors() {
-            // Always use dark theme colors for consistent export across all themes
-            return {
-                text: '#e6e9ee', // Light text for better contrast on dark background
-                grid: 'rgba(199,202,207,0.4)', // Visible grid lines
-                background: getUiChartBg()
-            };
+            const theme = document.body.getAttribute('data-theme') || 'dark-teal';
+            const isLightTheme = ['light', 'light-blue', 'light-yellow', 'light-pink'].includes(theme);
+
+            if (isLightTheme) {
+                return {
+                    text: '#212529', // Dark text for light background
+                    grid: 'rgba(0,0,0,0.1)', // Subtle dark grid
+                    background: '#ffffff' // Pure white background for better printing/reports
+                };
+            } else {
+                return {
+                    text: '#e6e9ee', // Light text for dark themes
+                    grid: 'rgba(199,202,207,0.4)', // Visible grid lines
+                    background: getUiChartBg()
+                };
+            }
         }
 
         function exportChartHiRes(chart, baseName) {
@@ -2219,7 +2353,16 @@
                 var ds = srcData.datasets[i] || {};
                 var cleanData = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
                 var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) * scale : (ds.pointRadius || 0) * scale;
-                datasets.push({ label: ds.label || '', data: cleanData, borderColor: ds.borderColor || '#1783FF', backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', borderWidth: (ds.borderWidth || 2) * scale, pointRadius: pointRadius, tension: ds.tension || 0.1 });
+                datasets.push({ 
+                    label: ds.label || '', 
+                    data: cleanData, 
+                    borderColor: ds.borderColor || '#1783FF', 
+                    backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', 
+                    borderDash: (ds.borderDash || []).map(function(v) { return v * scale; }),
+                    borderWidth: (ds.borderWidth || 2) * scale, 
+                    pointRadius: pointRadius, 
+                    tension: ds.tension || 0.1 
+                });
             }
             var xTitleObj = (((chart.options || {}).scales || {}).x || {}).title || {};
             var yTitleObj = (((chart.options || {}).scales || {}).y || {}).title || {};
@@ -2502,6 +2645,9 @@
                 planChart.options.scales.y.max = 1;
             }
 
+            // Get custom styles
+            const customDash = getDashArray(document.getElementById('plan_curve_dash')?.value || 'solid');
+
             for (var idx = 0; idx < samplingPlans.length; idx++) {
                 var plan = samplingPlans[idx];
                 var color = plan.color || planColors[idx % planColors.length];
@@ -2538,6 +2684,7 @@
                     data: data,
                     borderColor: color,
                     backgroundColor: color + '33',
+                    borderDash: customDash,
                     borderWidth: 2,
                     pointRadius: 0,
                     tension: 0.1
@@ -2679,7 +2826,7 @@
                     }
                     aql = num;
                 }
-                const color = planColors[samplingPlans.length % planColors.length];
+                const color = document.getElementById('plan_curve_color')?.value || planColors[samplingPlans.length % planColors.length];
                 // Manually added plans default to binomial distribution
                 samplingPlans.push({ n, c, aql, label, color, dist: 'binom', N, source: 'manual' });
                 planLabelInput.value = '';
@@ -2882,7 +3029,21 @@
         function drawRevChart(N, n, c, aql, dist) {
             const maxX = parseFloat(revXMaxEl.value || '5'); const xs = revGeneratePValues(maxX); ensureRevChart(); revChart.options.scales.x.max = maxX;
             const data = xs.map(px => ({ x: px, y: revComputePa(dist, N, n, c, px / 100) }));
-            revChart.data.datasets = [{ label: `Reverse (n=${n}, c=${c}, AQL=${aql.toFixed(3)}%, N=${N})`, data, borderColor: 'rgba(120,99,255,1)', backgroundColor: 'rgba(120,99,255,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 }];
+            
+            // Get custom styles
+            const customColor = document.getElementById('rev_curve_color')?.value || '#7863ff';
+            const customDash = getDashArray(document.getElementById('rev_curve_dash')?.value || 'solid');
+            
+            revChart.data.datasets = [{ 
+                label: `Reverse (n=${n}, c=${c}, AQL=${aql.toFixed(3)}%, N=${N})`, 
+                data, 
+                borderColor: customColor, 
+                backgroundColor: customColor + '40', 
+                borderDash: customDash,
+                borderWidth: 2, 
+                pointRadius: 0, 
+                tension: 0.1 
+            }];
             revChart.update();
         }
         function renderPlanLines(lower, upper, label, dist) {
@@ -3335,8 +3496,21 @@
             const xs = generatePValuesC0(maxX);
             ensureC0Chart();
             c0Chart.options.scales.x.max = maxX;
+
+            const customColor = document.getElementById('c0_curve_color').value;
+            const customDash = getDashArray(document.getElementById('c0_curve_dash').value);
+
             const data = xs.map(px => ({ x: px, y: computePa(dist, N, n, 0, px / 100) }));
-            c0Chart.data.datasets = [{ label: `C=0 Plan (n=${n}, c=0, AQL=${formatAqlLabel(aql)}, N=${N})`, data, borderColor: 'rgba(46,204,113,1)', backgroundColor: 'rgba(46,204,113,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 }];
+            c0Chart.data.datasets = [{ 
+                label: `C=0 Plan (n=${n}, c=0, AQL=${formatAqlLabel(aql)}, N=${N})`, 
+                data, 
+                borderColor: customColor, 
+                backgroundColor: 'transparent', 
+                borderWidth: 2, 
+                borderDash: customDash,
+                pointRadius: 0, 
+                tension: 0.1 
+            }];
             c0Chart.update();
         }
 
@@ -3838,8 +4012,6 @@
         function drawSsChart(N, n, c, aql, code, level, dist) {
             const maxX = parseFloat(ssXMaxEl.value || '5'); const xs = generatePValuesC0(maxX);
             ensureSsChart(); ssChart.options.scales.x.max = maxX;
-            // Pa = P[X <= c], Pr = P[X >= re], Pc band between Pa and (1-Pr)
-            const acceptColor = 'rgba(241,196,15,1)';
             const rejectColor = 'rgba(231,76,60,1)';
             const continueFill = 'rgba(52,152,219,0.20)';
             const paData = []; const prData = []; const upperData = [];
@@ -3856,10 +4028,14 @@
                 }
                 paData.push({ x: px, y: Pa });
                 prData.push({ x: px, y: Pr });
-                upperData.push({ x: px, y: Math.max(0, 1 - Pr) }); // Pa + Pc
+                upperData.push({ x: px, y: Math.max(0, 1 - Pr) });
             }
+            // Get custom styles
+            const customColor = document.getElementById('kaiyi_curve_color')?.value || 'rgba(241,196,15,1)';
+            const customDash = getDashArray(document.getElementById('kaiyi_curve_dash')?.value || 'solid');
+            
             ssChart.data.datasets = [
-                { label: `Accept (Pa)  n=${n}, c=${c}, AQL=${aql}, Code=${code}, Level=${level}`, data: paData, borderColor: acceptColor, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                { label: `Accept (Pa)  n=${n}, c=${c}, AQL=${aql}, Code=${code}, Level=${level}`, data: paData, borderColor: customColor, backgroundColor: 'transparent', borderDash: customDash, borderWidth: 2, pointRadius: 0, tension: 0.1 },
                 { label: 'Continue (Pc)', data: upperData, borderColor: 'rgba(0,0,0,0)', backgroundColor: continueFill, fill: '-1', pointRadius: 0, tension: 0.1 },
                 { label: 'Reject (Pr)', data: prData, borderColor: rejectColor, backgroundColor: 'transparent', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, tension: 0.1 }
             ];
@@ -4937,6 +5113,21 @@
                 }
             }
 
+            // Get custom styles
+            const customColor = document.getElementById('aql_ltpd_curve_color')?.value || '#e67e22';
+            const customDash = getDashArray(document.getElementById('aql_ltpd_curve_dash')?.value || 'solid');
+
+            const datasets = [{
+                label: `OC Curve (n=${n}, c=${c})`,
+                data: paValues.map((pa, i) => ({ x: pValues[i], y: pa })),
+                borderColor: customColor,
+                backgroundColor: customColor + '40',
+                borderDash: customDash,
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.1
+            }];
+
             // Destroy existing chart
             if (aqlLtpdChart) {
                 aqlLtpdChart.destroy();
@@ -4993,8 +5184,9 @@
                     datasets: [{
                         label: `Balanced Plan (n=${plan.n}, c=${plan.c})`,
                         data: pValues.map((p, i) => ({ x: p, y: paValues[i] })),
-                        borderColor: '#1783FF',
-                        backgroundColor: 'rgba(23, 131, 255, 0.1)',
+                        borderColor: customColor,
+                        backgroundColor: customColor + '40',
+                        borderDash: customDash,
                         borderWidth: 2,
                         pointRadius: 0,
                         tension: 0.1
