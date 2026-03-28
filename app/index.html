@@ -2289,14 +2289,15 @@
             document.body.style.cursor = 'wait';
             
             try {
-                // Fixed 4:3 Aspect Ratio for Export (Professional Standard)
-                var exportW = 1200;
-                var exportH = 900;
-                var scale = 3;
+                // Dynamically read the on-screen chart dimensions to preserve exact proportions (like Image A)
+                var baseW = chart.canvas.clientWidth || 800;
+                var baseH = chart.canvas.clientHeight || 600;
+                var scale = Math.min(window.devicePixelRatio || 2, 3); // High-res multiplier (max 3x)
+                if (scale < 2) scale = 2; // Ensure at least 2x export resolution
                 
                 var offCanvas = document.createElement('canvas'); 
-                offCanvas.width = exportW * scale; 
-                offCanvas.height = exportH * scale;
+                offCanvas.width = baseW * scale; 
+                offCanvas.height = baseH * scale;
                 var offCtx = offCanvas.getContext('2d');
                 var type = (chart.config && chart.config.type) ? chart.config.type : 'line';
                 var srcData = chart.data || {};
@@ -2322,23 +2323,27 @@
                 // Get enhanced export colors
                 const exportColors = getExportThemeColors();
 
-                // plugin to paint full-canvas background before Chart draws (avoids transparent margins)
+                // Plugin to paint full-canvas background before Chart draws (preserves light/dark mode)
                 var bgPlugin = { id: 'exportBg', beforeDraw: function (c) { var ctx = c.ctx; ctx.save(); ctx.fillStyle = exportColors.background; ctx.fillRect(0, 0, c.width, c.height); ctx.restore(); } };
-                var padPx = Math.round(Math.min(offCanvas.width, offCanvas.height) * 0.05);
+                // Small padding to maintain the tight margin look of Image A
+                var padPx = Math.round(Math.min(baseW, baseH) * 0.02 * scale);
                 // Get Y-axis range from original chart
                 var yMin = (((chart.options || {}).scales || {}).y || {}).min;
                 var yMax = (((chart.options || {}).scales || {}).y || {}).max;
                 var yTicksCallback = (((chart.options || {}).scales || {}).y || {}).ticks?.callback;
 
+                // Slightly bump up the font size to ensure absolute readability mimicking Image A
+                var baseFontSize = 14;
+
                 var options = {
                     responsive: false, maintainAspectRatio: false, animation: false, devicePixelRatio: 1,
-                    layout: { padding: { left: padPx, right: padPx, top: padPx, bottom: padPx } },
+                    layout: { padding: padPx },
                     plugins: { 
                         legend: { 
                             display: true, 
                             labels: { 
                                 color: exportColors.text, 
-                                font: { size: 12 * scale } 
+                                font: { size: baseFontSize * scale } 
                             } 
                         }, 
                         tooltip: { enabled: false } 
@@ -2350,12 +2355,12 @@
                                 display: !!xTitleObj.text, 
                                 text: xTitleObj.text || 'Defect Rate (p%)', 
                                 color: exportColors.text, 
-                                font: { size: 12 * scale } 
+                                font: { size: baseFontSize * scale, weight: 'bold' } 
                             }, 
                             grid: { color: exportColors.grid }, 
                             ticks: { 
                                 color: exportColors.text, 
-                                font: { size: 12 * scale } 
+                                font: { size: baseFontSize * scale } 
                             }, 
                             border: { color: exportColors.grid } 
                         }, 
@@ -2365,12 +2370,12 @@
                                 display: !!yTitleObj.text, 
                                 text: yTitleObj.text || 'Acceptance Probability (Pa%)', 
                                 color: exportColors.text, 
-                                font: { size: 12 * scale } 
+                                font: { size: baseFontSize * scale, weight: 'bold' } 
                             }, 
                             grid: { color: exportColors.grid }, 
                             ticks: { 
                                 color: exportColors.text, 
-                                font: { size: 12 * scale }, 
+                                font: { size: baseFontSize * scale }, 
                                 callback: yTicksCallback 
                             }, 
                             border: { color: exportColors.grid } 
@@ -2535,6 +2540,25 @@
         const planCInput = document.getElementById('plan_c_input');
         const planAqlInput = document.getElementById('plan_aql_input');
         const planLabelInput = document.getElementById('plan_label_input');
+
+        window.__planLastAutoLabel = '';
+        function autoUpdatePlanLabel() {
+            if (!planLabelInput) return;
+            var n = planNInput ? planNInput.value : '';
+            var c = planCInput ? planCInput.value : '';
+            var aql = planAqlInput ? parseFloat(planAqlInput.value) : NaN;
+            var aqlFmt = isNaN(aql) ? '' : (aql < 1 ? aql.toFixed(2) : aql.toFixed(1));
+            var autoLabel = 'Plan (n=' + n + ', c=' + c + ', AQL=' + aqlFmt + '%)';
+            var current = planLabelInput.value.trim();
+            if (!current || current === window.__planLastAutoLabel) {
+                planLabelInput.value = autoLabel;
+                window.__planLastAutoLabel = autoLabel;
+            }
+        }
+        [planNInput, planCInput, planAqlInput].forEach(function(el) {
+            if (el) { el.addEventListener('input', autoUpdatePlanLabel); el.addEventListener('change', autoUpdatePlanLabel); }
+        });
+        autoUpdatePlanLabel();
         const addPlanBtn = document.getElementById('add-plan-btn');
         const clearAllBtn = document.getElementById('clear-all-btn');
         const planListEl = document.getElementById('plan-list');
@@ -2960,8 +2984,7 @@
             });
         }
         if (planXMaxEl) { planXMaxEl.addEventListener('input', function () { updatePlanChart(currentCurveType); }); }
-        if (planExportPngBtn) { planExportPngBtn.addEventListener('click', function () { ensurePlanChart(); updatePlanChart(currentCurveType); setTimeout(function () { exportChartHiRes(planChart, 'plan_comparison'); }, 100); }); }
-        if (planExportCsvBtn) { planExportCsvBtn.addEventListener('click', function () { ensurePlanChart(); var csv = 'label,x_defect_rate_percent,y_acceptance_prob\n'; for (var di = 0; di < planChart.data.datasets.length; di++) { var ds = planChart.data.datasets[di]; if (ds.type === 'scatter') continue; for (var pi = 0; pi < ds.data.length; pi++) { var p = ds.data[pi]; csv += ds.label + ',' + p.x + ',' + p.y + '\n'; } } var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'plan_comparison.csv'; a.click(); URL.revokeObjectURL(url); }); }
+        // Legacy listeners removed (handled by unified exportConfigs)
         // Initialize plan chart on page load to ensure tooltip works
         if (planCtx) {
             ensurePlanChart();
@@ -3106,8 +3129,17 @@
             const colors = getEnhancedThemeColors();
             const accentColor = colors.accent || '#7863ff';
             
+            const autoLabel = `Reverse (n=${n}, c=${c}, AQL=${aql.toFixed(3)}%, N=${N})`;
+            const labelInput = document.getElementById('rev_plan_label');
+            let currentLabel = labelInput ? labelInput.value.trim() : '';
+            if (!currentLabel || currentLabel === 'Reverse Query Plan' || currentLabel === revChart.__lastAutoLabel) {
+                if (labelInput) labelInput.value = autoLabel;
+                currentLabel = autoLabel;
+            }
+            revChart.__lastAutoLabel = autoLabel;
+            
             revChart.data.datasets = [{ 
-                label: `Reverse (n=${n}, c=${c}, AQL=${aql.toFixed(3)}%, N=${N})`, 
+                label: currentLabel, 
                 data, 
                 borderColor: accentColor, 
                 backgroundColor: accentColor + '40', 
@@ -3359,9 +3391,14 @@
             drawRevChart(revLastPlan.N, revLastPlan.n, revLastPlan.c, revLastPlan.aql, revLastPlan.dist);
         }
         revCalcBtn?.addEventListener('click', doReverseCalc);
+        [revTargetParamSel, revLotEl, revNEl, revCEl, revAqlEl, revTargetPaEl, revDistSel].forEach(function(el) {
+            if (el) { el.addEventListener('change', doReverseCalc); if (el.tagName==='INPUT') el.addEventListener('input', doReverseCalc); }
+        });
         revTargetParamSel?.addEventListener('change', syncReverseDisabledInputs);
         // initial disable sync
         syncReverseDisabledInputs();
+        // Auto-trigger initial calculation so chart & label appear on page load
+        setTimeout(doReverseCalc, 80);
         revClearBtn?.addEventListener('click', () => {
             revLotEl.value = '500'; revNEl.value = '125'; revCEl.value = '1'; revAqlEl.value = '1.0'; revTargetPaEl.value = '95'; revDistSel.value = 'binom'; revTargetParamSel.value = 'aql'; revXMaxEl.value = '5';
             if (revChart) { revChart.data.datasets = []; revChart.update(); }
@@ -3371,8 +3408,7 @@
             revLastPlan = null; revErrEl.style.display = 'none';
         });
         revXMaxEl?.addEventListener('input', () => { if (revLastPlan) drawRevChart(revLastPlan.N, revLastPlan.n, revLastPlan.c, revLastPlan.aql, revLastPlan.dist); });
-        document.getElementById('rev_export_png')?.addEventListener('click', () => { if (!revChart) return; exportChartHiRes(revChart, 'reverse_oc_chart'); });
-        document.getElementById('rev_export_csv')?.addEventListener('click', () => { if (!revChart || !revLastPlan) return; let csv = 'x_defect_rate_percent,y_acceptance_prob,n,c,N,AQL,distribution,target_Pa\n'; revChart.data.datasets[0].data.forEach(p => { csv += `${p.x},${p.y},${revLastPlan.n},${revLastPlan.c},${revLastPlan.N},${revLastPlan.aql},${revLastPlan.dist},${(revLastPlan.targetPa * 100).toFixed(1)}%\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'reverse_oc_chart.csv'; a.click(); URL.revokeObjectURL(url); });
+        // Legacy reverse query export listeners removed (handled by unified exportConfigs)
         // export plan to queue
         (function () {
             var btn = document.getElementById('rev_export_plan');
@@ -3576,9 +3612,18 @@
             const colors = getEnhancedThemeColors();
             const accentColor = colors.accent || '#3b82f6';
             
+            const autoLabel = `C=0 Plan (n=${n}, c=0, AQL=${formatAqlLabel(aql)}, N=${N})`;
+            const labelInput = document.getElementById('c0_plan_label');
+            let currentLabel = labelInput ? labelInput.value.trim() : '';
+            if (!currentLabel || currentLabel === 'C=0 Plan' || currentLabel === c0Chart.__lastAutoLabel) {
+                if (labelInput) labelInput.value = autoLabel;
+                currentLabel = autoLabel;
+            }
+            c0Chart.__lastAutoLabel = autoLabel;
+            
             const data = xs.map(px => ({ x: px, y: computePa(dist, N, n, 0, px / 100) }));
             c0Chart.data.datasets = [{ 
-                label: `C=0 Plan (n=${n}, c=0, AQL=${formatAqlLabel(aql)}, N=${N})`, 
+                label: currentLabel, 
                 data, 
                 borderColor: accentColor, 
                 backgroundColor: 'transparent', 
@@ -3797,6 +3842,9 @@
             }
         });
         c0LookupBtn?.addEventListener('click', doC0Lookup);
+        [c0LotEl, c0AqlSel, c0AqlCustomEl, c0DistSel].forEach(function(el) {
+            if (el) { el.addEventListener('change', doC0Lookup); if (el.tagName==='INPUT') el.addEventListener('input', doC0Lookup); }
+        });
         c0ClearBtn?.addEventListener('click', () => {
             c0LotEl.value = '500'; c0XMaxEl.value = '5'; buildC0AqlOptions(); c0AqlCustomEl.value = '1.0'; c0DistSel.value = 'binom';
 
@@ -3815,12 +3863,6 @@
         c0XMaxEl?.addEventListener('input', updateC0Chart);
 
         // Exports
-        function exportC0Png() { if (!c0Chart) return; exportChartHiRes(c0Chart, 'c0_oc_chart'); }
-        function exportC0Csv() {
-            if (!c0Chart || !c0LastPlan) return; let csv = 'x_defect_rate_percent,y_acceptance_prob,n,c,N,AQL,distribution\n';
-            c0Chart.data.datasets[0].data.forEach(p => { csv += `${p.x},${p.y},${c0LastPlan.n},0,${c0LastPlan.N},${formatAqlLabel(c0LastPlan.aql)},${c0LastPlan.dist}\n`; });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'c0_oc_chart.csv'; a.click(); URL.revokeObjectURL(url);
-        }
         // C=0 exports handled by unified exportConfigs
         // export plan to queue
         (function () {
@@ -3862,6 +3904,8 @@
 
         // Populate AQL options initially
         buildC0AqlOptions();
+        // Auto-trigger initial calculation so chart & label appear on page load
+        setTimeout(doC0Lookup, 120);
 
         // ===== AQL page functionality =====
         const ssLotEl = document.getElementById('ss_lot_size');
@@ -4112,8 +4156,17 @@
             const colors = getEnhancedThemeColors();
             const accentColor = colors.accent || 'rgba(241,196,15,1)';
             
+            const autoLabel = `Accept (Pa)  n=${n}, c=${c}, AQL=${aql}, Code=${code}, Level=${level}`;
+            const labelInput = document.getElementById('ss_plan_label');
+            let currentLabel = labelInput ? labelInput.value.trim() : '';
+            if (!currentLabel || currentLabel === 'AQL Plan' || currentLabel === ssChart.__lastAutoLabel) {
+                if (labelInput) labelInput.value = autoLabel;
+                currentLabel = autoLabel;
+            }
+            ssChart.__lastAutoLabel = autoLabel;
+            
             ssChart.data.datasets = [
-                { label: `Accept (Pa)  n=${n}, c=${c}, AQL=${aql}, Code=${code}, Level=${level}`, data: paData, borderColor: accentColor, backgroundColor: 'transparent', borderDash: [], borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                { label: currentLabel, data: paData, borderColor: accentColor, backgroundColor: 'transparent', borderDash: [], borderWidth: 2, pointRadius: 0, tension: 0.1 },
                 { label: 'Continue (Pc)', data: upperData, borderColor: 'rgba(0,0,0,0)', backgroundColor: continueFill, fill: '-1', pointRadius: 0, tension: 0.1 },
                 { label: 'Reject (Pr)', data: prData, borderColor: rejectColor, backgroundColor: 'transparent', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, tension: 0.1 }
             ];
@@ -4189,6 +4242,9 @@
             }
         });
         ssLookupBtn?.addEventListener('click', doSsLookup);
+        [ssLotEl, ssLevelSel, ssAqlSel, ssAqlCustomEl, ssStateSel, ssDistSel].forEach(function(el) {
+            if (el) { el.addEventListener('change', doSsLookup); if (el.tagName==='INPUT') el.addEventListener('input', doSsLookup); }
+        });
         ssClearBtn?.addEventListener('click', () => {
             ssLotEl.value = '500'; populateInspectionLevels(); populateAqlLevels(); ssAqlCustomEl.value = '1.0'; ssDistSel.value = 'binom'; ssStateSel.value = 'normal';
             ['ss_result_code', 'ss_result_n', 'ss_result_c', 'ss_result_state', 'ss_result_note'].forEach(id => { const el = document.getElementById(id); if (el) el.value = id === 'ss_result_state' ? 'Normal' : '-'; });
@@ -4238,6 +4294,8 @@
 
         // Initialize selects
         populateInspectionLevels(); populateAqlLevels();
+        // Auto-trigger initial calculation so chart & label appear on page load
+        setTimeout(doSsLookup, 100);
 
         // ===== Interactive Tutorial System =====
         const tutorialSteps = [
@@ -5257,12 +5315,21 @@
                 }
             };
 
+            const autoLabel = `Balanced Plan (n=${plan.n}, c=${plan.c})`;
+            const labelInput = document.getElementById('aql_ltpd_plan_label');
+            let currentLabel = labelInput ? labelInput.value.trim() : '';
+            if (!currentLabel || currentLabel === 'AQL-LTPD Plan' || currentLabel === window.__aqlLtpdLastAutoLabel) {
+                if (labelInput) labelInput.value = autoLabel;
+                currentLabel = autoLabel;
+            }
+            window.__aqlLtpdLastAutoLabel = autoLabel;
+
             // Create new chart
             aqlLtpdChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     datasets: [{
-                        label: `Balanced Plan (n=${plan.n}, c=${plan.c})`,
+                        label: currentLabel,
                         data: pValues.map((p, i) => ({ x: p, y: paValues[i] })),
                         borderColor: customColor,
                         backgroundColor: customColor + '40',
@@ -5330,7 +5397,7 @@
                                 display: true,
                                 text: 'Acceptance Probability',
                                 color: getEnhancedThemeColors().text
-                            },
+            },
                             ticks: {
                                 callback: function (v) { return (v * 100).toFixed(0) + '%'; },
                                 color: getEnhancedThemeColors().text
@@ -5345,71 +5412,94 @@
         }
 
         // Event listeners for AQL-LTPD page
-        if (aqlLtpdElements.calculateBtn) {
-            aqlLtpdElements.calculateBtn.addEventListener('click', function () {
-                try {
-                    // Clear previous errors
-                    if (aqlLtpdElements.errorDiv) {
-                        aqlLtpdElements.errorDiv.style.display = 'none';
-                    }
-
-                    // Get input values
-                    const aql = parseFloat(aqlLtpdElements.aqlInput?.value || 1);
-                    const ltpd = parseFloat(aqlLtpdElements.ltpdInput?.value || 5);
-                    const lotSize = parseInt(aqlLtpdElements.lotSizeInput?.value || 1000);
-                    const distribution = aqlLtpdElements.distSelect?.value || 'binom';
-                    const optimization = aqlLtpdElements.optimizationSelect?.value || 'minimize_n';
-                    const alpha = parseFloat(aqlLtpdElements.alphaInput?.value || 0.05);
-                    const beta = parseFloat(aqlLtpdElements.betaInput?.value || 0.10);
-
-                    // Calculate optimal plan
-                    const plan = calculateOptimalAqlLtpdPlan(aql, ltpd, lotSize, distribution, optimization, alpha, beta);
-
-                    if (!plan) {
-                        throw new Error('No feasible plan found. Try adjusting AQL, LTPD, or risk constraints.');
-                    }
-
-                    // Update results
-                    if (aqlLtpdElements.resultN) aqlLtpdElements.resultN.value = plan.n;
-                    if (aqlLtpdElements.resultC) aqlLtpdElements.resultC.value = plan.c;
-                    // Calculate plan efficiency
-                    const efficiency = calculatePlanEfficiency(plan, 1 - alpha, beta, alpha, beta);
-                    if (aqlLtpdElements.efficiency) aqlLtpdElements.efficiency.value = (efficiency * 100).toFixed(1) + '%';
-                    if (aqlLtpdElements.aqlPa) aqlLtpdElements.aqlPa.value = (plan.paAql * 100).toFixed(1) + '%';
-                    if (aqlLtpdElements.ltpdPa) aqlLtpdElements.ltpdPa.value = (plan.paLtpd * 100).toFixed(1) + '%';
-                    if (aqlLtpdElements.actualAlpha) aqlLtpdElements.actualAlpha.value = (plan.actualAlpha * 100).toFixed(1) + '%';
-                    if (aqlLtpdElements.actualBeta) aqlLtpdElements.actualBeta.value = (plan.actualBeta * 100).toFixed(1) + '%';
-
-                    // Calculate additional metrics
-                    const aoql = calculateAOQL(plan.n, plan.c, aql / 100, lotSize, distribution);
-                    const asn = calculateASN(plan.n, plan.c, aql / 100, lotSize, distribution);
-
-                    if (aqlLtpdElements.aoql) aqlLtpdElements.aoql.value = (aoql * 100).toFixed(3) + '%';
-                    if (aqlLtpdElements.asn) aqlLtpdElements.asn.value = asn;
-
-                    // Calculate efficiency rating and improvement suggestions
-                    const { rating, suggestions } = calculateEfficiencyRatingAndSuggestions(plan, efficiency, alpha, beta, aql, ltpd, lotSize);
-                    if (aqlLtpdElements.efficiencyRating) aqlLtpdElements.efficiencyRating.value = rating;
-                    if (aqlLtpdElements.improvements) aqlLtpdElements.improvements.value = suggestions;
-
-                    // Update notes
-                    if (aqlLtpdElements.notes) {
-                        aqlLtpdElements.notes.textContent = `Optimal plan calculated using ${optimization.replace('_', ' ')} strategy.`;
-                    }
-
-                    // Store plan and update chart
-                    aqlLtpdLastPlan = plan;
-                    updateAqlLtpdChart(plan);
-
-                } catch (error) {
-                    if (aqlLtpdElements.errorDiv) {
-                        aqlLtpdElements.errorDiv.textContent = error.message;
-                        aqlLtpdElements.errorDiv.style.display = 'block';
-                    }
+        function doAqlLtpdLookup() {
+            try {
+                // Clear previous errors
+                if (aqlLtpdElements.errorDiv) {
+                    aqlLtpdElements.errorDiv.style.display = 'none';
                 }
-            });
+
+                // Get input values
+                const aql = parseFloat(aqlLtpdElements.aqlInput?.value || 1);
+                const ltpd = parseFloat(aqlLtpdElements.ltpdInput?.value || 5);
+                const lotSize = parseInt(aqlLtpdElements.lotSizeInput?.value || 1000);
+                const distribution = aqlLtpdElements.distSelect?.value || 'binom';
+                const optimization = aqlLtpdElements.optimizationSelect?.value || 'minimize_n';
+                const alpha = parseFloat(aqlLtpdElements.alphaInput?.value || 0.05);
+                const beta = parseFloat(aqlLtpdElements.betaInput?.value || 0.10);
+
+                // Calculate optimal plan
+                const plan = calculateOptimalAqlLtpdPlan(aql, ltpd, lotSize, distribution, optimization, alpha, beta);
+
+                if (!plan) {
+                    throw new Error('No feasible plan found. Try adjusting AQL, LTPD, or risk constraints.');
+                }
+
+                // Update results
+                if (aqlLtpdElements.resultN) aqlLtpdElements.resultN.value = plan.n;
+                if (aqlLtpdElements.resultC) aqlLtpdElements.resultC.value = plan.c;
+                // Calculate plan efficiency
+                const efficiency = calculatePlanEfficiency(plan, 1 - alpha, beta, alpha, beta);
+                if (aqlLtpdElements.efficiency) aqlLtpdElements.efficiency.value = (efficiency * 100).toFixed(1) + '%';
+                if (aqlLtpdElements.aqlPa) aqlLtpdElements.aqlPa.value = (plan.paAql * 100).toFixed(1) + '%';
+                if (aqlLtpdElements.ltpdPa) aqlLtpdElements.ltpdPa.value = (plan.paLtpd * 100).toFixed(1) + '%';
+                if (aqlLtpdElements.actualAlpha) aqlLtpdElements.actualAlpha.value = (plan.actualAlpha * 100).toFixed(1) + '%';
+                if (aqlLtpdElements.actualBeta) aqlLtpdElements.actualBeta.value = (plan.actualBeta * 100).toFixed(1) + '%';
+
+                // Calculate additional metrics
+                const aoql = calculateAOQL(plan.n, plan.c, aql / 100, lotSize, distribution);
+                const asn = calculateASN(plan.n, plan.c, aql / 100, lotSize, distribution);
+
+                if (aqlLtpdElements.aoql) aqlLtpdElements.aoql.value = (aoql * 100).toFixed(3) + '%';
+                if (aqlLtpdElements.asn) aqlLtpdElements.asn.value = asn.toFixed(1);
+
+                // Calculate efficiency rating and improvement suggestions
+                const { rating, suggestions } = calculateEfficiencyRatingAndSuggestions(plan, efficiency, alpha, beta, aql, ltpd, lotSize);
+                if (aqlLtpdElements.efficiencyRating) aqlLtpdElements.efficiencyRating.value = rating;
+                if (aqlLtpdElements.improvements) aqlLtpdElements.improvements.value = suggestions;
+
+                if (aqlLtpdElements.ati) {
+                    const ati = calculateATI(plan.n, plan.c, aql / 100, lotSize, distribution);
+                    aqlLtpdElements.ati.value = ati.toFixed(1);
+                }
+
+                // Make sure to add the label for automatic export handling
+                const autoLtpdLabel = `AQL-LTPD Plan (n=${plan.n}, c=${plan.c}) AQL=${aql}%, LTPD=${ltpd}%`;
+                const labelInput = document.getElementById('aql_ltpd_plan_label');
+                let currentLabel = labelInput ? labelInput.value.trim() : '';
+                
+                // Allow dynamic replacement if user hasn't heavily customized the label yet
+                if (!currentLabel || currentLabel === 'Balanced Plan' || currentLabel === (aqlLtpdLastPlan ? aqlLtpdLastPlan.__lastLabel : null)) {
+                    if (labelInput) labelInput.value = autoLtpdLabel;
+                    currentLabel = autoLtpdLabel;
+                }
+                plan.__lastLabel = autoLtpdLabel;
+                
+                // Set notes based on optimization selected
+                if (aqlLtpdElements.notes) {
+                    aqlLtpdElements.notes.textContent = `Optimal plan calculated using ${optimization.replace('_', ' ')} strategy.`;
+                }
+
+                // Store plan and update chart
+                aqlLtpdLastPlan = plan;
+                updateAqlLtpdChart(plan);
+
+            } catch (error) {
+                if (aqlLtpdElements.errorDiv) {
+                    aqlLtpdElements.errorDiv.textContent = error.message;
+                    aqlLtpdElements.errorDiv.style.display = 'block';
+                }
+            }
         }
 
+        if (aqlLtpdElements.calculateBtn) {
+            aqlLtpdElements.calculateBtn.addEventListener('click', doAqlLtpdLookup);
+            [aqlLtpdElements.aqlInput, aqlLtpdElements.ltpdInput, aqlLtpdElements.lotSizeInput, aqlLtpdElements.distSelect, aqlLtpdElements.optimizationSelect, aqlLtpdElements.alphaInput, aqlLtpdElements.betaInput].forEach(function(el) {
+                if (el) { el.addEventListener('change', doAqlLtpdLookup); if (el.tagName==='INPUT') el.addEventListener('input', doAqlLtpdLookup); }
+            });
+            // Auto-trigger initial calculation so chart & label appear on page load
+            setTimeout(doAqlLtpdLookup, 150);
+        }
         if (aqlLtpdElements.clearBtn) {
             aqlLtpdElements.clearBtn.addEventListener('click', function () {
                 // Reset inputs to defaults
@@ -5590,6 +5680,22 @@
                 btn.addEventListener('click', function () { renderHelp(btn.getAttribute('data-help-for')); open(); });
             });
         }
+
+        // Universal chart label updater for real-time typing
+        ['rev_plan_label', 'ss_plan_label', 'c0_plan_label', 'aql_ltpd_plan_label'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', (e) => {
+                let chart = null;
+                if (id === 'rev_plan_label') chart = typeof revChart !== 'undefined' ? revChart : null;
+                if (id === 'ss_plan_label') chart = typeof ssChart !== 'undefined' ? ssChart : null;
+                if (id === 'c0_plan_label') chart = typeof c0Chart !== 'undefined' ? c0Chart : null;
+                if (id === 'aql_ltpd_plan_label') chart = typeof aqlLtpdChart !== 'undefined' ? aqlLtpdChart : null;
+                
+                if (chart && chart.data && chart.data.datasets && chart.data.datasets.length > 0) {
+                    chart.data.datasets[0].label = e.target.value;
+                    chart.update();
+                }
+            });
+        });
 
     </script>
 </body>
