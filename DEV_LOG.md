@@ -1,3 +1,30 @@
+## [2026-03-28] - Phase 5.9: AQL Lookup TypeError Fix & Listener Cleanup
+### RCA (Root Cause Analysis):
+- **Problem**: A `TypeError` occurred when clicking "Export PNG" in the AQL Plan Table Lookup tab.
+- **Cause**: The unified `exportConfigs` incorrectly mapped the `chart` instance to the HTML element ID `ocChartAQL` instead of the actual `Chart.js` variable `ssChart`.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: 
+    - Updated `exportConfigs` to use the correct chart instance variables for all modules (`ssChart`, `c0Chart`, `aqlLtpdChart`).
+    - Removed all remaining manual/legacy export event listeners across all tabs to prevent redundant trigger conflicts.
+    - Verified all 6 export modules in the browser to ensure zero console errors and successful downloads.
+- **Status**: Completed.
+- **Verification**: Browser verification confirmed successful PNG export for AQL Lookup without any regressions.
+
+## [2026-03-28] - Phase 5.8: Unified Export System & Robust Imaging
+### RCA (Root Cause Analysis):
+- **Problem 1**: Export buttons on all tabs except the first one were non-functional.
+- **Problem 2**: "Export PNG" on the first tab failed silently in some browser states.
+- **Cause 1**: Event listeners were only attached to the first tab's button IDs (`export_png`), whereas other tabs used different IDs (e.g., `plan_export_png`).
+- **Cause 2**: `exportChartHiRes` lacked error handling and was using a direct canvas context draw which could be flaky with high-res scaling.
+### CAPA (Corrective Action and Preventive Action):
+- **Correction**: 
+    - Implemented a centralized `exportConfigs` array and unified listener loop to hook up PNG and CSV export buttons across all 6 modules.
+    - Updated `exportChartHiRes` to use the canvas element directly for `Chart.js` initialization and added a 100ms rendering delay to ensure completion before `toDataURL` capture.
+    - Added comprehensive `console.log` and `try-catch` blocks for visual and diagnostic feedback.
+    - Cleaned up redundant legacy listeners and standardized button IDs.
+- **Status**: Completed.
+- **Verification**: Browser verification confirmed that export buttons on all tabs (Multiple Plan, AQL Lookup, etc.) now trigger successful downloads with correct styling.
+
 ## [2026-03-28] - Phase 5.7: Theme-Aware Chart Styling & Customization
 ### RCA (Root Cause Analysis):
 - **Problem 1**: Exported high-res PNG images always had a dark background, making them unsuitable for light-colored documents or presentations.

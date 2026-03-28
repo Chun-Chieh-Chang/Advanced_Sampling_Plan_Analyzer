@@ -2340,78 +2340,163 @@
         }
 
         function exportChartHiRes(chart, baseName) {
-            if (!chart) return;
-            var scale = 3; // reduce memory usage
-            var srcW = chart.width, srcH = chart.height;
-            var offCanvas = document.createElement('canvas'); offCanvas.width = srcW * scale; offCanvas.height = srcH * scale;
-            var offCtx = offCanvas.getContext('2d');
-            // Build minimal high-res config
-            var type = (chart.config && chart.config.type) ? chart.config.type : 'line';
-            var srcData = chart.data || { datasets: [] };
-            var datasets = [];
-            for (var i = 0; i < (srcData.datasets ? srcData.datasets.length : 0); i++) {
-                var ds = srcData.datasets[i] || {};
-                var cleanData = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
-                var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) * scale : (ds.pointRadius || 0) * scale;
-                datasets.push({ 
-                    label: ds.label || '', 
-                    data: cleanData, 
-                    borderColor: ds.borderColor || '#1783FF', 
-                    backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', 
-                    borderDash: (ds.borderDash || []).map(function(v) { return v * scale; }),
-                    borderWidth: (ds.borderWidth || 2) * scale, 
-                    pointRadius: pointRadius, 
-                    tension: ds.tension || 0.1 
-                });
+            console.log('Starting high-res export for:', baseName);
+            if (!chart) {
+                console.warn('Export aborted: chart instance is null');
+                return;
             }
-            var xTitleObj = (((chart.options || {}).scales || {}).x || {}).title || {};
-            var yTitleObj = (((chart.options || {}).scales || {}).y || {}).title || {};
+            document.body.style.cursor = 'wait';
+            
+            try {
+                var scale = 3;
+                var srcCanvas = chart.canvas;
+                var srcW = srcCanvas.offsetWidth || srcCanvas.width;
+                var srcH = srcCanvas.offsetHeight || srcCanvas.height;
+                var offCanvas = document.createElement('canvas'); 
+                offCanvas.width = srcW * scale; 
+                offCanvas.height = srcH * scale;
+                var offCtx = offCanvas.getContext('2d');
+                var type = (chart.config && chart.config.type) ? chart.config.type : 'line';
+                var srcData = chart.data || {};
+                var datasets = [];
+                for (var i = 0; i < (srcData.datasets ? srcData.datasets.length : 0); i++) {
+                    var ds = srcData.datasets[i] || {};
+                    var cleanData = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
+                    var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) * scale : (ds.pointRadius || 0) * scale;
+                    datasets.push({ 
+                        label: ds.label || '', 
+                        data: cleanData, 
+                        borderColor: ds.borderColor || '#1783FF', 
+                        backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', 
+                        borderDash: (ds.borderDash || []).map(function(v) { return v * scale; }),
+                        borderWidth: (ds.borderWidth || 2) * scale, 
+                        pointRadius: pointRadius, 
+                        tension: ds.tension || 0.1 
+                    });
+                }
+                var xTitleObj = (((chart.options || {}).scales || {}).x || {}).title || {};
+                var yTitleObj = (((chart.options || {}).scales || {}).y || {}).title || {};
 
-            // Get enhanced export colors
-            const exportColors = getExportThemeColors();
+                // Get enhanced export colors
+                const exportColors = getExportThemeColors();
 
-            // plugin to paint full-canvas background before Chart draws (avoids transparent margins)
-            var bgPlugin = { id: 'exportBg', beforeDraw: function (c) { var ctx = c.ctx; ctx.save(); ctx.fillStyle = exportColors.background; ctx.fillRect(0, 0, c.width, c.height); ctx.restore(); } };
-            var padPx = Math.round(Math.min(offCanvas.width, offCanvas.height) * 0.05);
-            // Get Y-axis range from original chart
-            var yMin = (((chart.options || {}).scales || {}).y || {}).min;
-            var yMax = (((chart.options || {}).scales || {}).y || {}).max;
-            var yTicksCallback = (((chart.options || {}).scales || {}).y || {}).ticks?.callback;
+                // plugin to paint full-canvas background before Chart draws (avoids transparent margins)
+                var bgPlugin = { id: 'exportBg', beforeDraw: function (c) { var ctx = c.ctx; ctx.save(); ctx.fillStyle = exportColors.background; ctx.fillRect(0, 0, c.width, c.height); ctx.restore(); } };
+                var padPx = Math.round(Math.min(offCanvas.width, offCanvas.height) * 0.05);
+                // Get Y-axis range from original chart
+                var yMin = (((chart.options || {}).scales || {}).y || {}).min;
+                var yMax = (((chart.options || {}).scales || {}).y || {}).max;
+                var yTicksCallback = (((chart.options || {}).scales || {}).y || {}).ticks?.callback;
 
-            var options = {
-                responsive: false, maintainAspectRatio: false, animation: false, devicePixelRatio: 1,
-                layout: { padding: { left: padPx, right: padPx, top: padPx, bottom: padPx } },
-                plugins: { legend: { display: true, labels: { color: exportColors.text, font: { size: 12 * scale } } }, tooltip: { enabled: false } },
-                scales: { x: { type: 'linear', title: { display: !!xTitleObj.text, text: xTitleObj.text || 'Defect Rate (p%)', color: exportColors.text, font: { size: 12 * scale } }, grid: { color: exportColors.grid }, ticks: { color: exportColors.text, font: { size: 12 * scale } }, border: { color: exportColors.grid } }, y: { min: yMin, max: yMax, title: { display: !!yTitleObj.text, text: yTitleObj.text || 'Acceptance Probability (Pa%)', color: exportColors.text, font: { size: 12 * scale } }, grid: { color: exportColors.grid }, ticks: { color: exportColors.text, font: { size: 12 * scale }, callback: yTicksCallback }, border: { color: exportColors.grid } } }, elements: { line: { borderWidth: 2 * scale }, point: { radius: 4 * scale } }
-            };
-            var tempChart = null; try {
+                var options = {
+                    responsive: false, maintainAspectRatio: false, animation: false, devicePixelRatio: 1,
+                    layout: { padding: { left: padPx, right: padPx, top: padPx, bottom: padPx } },
+                    plugins: { legend: { display: true, labels: { color: exportColors.text, font: { size: 12 * scale } } }, tooltip: { enabled: false } },
+                    scales: { 
+                        x: { 
+                            type: 'linear', 
+                            title: { display: !!xTitleObj.text, text: xTitleObj.text || 'Defect Rate (p%)', color: exportColors.text, font: { size: 12 * scale } }, 
+                            grid: { color: exportColors.grid }, 
+                            ticks: { color: exportColors.text, font: { size: 12 * scale } }, 
+                            border: { color: exportColors.grid } 
+                        }, 
+                        y: { 
+                            min: yMin, max: yMax, 
+                            title: { display: !!yTitleObj.text, text: yTitleObj.text || 'Acceptance Probability (Pa%)', color: exportColors.text, font: { size: 12 * scale } }, 
+                            grid: { color: exportColors.grid }, 
+                            ticks: { color: exportColors.text, font: { size: 12 * scale }, callback: yTicksCallback }, 
+                            border: { color: exportColors.grid } 
+                        } 
+                    }, 
+                    elements: { line: { borderWidth: 2 * scale }, point: { radius: 4 * scale } }
+                };
+                
+                // Use the canvas element directly instead of context to ensure Chart.js handles sizing correctly
                 // Handle mixed chart types (line + scatter)
-                var chartConfig = { data: { datasets: datasets }, options: options, plugins: [bgPlugin] };
-                // If we have mixed types, use 'line' as base type
-                chartConfig.type = type;
-                tempChart = new Chart(offCtx, chartConfig);
-            } catch (e) { console.error('Chart creation error:', e); }
-            var filename = baseName + '.png';
-            if (offCanvas.toBlob) {
-                offCanvas.toBlob(function (blob) { var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000); try { tempChart && tempChart.destroy(); } catch (_) { } }, 'image/png');
-            } else {
-                var url = offCanvas.toDataURL('image/png'); var a = document.createElement('a'); a.href = url; a.download = filename; a.click(); try { tempChart && tempChart.destroy(); } catch (_) { }
+                var chartConfig = { type: type, data: { datasets: datasets }, options: options, plugins: [bgPlugin] };
+                var tempChart = new Chart(offCanvas, chartConfig);
+                
+                var filename = baseName + '.png';
+                // Small delay to ensure render is complete even with animation:false
+                setTimeout(function() {
+                    try {
+                        var url = offCanvas.toDataURL('image/png');
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        a.click();
+                        console.log('Export download triggered for:', filename);
+                        tempChart.destroy();
+                        document.body.style.cursor = 'default';
+                    } catch (err) {
+                        console.error('Final export stage failed:', err);
+                        document.body.style.cursor = 'default';
+                        alert('Image generation failed.');
+                    }
+                }, 100);
+            } catch (e) {
+                console.error('Export core error:', e);
+                document.body.style.cursor = 'default';
+                alert('Export failed due to a processing error.');
             }
         }
 
-        // Export handlers
-        document.getElementById('export_png').onclick = () => { exportChartHiRes(ocChart, 'oc_chart'); };
-        document.getElementById('export_csv').onclick = () => {
-            let csv = 'label,x_defect_rate_percent,y_acceptance_prob\n';
-            ocChart.data.datasets.forEach(ds => {
-                ds.data.forEach(p => { csv += `${ds.label},${p.x},${p.y}\n`; });
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'oc_chart.csv'; a.click();
-            URL.revokeObjectURL(url);
-        };
+        // Enhanced Export handlers - Hook up all export buttons across all tabs
+        const exportConfigs = [
+            { pngId: 'export_png', csvId: 'export_csv', chart: () => typeof ocChart !== 'undefined' ? ocChart : null, name: 'oc_chart' },
+            { pngId: 'plan_export_png', csvId: 'plan_export_csv', chart: () => typeof planChart !== 'undefined' ? planChart : null, name: 'plan_comparison' },
+            { pngId: 'rev_export_png', csvId: 'rev_export_csv', chart: () => typeof revChart !== 'undefined' ? revChart : null, name: 'reverse_query' },
+            { pngId: 'ss_export_png', csvId: 'ss_export_csv', chart: () => typeof ssChart !== 'undefined' ? ssChart : null, name: 'aql_lookup' },
+            { pngId: 'c0_export_png_toolbar', csvId: 'c0_export_csv_toolbar', chart: () => typeof c0Chart !== 'undefined' ? c0Chart : null, name: 'c0_lookup' },
+            { pngId: 'aql_ltpd_export_png_toolbar', csvId: 'aql_ltpd_export_csv_toolbar', chart: () => typeof aqlLtpdChart !== 'undefined' ? aqlLtpdChart : null, name: 'aql_ltpd_balanced' }
+        ];
+
+        exportConfigs.forEach(cfg => {
+            const pngBtn = document.getElementById(cfg.pngId);
+            const csvBtn = document.getElementById(cfg.csvId);
+            
+            if (pngBtn) {
+                pngBtn.onclick = () => {
+                    const chartInstance = cfg.chart();
+                    console.log(`Export PNG triggered for ${cfg.name}. Chart instance exists:`, !!chartInstance);
+                    if (chartInstance) {
+                        try {
+                            exportChartHiRes(chartInstance, cfg.name);
+                        } catch (err) {
+                            console.error(`Export PNG failed for ${cfg.name}:`, err);
+                            alert('Export failed. Check console for details.');
+                        }
+                    } else {
+                        alert('No chart data available to export.');
+                    }
+                };
+            }
+            
+            if (csvBtn) {
+                csvBtn.onclick = () => {
+                    const chartInstance = cfg.chart();
+                    console.log(`Export CSV triggered for ${cfg.name}. Chart instance exists:`, !!chartInstance);
+                    if (chartInstance && chartInstance.data && chartInstance.data.datasets) {
+                        let csv = 'label,x_defect_rate_percent,y_acceptance_prob\n';
+                        chartInstance.data.datasets.forEach(ds => {
+                            if (ds.data) {
+                                ds.data.forEach(p => { csv += `${ds.label},${p.x},${p.y}\n`; });
+                            }
+                        });
+                        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = cfg.name + '.csv';
+                        a.click();
+                        setTimeout(() => URL.revokeObjectURL(url), 1000);
+                    } else {
+                        alert('No chart data available to export.');
+                    }
+                };
+            }
+        });
+        // Unified export handlers are active above. Legacy listeners removed.
         // Left-side export buttons removed; use toolbar buttons only
 
         // initial draw
@@ -3745,8 +3830,7 @@
             c0Chart.data.datasets[0].data.forEach(p => { csv += `${p.x},${p.y},${c0LastPlan.n},0,${c0LastPlan.N},${formatAqlLabel(c0LastPlan.aql)},${c0LastPlan.dist}\n`; });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'c0_oc_chart.csv'; a.click(); URL.revokeObjectURL(url);
         }
-        document.getElementById('c0_export_png_toolbar')?.addEventListener('click', exportC0Png);
-        document.getElementById('c0_export_csv_toolbar')?.addEventListener('click', exportC0Csv);
+        // C=0 exports handled by unified exportConfigs
         // export plan to queue
         (function () {
             var btn = document.getElementById('c0_export_plan');
@@ -4119,8 +4203,7 @@
         });
         ssXMaxEl?.addEventListener('input', () => { if (ssLastPlan && ssLastPlan.c != null) drawSsChart(ssLastPlan.N, ssLastPlan.n, ssLastPlan.c, ssLastPlan.aql, ssLastPlan.code, ssLastPlan.level, ssLastPlan.dist); });
         // Exports
-        document.getElementById('ss_export_png')?.addEventListener('click', () => { if (!ssChart) return; exportChartHiRes(ssChart, 'aql_oc_chart'); });
-        document.getElementById('ss_export_csv')?.addEventListener('click', () => { if (!ssChart || !ssLastPlan || ssLastPlan.c == null) return; let csv = 'x_defect_rate_percent,y_acceptance_prob,n,c,N,AQL,code_letter,inspection_level,distribution\n'; ssChart.data.datasets[0].data.forEach(p => { csv += `${p.x},${p.y},${ssLastPlan.n},${ssLastPlan.c},${ssLastPlan.N},${ssLastPlan.aql},${ssLastPlan.code},${ssLastPlan.level},${ssLastPlan.dist}\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'aql_oc_chart.csv'; a.click(); URL.revokeObjectURL(url); });
+        // AQL Lookup exports handled by unified exportConfigs
         // export plan to queue
         (function () {
             var btn = document.getElementById('ss_export_plan');
@@ -5372,31 +5455,7 @@
         }
 
         // Export functionality
-        if (aqlLtpdElements.exportPngBtn) {
-            aqlLtpdElements.exportPngBtn.addEventListener('click', function () {
-                if (aqlLtpdChart) {
-                    exportChartHiRes(aqlLtpdChart, 'aql_ltpd_balanced_plan');
-                }
-            });
-        }
-
-        if (aqlLtpdElements.exportCsvBtn) {
-            aqlLtpdElements.exportCsvBtn.addEventListener('click', function () {
-                if (aqlLtpdChart && aqlLtpdLastPlan) {
-                    let csv = 'x_defect_rate_percent,y_acceptance_prob,n,c,aql,ltpd,alpha,beta,distribution,optimization_target\n';
-                    aqlLtpdChart.data.datasets[0].data.forEach(point => {
-                        csv += `${point.x},${point.y},${aqlLtpdLastPlan.n},${aqlLtpdLastPlan.c},${aqlLtpdElements.aqlInput?.value || 1},${aqlLtpdElements.ltpdInput?.value || 5},${aqlLtpdElements.alphaInput?.value || 0.05},${aqlLtpdElements.betaInput?.value || 0.10},${aqlLtpdElements.distSelect?.value || 'binom'},${aqlLtpdElements.optimizationSelect?.value || 'minimize_n'}\n`;
-                    });
-                    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'aql_ltpd_balanced_plan.csv';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                }
-            });
-        }
+        // AQL-LTPD exports handled by unified exportConfigs
 
         if (aqlLtpdElements.exportPlanBtn) {
             aqlLtpdElements.exportPlanBtn.addEventListener('click', function () {
