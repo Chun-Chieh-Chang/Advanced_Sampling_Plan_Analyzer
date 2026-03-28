@@ -1,3 +1,21 @@
+## [2026-03-28] - UI Simplification & Comfort Normalization
+### Task: Phase 7 & 8 Optimization
+- **Action**: 
+    - Removed all "Curve Styling" panels (Color Pickers/Line Styles) from all 6 modules to reduce UI clutter.
+    - Added "Plan Label" input fields to the parameters panel of each module.
+    - Standardized default chart colors using `getEnhancedThemeColors()`.
+    - **Comfort Normalization**: Reverted high-resolution export parameters to legacy "comfortable" values: 12px font (Effective 36px), 2px line width (6px), and regular font weights.
+    - Maintained professional 1200x900 (4:3) export resolution with 3x scaling factor.
+- **Status**: Completed.
+- **Verification**: 
+    - Verified the 4:3 fixed ratio for exports.
+    - Verified custom plan labels show up correctly in legends and comparison queue.
+    - Confirmed the removal of manual styling dependencies across all JavaScript modules.
+- **Failures/Fixes**: 
+    - Found that using 14px bold fonts for exports (Phase 6) was perceived as "heavy" by the user; reverted to 12px regular weight as per legacy reference.
+    - Updated interactive tutorial to ensure all screenshots/descriptions align with the new, simplified UI.
+- **Next Steps**: Git push and final deployment.
+
 ## [2026-03-28] - Phase 6: RCA/CAPA & 4:3 Aspect Ratio Normalization
 ### Phase 6.0: RCA/CAPA for Download Filename/Extension
 - **RCA (Root Cause Analysis)**: Programmatic `a.click()` triggers in headless/automated AI browser environments (subagents) can fail to apply the `download` attribute correctly, leading to UUID-named files without extensions. This was an artifact of the verification environment.

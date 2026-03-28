@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -546,21 +546,13 @@
             gap: var(--gap);
         }
 
-        .chart-container {
-            width: 100%;
-            aspect-ratio: 4 / 3;
-            max-height: 500px;
-            margin: 0 auto;
-            position: relative;
-        }
-
         .left {
             width: var(--left);
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
             gap: var(--gap);
-            max-height: 500px;
+            height: var(--chart-h);
             overflow-y: auto;
             padding-right: 6px;
         }
@@ -1225,10 +1217,6 @@
                                     <div class="group" style="grid-column: 1 / span 2;"><label>Acceptance No.
                                             (c)</label><input id="dist_c" type="number" value="1"
                                             title="Acceptance No. (c)"></div>
-                                    <div class="group" style="grid-column: 1 / span 2;">
-                                        <label>Plan Label / Name</label>
-                                        <input id="dist_plan_label" type="text" value="OC Curve Distribution" title="Plan Label">
-                                    </div>
                                 </div>
                             </div>
                             <div class="panel">
@@ -1245,7 +1233,7 @@
                             <div class="panel">
                                 <h3>Learning</h3>
                                 <button class="btn primary glass-button" id="start-tutorial-btn" style="width: 100%;">
-                                    🎓 Start Interactive Tutorial
+                                    ?? Start Interactive Tutorial
                                 </button>
                             </div>
 
@@ -1314,7 +1302,7 @@
                                 </ul>
                             </div>
                             <div class="panel">
-                                <h3>⚠️ Distribution Types</h3>
+                                <h3>?? Distribution Types</h3>
                                 <div style="font-size:0.85rem; color:var(--muted); line-height:1.4;">
                                     <p><strong>Hypergeometric:</strong> Finite lot, no replacement (exact)</p>
                                     <p><strong>Binomial:</strong> Infinite lot or with replacement</p>
@@ -1374,10 +1362,6 @@
                                             step="0.01" value="1.0"></div>
                                     <div class="group" style="grid-column: 1 / span 2;"><label>Target Pa at AQL
                                             (%)</label><input id="rev_target_pa" type="number" step="0.1" value="95">
-                                    </div>
-                                    <div class="group" style="grid-column: 1 / span 2;">
-                                        <label>Plan Label / Name</label>
-                                        <input id="rev_plan_label" type="text" value="Reverse Query Plan">
                                     </div>
                                     <div class="group" style="grid-column: 1 / span 2;"><label>Distribution</label>
                                         <select id="rev_dist_select">
@@ -1445,10 +1429,6 @@
                                             <option value="tightened">Tightened</option>
                                             <option value="reduced" selected>Reduced</option>
                                         </select>
-                                    </div>
-                                    <div class="group" style="grid-column: 1 / span 2;">
-                                        <label>Plan Label / Name</label>
-                                        <input id="ss_plan_label" type="text" value="AQL Plan">
                                     </div>
                                     <div class="group" style="grid-column: 1 / span 2;"><label>Distribution</label>
                                         <select id="ss_dist_select">
@@ -1547,10 +1527,6 @@
                                         <label>Custom AQL (%)</label><input id="c0_aql_custom" type="number"
                                             step="0.001" value="1.0" placeholder="e.g. 0.40" title="Click to enable custom AQL input" disabled>
                                     </div>
-                                    <div class="group" style="grid-column: 1 / span 2;">
-                                        <label>Plan Label / Name</label>
-                                        <input id="c0_plan_label" type="text" value="C=0 Plan">
-                                    </div>
                                     <div class="group" style="grid-column: 1 / span 2;"><label>Distribution</label>
                                         <select id="c0_dist_select">
                                             <option value="hyper">Hypergeometric</option>
@@ -1584,6 +1560,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </aside>
                         <main class="right">
                             <div class="chart-card">
@@ -1656,18 +1633,14 @@
                                 <h3>Risk Constraints</h3>
                                 <div class="parameters">
                                     <div class="group">
-                                        <label>Producer's Risk (α)</label>
+                                        <label>Producer's Risk (帢)</label>
                                         <input id="aql_ltpd_alpha" type="number" value="0.05" step="0.01" min="0.01"
                                             max="0.20">
                                     </div>
                                     <div class="group">
-                                        <label>Consumer's Risk (β)</label>
+                                        <label>Consumer's Risk (帣)</label>
                                         <input id="aql_ltpd_beta" type="number" value="0.10" step="0.01" min="0.01"
                                             max="0.20">
-                                    </div>
-                                    <div class="group" style="grid-column: 1 / span 2;">
-                                        <label>Plan Label / Name</label>
-                                        <input id="aql_ltpd_plan_label" type="text" value="AQL-LTPD Plan">
                                     </div>
                                 </div>
                             </div>
@@ -1693,7 +1666,7 @@
                                         <input id="aql_ltpd_result_c" type="text" value="-" disabled>
                                     </div>
                                     <div class="group" style="grid-column: 1 / span 2;">
-                                        <label>Plan Efficiency (E = 1 - |Pa_AQL - (1-α)| - |Pa_LTPD - β| -
+                                        <label>Plan Efficiency (E = 1 - |Pa_AQL - (1-帢)| - |Pa_LTPD - 帣| -
                                             penalty)</label>
                                         <input id="aql_ltpd_efficiency" type="text" value="-" disabled>
                                     </div>
@@ -1712,11 +1685,11 @@
                                         <input id="aql_ltpd_ltpd_pa" type="text" value="-" disabled>
                                     </div>
                                     <div class="group">
-                                        <label>Actual α</label>
+                                        <label>Actual 帢</label>
                                         <input id="aql_ltpd_actual_alpha" type="text" value="-" disabled>
                                     </div>
                                     <div class="group">
-                                        <label>Actual β</label>
+                                        <label>Actual 帣</label>
                                         <input id="aql_ltpd_actual_beta" type="text" value="-" disabled>
                                     </div>
                                     <div class="group">
@@ -1781,8 +1754,8 @@
         <div class="tutorial-overlay"></div>
         <div class="tutorial-content">
             <div class="tutorial-header">
-                <h2 id="tutorial-title">🎓 Interactive Sampling Plan Tutorial</h2>
-                <button class="tutorial-close" id="tutorial-close-btn">×</button>
+                <h2 id="tutorial-title">?? Interactive Sampling Plan Tutorial</h2>
+                <button class="tutorial-close" id="tutorial-close-btn">?</button>
             </div>
             <div class="tutorial-body">
                 <div class="tutorial-progress">
@@ -1796,11 +1769,11 @@
                 </div>
             </div>
             <div class="tutorial-footer">
-                <button class="btn" id="tutorial-prev-btn" style="display: none;">← Previous</button>
+                <button class="btn" id="tutorial-prev-btn" style="display: none;">??Previous</button>
                 <div class="tutorial-nav-center">
                     <div class="tutorial-dots" id="tutorial-dots"></div>
                 </div>
-                <button class="btn primary" id="tutorial-next-btn">Next →</button>
+                <button class="btn primary" id="tutorial-next-btn">Next ??/button>
             </div>
         </div>
     </div>
@@ -1881,9 +1854,6 @@
                 };
             }
         }
-
-        // Helper for curve dash styles
-        // getDashArray helper removed - styling now standardized by theme
 
         function updateChartColors() {
             const colors = getEnhancedThemeColors();
@@ -2202,52 +2172,17 @@
             ocChart.options.scales.x.max = maxX;
             const datasets = [];
 
-            // Standardized theme colors for distribution curves
-            const colors = {
-                hyper: 'rgba(241,196,15,1)',
-                binom: 'rgba(46,204,113,1)',
-                pois: 'rgba(231,76,60,1)',
-                accent: getEnhancedThemeColors().accent || '#3b82f6'
-            };
-
             if (distState.hyper) {
                 const data = pValuesPercent.map(px => ({ x: px, y: getPaHyper(N, n, c, px / 100) }));
-                datasets.push({ 
-                    label: 'Hypergeometric', 
-                    data, 
-                    borderColor: colors.hyper,
-                    backgroundColor: 'rgba(241,196,15,0.25)',
-                    borderDash: [],
-                    borderWidth: 2, 
-                    pointRadius: 0, 
-                    tension: 0.1 
-                });
+                datasets.push({ label: 'Hypergeometric', data, borderColor: 'rgba(241,196,15,1)', backgroundColor: 'rgba(241,196,15,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 });
             }
             if (distState.binom) {
                 const data = pValuesPercent.map(px => ({ x: px, y: getPaBinomial(n, c, px / 100) }));
-                datasets.push({ 
-                    label: 'Binomial', 
-                    data, 
-                    borderColor: colors.binom,
-                    backgroundColor: 'rgba(46,204,113,0.25)',
-                    borderDash: [6, 4],
-                    borderWidth: 2, 
-                    pointRadius: 0, 
-                    tension: 0.1 
-                });
+                datasets.push({ label: 'Binomial', data, borderColor: 'rgba(46,204,113,1)', backgroundColor: 'rgba(46,204,113,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 });
             }
             if (distState.pois) {
                 const data = pValuesPercent.map(px => ({ x: px, y: getPaPoisson(n, c, px / 100) }));
-                datasets.push({ 
-                    label: 'Poisson', 
-                    data, 
-                    borderColor: colors.pois,
-                    backgroundColor: 'rgba(231,76,60,0.25)',
-                    borderDash: [2, 2],
-                    borderWidth: 2, 
-                    pointRadius: 0, 
-                    tension: 0.1 
-                });
+                datasets.push({ label: 'Poisson', data, borderColor: 'rgba(231,76,60,1)', backgroundColor: 'rgba(231,76,60,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 });
             }
 
             ocChart.data.datasets = datasets;
@@ -2260,223 +2195,80 @@
             // Prefer panel-2; fallback to panel; final fallback to a dark tone
             return getCssVar('--panel-2') || getCssVar('--panel') || '#111c26';
         }
-        // Enhanced theme color function for export with theme-aware colors
+        // Enhanced theme color function for export with consistent dark theme colors
         function getExportThemeColors() {
-            const theme = document.body.getAttribute('data-theme') || 'dark-teal';
-            const isLightTheme = ['light', 'light-blue', 'light-yellow', 'light-pink'].includes(theme);
-
-            if (isLightTheme) {
-                return {
-                    text: '#212529', // Dark text for light background
-                    grid: 'rgba(0,0,0,0.1)', // Subtle dark grid
-                    background: '#ffffff' // Pure white background for better printing/reports
-                };
-            } else {
-                return {
-                    text: '#e6e9ee', // Light text for dark themes
-                    grid: 'rgba(199,202,207,0.4)', // Visible grid lines
-                    background: getUiChartBg()
-                };
-            }
+            // Always use dark theme colors for consistent export across all themes
+            return {
+                text: '#e6e9ee', // Light text for better contrast on dark background
+                grid: 'rgba(199,202,207,0.4)', // Visible grid lines
+                background: getUiChartBg()
+            };
         }
 
         function exportChartHiRes(chart, baseName) {
-            console.log('Starting high-res export for:', baseName);
-            if (!chart) {
-                console.warn('Export aborted: chart instance is null');
-                return;
+            if (!chart) return;
+            var scale = 3; // reduce memory usage
+            var srcW = chart.width, srcH = chart.height;
+            var offCanvas = document.createElement('canvas'); offCanvas.width = srcW * scale; offCanvas.height = srcH * scale;
+            var offCtx = offCanvas.getContext('2d');
+            // Build minimal high-res config
+            var type = (chart.config && chart.config.type) ? chart.config.type : 'line';
+            var srcData = chart.data || { datasets: [] };
+            var datasets = [];
+            for (var i = 0; i < (srcData.datasets ? srcData.datasets.length : 0); i++) {
+                var ds = srcData.datasets[i] || {};
+                var cleanData = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
+                var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) * scale : (ds.pointRadius || 0) * scale;
+                datasets.push({ label: ds.label || '', data: cleanData, borderColor: ds.borderColor || '#1783FF', backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', borderWidth: (ds.borderWidth || 2) * scale, pointRadius: pointRadius, tension: ds.tension || 0.1 });
             }
-            document.body.style.cursor = 'wait';
-            
-            try {
-                // Fixed 4:3 Aspect Ratio for Export (Professional Standard)
-                var exportW = 1200;
-                var exportH = 900;
-                var scale = 3;
-                
-                var offCanvas = document.createElement('canvas'); 
-                offCanvas.width = exportW * scale; 
-                offCanvas.height = exportH * scale;
-                var offCtx = offCanvas.getContext('2d');
-                var type = (chart.config && chart.config.type) ? chart.config.type : 'line';
-                var srcData = chart.data || {};
-                var datasets = [];
-                for (var i = 0; i < (srcData.datasets ? srcData.datasets.length : 0); i++) {
-                    var ds = srcData.datasets[i] || {};
-                    var cleanData = Array.isArray(ds.data) ? ds.data.map(function (p) { return { x: p.x, y: p.y }; }) : [];
-                    var pointRadius = ds.type === 'scatter' ? (ds.pointRadius || 4) : 0;
-                    datasets.push({ 
-                        label: ds.label || '', 
-                        data: cleanData, 
-                        borderColor: ds.borderColor || '#1783FF', 
-                        backgroundColor: ds.backgroundColor || 'rgba(23,131,255,0.25)', 
-                        borderDash: (ds.borderDash || []).map(function(v) { return v * scale; }),
-                        borderWidth: (ds.borderWidth || 2) * scale, 
-                        pointRadius: pointRadius * scale, 
-                        tension: ds.tension || 0.1 
-                    });
-                }
-                var xTitleObj = (((chart.options || {}).scales || {}).x || {}).title || {};
-                var yTitleObj = (((chart.options || {}).scales || {}).y || {}).title || {};
+            var xTitleObj = (((chart.options || {}).scales || {}).x || {}).title || {};
+            var yTitleObj = (((chart.options || {}).scales || {}).y || {}).title || {};
 
-                // Get enhanced export colors
-                const exportColors = getExportThemeColors();
+            // Get enhanced export colors
+            const exportColors = getExportThemeColors();
 
-                // plugin to paint full-canvas background before Chart draws (avoids transparent margins)
-                var bgPlugin = { id: 'exportBg', beforeDraw: function (c) { var ctx = c.ctx; ctx.save(); ctx.fillStyle = exportColors.background; ctx.fillRect(0, 0, c.width, c.height); ctx.restore(); } };
-                var padPx = Math.round(Math.min(offCanvas.width, offCanvas.height) * 0.05);
-                // Get Y-axis range from original chart
-                var yMin = (((chart.options || {}).scales || {}).y || {}).min;
-                var yMax = (((chart.options || {}).scales || {}).y || {}).max;
-                var yTicksCallback = (((chart.options || {}).scales || {}).y || {}).ticks?.callback;
+            // plugin to paint full-canvas background before Chart draws (avoids transparent margins)
+            var bgPlugin = { id: 'exportBg', beforeDraw: function (c) { var ctx = c.ctx; ctx.save(); ctx.fillStyle = exportColors.background; ctx.fillRect(0, 0, c.width, c.height); ctx.restore(); } };
+            var padPx = Math.round(Math.min(offCanvas.width, offCanvas.height) * 0.05);
+            // Get Y-axis range from original chart
+            var yMin = (((chart.options || {}).scales || {}).y || {}).min;
+            var yMax = (((chart.options || {}).scales || {}).y || {}).max;
+            var yTicksCallback = (((chart.options || {}).scales || {}).y || {}).ticks?.callback;
 
-                var options = {
-                    responsive: false, maintainAspectRatio: false, animation: false, devicePixelRatio: 1,
-                    layout: { padding: { left: padPx, right: padPx, top: padPx, bottom: padPx } },
-                    plugins: { 
-                        legend: { 
-                            display: true, 
-                            labels: { 
-                                color: exportColors.text, 
-                                font: { size: 12 * scale } 
-                            } 
-                        }, 
-                        tooltip: { enabled: false } 
-                    },
-                    scales: { 
-                        x: { 
-                            type: 'linear', 
-                            title: { 
-                                display: !!xTitleObj.text, 
-                                text: xTitleObj.text || 'Defect Rate (p%)', 
-                                color: exportColors.text, 
-                                font: { size: 12 * scale } 
-                            }, 
-                            grid: { color: exportColors.grid }, 
-                            ticks: { 
-                                color: exportColors.text, 
-                                font: { size: 12 * scale } 
-                            }, 
-                            border: { color: exportColors.grid } 
-                        }, 
-                        y: { 
-                            min: yMin, max: yMax, 
-                            title: { 
-                                display: !!yTitleObj.text, 
-                                text: yTitleObj.text || 'Acceptance Probability (Pa%)', 
-                                color: exportColors.text, 
-                                font: { size: 12 * scale } 
-                            }, 
-                            grid: { color: exportColors.grid }, 
-                            ticks: { 
-                                color: exportColors.text, 
-                                font: { size: 12 * scale }, 
-                                callback: yTicksCallback 
-                            }, 
-                            border: { color: exportColors.grid } 
-                        } 
-                    }, 
-                    elements: { 
-                        line: { borderWidth: 2 * scale }, 
-                        point: { radius: 4 * scale } 
-                    }
-                };
-                
-                // Use the canvas element directly instead of context to ensure Chart.js handles sizing correctly
+            var options = {
+                responsive: false, maintainAspectRatio: false, animation: false, devicePixelRatio: 1,
+                layout: { padding: { left: padPx, right: padPx, top: padPx, bottom: padPx } },
+                plugins: { legend: { display: true, labels: { color: exportColors.text, font: { size: 12 * scale } } }, tooltip: { enabled: false } },
+                scales: { x: { type: 'linear', title: { display: !!xTitleObj.text, text: xTitleObj.text || 'Defect Rate (p%)', color: exportColors.text, font: { size: 12 * scale } }, grid: { color: exportColors.grid }, ticks: { color: exportColors.text, font: { size: 12 * scale } }, border: { color: exportColors.grid } }, y: { min: yMin, max: yMax, title: { display: !!yTitleObj.text, text: yTitleObj.text || 'Acceptance Probability (Pa%)', color: exportColors.text, font: { size: 12 * scale } }, grid: { color: exportColors.grid }, ticks: { color: exportColors.text, font: { size: 12 * scale }, callback: yTicksCallback }, border: { color: exportColors.grid } } }, elements: { line: { borderWidth: 2 * scale }, point: { radius: 4 * scale } }
+            };
+            var tempChart = null; try {
                 // Handle mixed chart types (line + scatter)
-                var chartConfig = { type: type, data: { datasets: datasets }, options: options, plugins: [bgPlugin] };
-                var tempChart = new Chart(offCanvas, chartConfig);
-                
-                var filename = baseName + '.png';
-                // Small delay to ensure render is complete even with animation:false
-                setTimeout(function() {
-                    try {
-                        // Using toDataURL (Base64) for maximum compatibility with all browsers
-                        // Using data:application/octet-stream as a specialized MIME type to FORCE Chrome 
-                        // and other browsers to trigger the download handler instead of opening it as an image.
-                        var url = offCanvas.toDataURL('image/png').replace(/^data:image\/[^;]+/, 'data:application/octet-stream');
-                        
-                        var a = document.createElement('a');
-                        a.href = url;
-                        a.download = filename;
-                        
-                        // Chrome specifically requires the link to be appended to the document to allow a.click()
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        
-                        console.log('Export download triggered via octet-stream for:', filename);
-                        tempChart.destroy();
-                        document.body.style.cursor = 'default';
-                    } catch (err) {
-                        console.error('Final export stage failed:', err);
-                        document.body.style.cursor = 'default';
-                        alert('Image generation failed.');
-                    }
-                }, 100);
-            } catch (e) {
-                console.error('Export core error:', e);
-                document.body.style.cursor = 'default';
-                alert('Export failed due to a processing error.');
+                var chartConfig = { data: { datasets: datasets }, options: options, plugins: [bgPlugin] };
+                // If we have mixed types, use 'line' as base type
+                chartConfig.type = type;
+                tempChart = new Chart(offCtx, chartConfig);
+            } catch (e) { console.error('Chart creation error:', e); }
+            var filename = baseName + '.png';
+            if (offCanvas.toBlob) {
+                offCanvas.toBlob(function (blob) { var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000); try { tempChart && tempChart.destroy(); } catch (_) { } }, 'image/png');
+            } else {
+                var url = offCanvas.toDataURL('image/png'); var a = document.createElement('a'); a.href = url; a.download = filename; a.click(); try { tempChart && tempChart.destroy(); } catch (_) { }
             }
         }
 
-        // Enhanced Export handlers - Hook up all export buttons across all tabs
-        const exportConfigs = [
-            { pngId: 'export_png', csvId: 'export_csv', chart: () => typeof ocChart !== 'undefined' ? ocChart : null, name: 'oc_chart' },
-            { pngId: 'plan_export_png', csvId: 'plan_export_csv', chart: () => typeof planChart !== 'undefined' ? planChart : null, name: 'plan_comparison' },
-            { pngId: 'rev_export_png', csvId: 'rev_export_csv', chart: () => typeof revChart !== 'undefined' ? revChart : null, name: 'reverse_query' },
-            { pngId: 'ss_export_png', csvId: 'ss_export_csv', chart: () => typeof ssChart !== 'undefined' ? ssChart : null, name: 'aql_lookup' },
-            { pngId: 'c0_export_png_toolbar', csvId: 'c0_export_csv_toolbar', chart: () => typeof c0Chart !== 'undefined' ? c0Chart : null, name: 'c0_lookup' },
-            { pngId: 'aql_ltpd_export_png_toolbar', csvId: 'aql_ltpd_export_csv_toolbar', chart: () => typeof aqlLtpdChart !== 'undefined' ? aqlLtpdChart : null, name: 'aql_ltpd_balanced' }
-        ];
-
-        exportConfigs.forEach(cfg => {
-            const pngBtn = document.getElementById(cfg.pngId);
-            const csvBtn = document.getElementById(cfg.csvId);
-            
-            if (pngBtn) {
-                pngBtn.onclick = () => {
-                    const chartInstance = cfg.chart();
-                    console.log(`Export PNG triggered for ${cfg.name}. Chart instance exists:`, !!chartInstance);
-                    if (chartInstance) {
-                        try {
-                            exportChartHiRes(chartInstance, cfg.name);
-                        } catch (err) {
-                            console.error(`Export PNG failed for ${cfg.name}:`, err);
-                            alert('Export failed. Check console for details.');
-                        }
-                    } else {
-                        alert('No chart data available to export.');
-                    }
-                };
-            }
-            
-            if (csvBtn) {
-                csvBtn.onclick = () => {
-                    const chartInstance = cfg.chart();
-                    console.log(`Export CSV triggered for ${cfg.name}. Chart instance exists:`, !!chartInstance);
-                    if (chartInstance && chartInstance.data && chartInstance.data.datasets) {
-                        let csv = 'label,x_defect_rate_percent,y_acceptance_prob\n';
-                        chartInstance.data.datasets.forEach(ds => {
-                            if (ds.data) {
-                                ds.data.forEach(p => { csv += `${ds.label},${p.x},${p.y}\n`; });
-                            }
-                        });
-                        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = cfg.name + '.csv';
-                        a.click();
-                        setTimeout(() => URL.revokeObjectURL(url), 1000);
-                    } else {
-                        alert('No chart data available to export.');
-                    }
-                };
-            }
-        });
-        // Unified export handlers are active above. Legacy listeners removed.
+        // Export handlers
+        document.getElementById('export_png').onclick = () => { exportChartHiRes(ocChart, 'oc_chart'); };
+        document.getElementById('export_csv').onclick = () => {
+            let csv = 'label,x_defect_rate_percent,y_acceptance_prob\n';
+            ocChart.data.datasets.forEach(ds => {
+                ds.data.forEach(p => { csv += `${ds.label},${p.x},${p.y}\n`; });
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'oc_chart.csv'; a.click();
+            URL.revokeObjectURL(url);
+        };
         // Left-side export buttons removed; use toolbar buttons only
 
         // initial draw
@@ -2508,10 +2300,7 @@
 
                 window.planComparisonQueue = window.planComparisonQueue || [];
                 var distName = dist === 'hyper' ? 'Hypergeometric' : (dist === 'binom' ? 'Binomial' : 'Poisson');
-                
-                // Use custom label if provided, else generate default
-                var customLabel = document.getElementById('dist_plan_label')?.value.trim();
-                var label = customLabel || ('Dist Plan (n=' + n + ', c=' + c + ', ' + distName + ')');
+                var label = 'Dist. Page Plan (n=' + n + ', c=' + c + ', ' + distName + ')';
 
                 window.planComparisonQueue.push({
                     n: n,
@@ -2713,12 +2502,6 @@
                 planChart.options.scales.y.max = 1;
             }
 
-            // Standardized theme colors for comparison chart
-            const colors = getEnhancedThemeColors();
-            // No more custom dashes, use solid lines for comparison by default (or standard dashes)
-            const commonDash = []; 
-            
-
             for (var idx = 0; idx < samplingPlans.length; idx++) {
                 var plan = samplingPlans[idx];
                 var color = plan.color || planColors[idx % planColors.length];
@@ -2755,7 +2538,6 @@
                     data: data,
                     borderColor: color,
                     backgroundColor: color + '33',
-                    borderDash: commonDash,
                     borderWidth: 2,
                     pointRadius: 0,
                     tension: 0.1
@@ -2867,7 +2649,7 @@
                 var aqlTxt = (p.aql == null ? 'No AQL' : ('AQL=' + (+p.aql).toFixed(2) + '%'));
                 var distTxt = p.dist ? (p.dist === 'hyper' ? 'Hypergeometric' : (p.dist === 'binom' ? 'Binomial' : 'Poisson')) : 'Binomial';
                 var nTxt = p.N ? ', N=' + p.N : '';
-                li.innerHTML = '<span style="color:' + p.color + '">' + p.label + ': n=' + p.n + ', c=' + p.c + ', ' + aqlTxt + ' (' + distTxt + nTxt + ')</span><button class="btn" data-del="' + i + '">×</button>';
+                li.innerHTML = '<span style="color:' + p.color + '">' + p.label + ': n=' + p.n + ', c=' + p.c + ', ' + aqlTxt + ' (' + distTxt + nTxt + ')</span><button class="btn" data-del="' + i + '">?</button>';
                 planListEl.appendChild(li);
             }
         }
@@ -2898,7 +2680,6 @@
                     aql = num;
                 }
                 const color = planColors[samplingPlans.length % planColors.length];
-                
                 // Manually added plans default to binomial distribution
                 samplingPlans.push({ n, c, aql, label, color, dist: 'binom', N, source: 'manual' });
                 planLabelInput.value = '';
@@ -3101,21 +2882,7 @@
         function drawRevChart(N, n, c, aql, dist) {
             const maxX = parseFloat(revXMaxEl.value || '5'); const xs = revGeneratePValues(maxX); ensureRevChart(); revChart.options.scales.x.max = maxX;
             const data = xs.map(px => ({ x: px, y: revComputePa(dist, N, n, c, px / 100) }));
-            
-            // Standardized theme color for Reverse curve
-            const colors = getEnhancedThemeColors();
-            const accentColor = colors.accent || '#7863ff';
-            
-            revChart.data.datasets = [{ 
-                label: `Reverse (n=${n}, c=${c}, AQL=${aql.toFixed(3)}%, N=${N})`, 
-                data, 
-                borderColor: accentColor, 
-                backgroundColor: accentColor + '40', 
-                borderDash: [],
-                borderWidth: 2, 
-                pointRadius: 0, 
-                tension: 0.1 
-            }];
+            revChart.data.datasets = [{ label: `Reverse (n=${n}, c=${c}, AQL=${aql.toFixed(3)}%, N=${N})`, data, borderColor: 'rgba(120,99,255,1)', backgroundColor: 'rgba(120,99,255,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 }];
             revChart.update();
         }
         function renderPlanLines(lower, upper, label, dist) {
@@ -3123,8 +2890,8 @@
             const fmtPa = (v) => v == null ? '' : `Pa=${(v.pa * 100).toFixed(2)}%`;
             const distName = (dist === 'hyper' ? 'Hypergeometric' : (dist === 'binom' ? 'Binomial' : 'Poisson'));
             let html = '';
-            if (lower) html += `<div id="rev_plan1" style="cursor:pointer; padding: 8px; border: 1px solid #424242; border-radius: 4px; margin: 4px 0; background: rgba(60, 60, 60, 0.8); color: white; font-weight: bold;"><strong>Plan1</strong>  ${fmt(lower)}  ·  ${fmtPa(lower)}  ·  ${distName}</div>`;
-            if (upper) html += `<div id="rev_plan2" style="cursor:pointer; padding: 8px; border: 1px solid #424242; border-radius: 4px; margin: 4px 0; background: rgba(60, 60, 60, 0.8); color: white; font-weight: bold;"><strong>Plan2</strong>  ${fmt(upper)}  ·  ${fmtPa(upper)}  ·  ${distName}</div>`;
+            if (lower) html += `<div id="rev_plan1" style="cursor:pointer; padding: 8px; border: 1px solid #424242; border-radius: 4px; margin: 4px 0; background: rgba(60, 60, 60, 0.8); color: white; font-weight: bold;"><strong>Plan1</strong>  ${fmt(lower)}  繚  ${fmtPa(lower)}  繚  ${distName}</div>`;
+            if (upper) html += `<div id="rev_plan2" style="cursor:pointer; padding: 8px; border: 1px solid #424242; border-radius: 4px; margin: 4px 0; background: rgba(60, 60, 60, 0.8); color: white; font-weight: bold;"><strong>Plan2</strong>  ${fmt(upper)}  繚  ${fmtPa(upper)}  繚  ${distName}</div>`;
             return html || '';
         }
         function attachPlanChoiceHandlers() {
@@ -3284,11 +3051,11 @@
             let paLo = revComputePa(dist, N, lo, c, p);
             let paHi = revComputePa(dist, N, hi, c, p);
             if (paLo <= targetPa) {
-                // already below target at n=1 → no lower bound >= target
+                // already below target at n=1 ??no lower bound >= target
                 return { lower: null, upper: { value: lo, pa: paLo } };
             }
             if (paHi >= targetPa) {
-                // even at very large n still above target → no upper crossing
+                // even at very large n still above target ??no upper crossing
                 return { lower: { value: hi, pa: paHi }, upper: null };
             }
             let lower = { value: lo, pa: paLo }; // Pa >= target
@@ -3381,10 +3148,7 @@
                 if (!revLastPlan) { alert('No plan to export. Please calculate first.'); return; }
                 window.planComparisonQueue = window.planComparisonQueue || [];
                 var distName = revLastPlan.dist === 'hyper' ? 'Hypergeometric' : (revLastPlan.dist === 'binom' ? 'Binomial' : 'Poisson');
-                
-                // Use custom label if provided, else generate default
-                var customLabel = document.getElementById('rev_plan_label')?.value.trim();
-                var label = customLabel || ('Reverse n=' + revLastPlan.n + ', c=' + revLastPlan.c + ' (' + distName + ')');
+                var label = 'Reverse n=' + revLastPlan.n + ', c=' + revLastPlan.c + ' (' + distName + ')';
                 // Calculate efficiency data for consistent rating
                 const aql = revLastPlan.aql;
                 const paAql = calculateAcceptanceProbability(revLastPlan.n, revLastPlan.c, aql / 100, revLastPlan.N, revLastPlan.dist);
@@ -3571,22 +3335,8 @@
             const xs = generatePValuesC0(maxX);
             ensureC0Chart();
             c0Chart.options.scales.x.max = maxX;
-            
-            // Standardized theme color for C=0 curve
-            const colors = getEnhancedThemeColors();
-            const accentColor = colors.accent || '#3b82f6';
-            
             const data = xs.map(px => ({ x: px, y: computePa(dist, N, n, 0, px / 100) }));
-            c0Chart.data.datasets = [{ 
-                label: `C=0 Plan (n=${n}, c=0, AQL=${formatAqlLabel(aql)}, N=${N})`, 
-                data, 
-                borderColor: accentColor, 
-                backgroundColor: 'transparent', 
-                borderWidth: 2, 
-                borderDash: [],
-                pointRadius: 0, 
-                tension: 0.1 
-            }];
+            c0Chart.data.datasets = [{ label: `C=0 Plan (n=${n}, c=0, AQL=${formatAqlLabel(aql)}, N=${N})`, data, borderColor: 'rgba(46,204,113,1)', backgroundColor: 'rgba(46,204,113,0.25)', borderWidth: 2, pointRadius: 0, tension: 0.1 }];
             c0Chart.update();
         }
 
@@ -3741,7 +3491,7 @@
             if (typeof C0_SAMPLING_TABLE !== 'undefined') {
                 for (const entry of C0_SAMPLING_TABLE) {
                     const [min, max] = entry.lot_range;
-                    if (N >= min && (max === Infinity || N <= max)) { rangeText = `${min} - ${max === Infinity ? '∞' : max}`; break; }
+                    if (N >= min && (max === Infinity || N <= max)) { rangeText = `${min} - ${max === Infinity ? '?? : max}`; break; }
                 }
             }
             document.getElementById('c0_result_lot_range').value = rangeText;
@@ -3821,7 +3571,8 @@
             c0Chart.data.datasets[0].data.forEach(p => { csv += `${p.x},${p.y},${c0LastPlan.n},0,${c0LastPlan.N},${formatAqlLabel(c0LastPlan.aql)},${c0LastPlan.dist}\n`; });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'c0_oc_chart.csv'; a.click(); URL.revokeObjectURL(url);
         }
-        // C=0 exports handled by unified exportConfigs
+        document.getElementById('c0_export_png_toolbar')?.addEventListener('click', exportC0Png);
+        document.getElementById('c0_export_csv_toolbar')?.addEventListener('click', exportC0Csv);
         // export plan to queue
         (function () {
             var btn = document.getElementById('c0_export_plan');
@@ -3830,10 +3581,7 @@
                 if (!c0LastPlan) { alert('No plan to export. Please lookup first.'); return; }
                 window.planComparisonQueue = window.planComparisonQueue || [];
                 var distName = c0LastPlan.dist === 'hyper' ? 'Hypergeometric' : (c0LastPlan.dist === 'binom' ? 'Binomial' : 'Poisson');
-                
-                // Use custom label if provided, else generate default
-                var customLabel = document.getElementById('c0_plan_label')?.value.trim();
-                var label = customLabel || ('C=0 n=' + c0LastPlan.n + ' @AQL=' + formatAqlLabel(c0LastPlan.aql) + '% (' + distName + ')');
+                var label = 'C=0 n=' + c0LastPlan.n + ' @AQL=' + formatAqlLabel(c0LastPlan.aql) + '% (' + distName + ')';
                 // Calculate efficiency data for consistent rating
                 const aql = c0LastPlan.aql;
                 const paAql = calculateAcceptanceProbability(c0LastPlan.n, 0, aql / 100, c0LastPlan.N, c0LastPlan.dist);
@@ -4090,6 +3838,8 @@
         function drawSsChart(N, n, c, aql, code, level, dist) {
             const maxX = parseFloat(ssXMaxEl.value || '5'); const xs = generatePValuesC0(maxX);
             ensureSsChart(); ssChart.options.scales.x.max = maxX;
+            // Pa = P[X <= c], Pr = P[X >= re], Pc band between Pa and (1-Pr)
+            const acceptColor = 'rgba(241,196,15,1)';
             const rejectColor = 'rgba(231,76,60,1)';
             const continueFill = 'rgba(52,152,219,0.20)';
             const paData = []; const prData = []; const upperData = [];
@@ -4106,14 +3856,10 @@
                 }
                 paData.push({ x: px, y: Pa });
                 prData.push({ x: px, y: Pr });
-                upperData.push({ x: px, y: Math.max(0, 1 - Pr) });
+                upperData.push({ x: px, y: Math.max(0, 1 - Pr) }); // Pa + Pc
             }
-            // Standardized theme colors for AQL chart
-            const colors = getEnhancedThemeColors();
-            const accentColor = colors.accent || 'rgba(241,196,15,1)';
-            
             ssChart.data.datasets = [
-                { label: `Accept (Pa)  n=${n}, c=${c}, AQL=${aql}, Code=${code}, Level=${level}`, data: paData, borderColor: accentColor, backgroundColor: 'transparent', borderDash: [], borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                { label: `Accept (Pa)  n=${n}, c=${c}, AQL=${aql}, Code=${code}, Level=${level}`, data: paData, borderColor: acceptColor, backgroundColor: 'transparent', borderWidth: 2, pointRadius: 0, tension: 0.1 },
                 { label: 'Continue (Pc)', data: upperData, borderColor: 'rgba(0,0,0,0)', backgroundColor: continueFill, fill: '-1', pointRadius: 0, tension: 0.1 },
                 { label: 'Reject (Pr)', data: prData, borderColor: rejectColor, backgroundColor: 'transparent', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, tension: 0.1 }
             ];
@@ -4129,7 +3875,7 @@
             if (!finalPlan.finalLetter || typeof finalPlan.finalAc !== 'number') { ssErrEl.textContent = 'No numeric acceptance number found for this AQL in the selected state.'; ssErrEl.style.display = 'block'; if (ssChart) { ssChart.data.datasets = []; ssChart.update(); } return; }
             const code = finalPlan.finalLetter; const c = finalPlan.finalAc; const re = (typeof finalPlan.finalRe === 'number' ? finalPlan.finalRe : (c != null ? c + 1 : null));
             const n = getSampleSizeFromCode(code); if (!n) { ssErrEl.textContent = 'No sample size for code letter in this state.'; ssErrEl.style.display = 'block'; return; }
-            let note = '-'; if (code !== code0) note = `Resolved by ${code0} → ${code}`;
+            let note = '-'; if (code !== code0) note = `Resolved by ${code0} ??${code}`;
 
             // write results
             document.getElementById('ss_result_code').value = code;
@@ -4160,7 +3906,7 @@
             const prEl = document.getElementById('ss_result_prej'); if (prEl) prEl.value = (Pr * 100).toFixed(2) + '%';
             const pcEl = document.getElementById('ss_result_pcont'); if (pcEl) pcEl.value = (Pc * 100).toFixed(2) + '%';
 
-            // Check if n >= N (全檢的情況)
+            // Check if n >= N (?冽炎??瘜?
             if (n >= N) {
                 ssErrEl.textContent = `Sample size n=${n} >= Lot size N=${N}. Consider 100% inspection instead of sampling.`;
                 ssErrEl.style.display = 'block';
@@ -4197,7 +3943,8 @@
         });
         ssXMaxEl?.addEventListener('input', () => { if (ssLastPlan && ssLastPlan.c != null) drawSsChart(ssLastPlan.N, ssLastPlan.n, ssLastPlan.c, ssLastPlan.aql, ssLastPlan.code, ssLastPlan.level, ssLastPlan.dist); });
         // Exports
-        // AQL Lookup exports handled by unified exportConfigs
+        document.getElementById('ss_export_png')?.addEventListener('click', () => { if (!ssChart) return; exportChartHiRes(ssChart, 'aql_oc_chart'); });
+        document.getElementById('ss_export_csv')?.addEventListener('click', () => { if (!ssChart || !ssLastPlan || ssLastPlan.c == null) return; let csv = 'x_defect_rate_percent,y_acceptance_prob,n,c,N,AQL,code_letter,inspection_level,distribution\n'; ssChart.data.datasets[0].data.forEach(p => { csv += `${p.x},${p.y},${ssLastPlan.n},${ssLastPlan.c},${ssLastPlan.N},${ssLastPlan.aql},${ssLastPlan.code},${ssLastPlan.level},${ssLastPlan.dist}\n`; }); const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'aql_oc_chart.csv'; a.click(); URL.revokeObjectURL(url); });
         // export plan to queue
         (function () {
             var btn = document.getElementById('ss_export_plan');
@@ -4206,10 +3953,7 @@
                 if (!ssLastPlan || ssLastPlan.c == null) { alert('No plan to export. Please lookup first.'); return; }
                 window.planComparisonQueue = window.planComparisonQueue || [];
                 var distName = ssLastPlan.dist === 'hyper' ? 'Hypergeometric' : (ssLastPlan.dist === 'binom' ? 'Binomial' : 'Poisson');
-                
-                // Use custom label if provided, else generate default
-                var customLabel = document.getElementById('ss_plan_label')?.value.trim();
-                var label = customLabel || ('AQL ' + ssLastPlan.aql + ' (Code ' + ssLastPlan.code + ', ' + distName + ')');
+                var label = 'AQL ' + ssLastPlan.aql + ' (Code ' + ssLastPlan.code + ', ' + distName + ')';
                 // Calculate efficiency data for consistent rating
                 const aql = parseFloat(ssLastPlan.aql);
                 const paAql = calculateAcceptanceProbability(ssLastPlan.n, ssLastPlan.c, aql / 100, ssLastPlan.N, ssLastPlan.dist);
@@ -4242,17 +3986,17 @@
         // ===== Interactive Tutorial System =====
         const tutorialSteps = [
             {
-                title: "🎯 Welcome to Sampling Plan Analysis!",
+                title: "? Welcome to Sampling Plan Analysis!",
                 content: `
                 <h3>What is Statistical Sampling?</h3>
                 <p>Statistical sampling is a quality control method where we inspect only a small portion of a production lot to make decisions about the entire lot's quality.</p>
                 
                 <div class="highlight-box">
-                    <strong>🎯 Key Concept:</strong> Instead of checking every single item (which is expensive and time-consuming), we use mathematical models to determine how many items to inspect and what acceptance criteria to use.
+                    <strong>? Key Concept:</strong> Instead of checking every single item (which is expensive and time-consuming), we use mathematical models to determine how many items to inspect and what acceptance criteria to use.
                 </div>
                 
                 <div class="example-box">
-                    <strong>📦 Real Example:</strong> You receive 10,000 electronic components. Instead of testing all 10,000, you might test only 125 components. If 2 or fewer are defective, you accept the entire lot. If 3 or more are defective, you reject it.
+                    <strong>? Real Example:</strong> You receive 10,000 electronic components. Instead of testing all 10,000, you might test only 125 components. If 2 or fewer are defective, you accept the entire lot. If 3 or more are defective, you reject it.
                 </div>
                 
                 <p>This tutorial will teach you how to design and analyze these sampling plans using three different statistical models!</p>
@@ -4260,13 +4004,13 @@
                 highlight: null
             },
             {
-                title: "📊 Understanding OC Curves",
+                title: "?? Understanding OC Curves",
                 content: `
                 <h3>What is an Operating Characteristic (OC) Curve?</h3>
                 <p>An OC curve shows the probability of accepting a lot based on its true defect rate. It's the heart of sampling plan analysis!</p>
                 
                 <div class="highlight-box">
-                    <strong>📈 How to Read an OC Curve:</strong>
+                    <strong>?? How to Read an OC Curve:</strong>
                     <ul>
                         <li><strong>X-axis:</strong> True defect rate in the lot (%)</li>
                         <li><strong>Y-axis:</strong> Probability of accepting the lot (%)</li>
@@ -4275,7 +4019,7 @@
                 </div>
                 
                 <div class="example-box">
-                    <strong>🎯 Example:</strong> If your lot has a 1% defect rate, you want a 95% chance of accepting it. If it has a 5% defect rate, you might want only a 10% chance of accepting it.
+                    <strong>? Example:</strong> If your lot has a 1% defect rate, you want a 95% chance of accepting it. If it has a 5% defect rate, you might want only a 10% chance of accepting it.
                 </div>
                 
                 <p>The steeper the curve, the better it discriminates between good and bad lots!</p>
@@ -4283,13 +4027,13 @@
                 highlight: '#ocChart'
             },
             {
-                title: "🔢 Three Statistical Models",
+                title: "? Three Statistical Models",
                 content: `
                 <h3>Why Different Probability Distributions?</h3>
                 <p>The choice of statistical model depends on your sampling conditions:</p>
                 
                 <div class="highlight-box">
-                    <strong>🟡 Hypergeometric (Most Accurate):</strong>
+                    <strong>? Hypergeometric (Most Accurate):</strong>
                     <ul>
                         <li>Use when: Finite lot size, sampling without replacement</li>
                         <li>Example: Testing 50 items from a lot of 500</li>
@@ -4298,7 +4042,7 @@
                 </div>
                 
                 <div class="example-box">
-                    <strong>🟢 Binomial (Most Common):</strong>
+                    <strong>? Binomial (Most Common):</strong>
                     <ul>
                         <li>Use when: Large lot size or sampling with replacement</li>
                         <li>Example: Testing 125 items from a lot of 100,000</li>
@@ -4307,7 +4051,7 @@
                 </div>
                 
                 <div class="warning-box">
-                    <strong>🔴 Poisson (Approximation):</strong>
+                    <strong>? Poisson (Approximation):</strong>
                     <ul>
                         <li>Use when: Large sample size, small defect rate</li>
                         <li>Example: n > 50 and defect rate < 5%</li>
@@ -4318,13 +4062,13 @@
                 highlight: '[data-dist]'
             },
             {
-                title: "🎮 Interactive Demo: Try It!",
+                title: "? Interactive Demo: Try It!",
                 content: `
                 <h3>Let's Experiment with Parameters!</h3>
                 <p>Now let's see how changing parameters affects the OC curve. Try these experiments:</p>
                 
                 <div class="tutorial-interactive-demo">
-                    <strong>🧪 Experiment 1: Sample Size Effect</strong>
+                    <strong>?妒 Experiment 1: Sample Size Effect</strong>
                     <ol>
                         <li>Set N=1000, n=50, c=2</li>
                         <li>Now change n to 100, then 200</li>
@@ -4333,7 +4077,7 @@
                 </div>
                 
                 <div class="tutorial-interactive-demo">
-                    <strong>🧪 Experiment 2: Acceptance Number Effect</strong>
+                    <strong>?妒 Experiment 2: Acceptance Number Effect</strong>
                     <ol>
                         <li>Set N=1000, n=125, c=1</li>
                         <li>Now change c to 3, then 5</li>
@@ -4342,7 +4086,7 @@
                 </div>
                 
                 <div class="tutorial-interactive-demo">
-                    <strong>🧪 Experiment 3: Distribution Comparison</strong>
+                    <strong>?妒 Experiment 3: Distribution Comparison</strong>
                     <ol>
                         <li>Set N=500, n=50, c=2</li>
                         <li>Toggle between Hypergeometric, Binomial, and Poisson</li>
@@ -4353,13 +4097,13 @@
                 highlight: '.parameters'
             },
             {
-                title: "🎯 AQL and Quality Standards",
+                title: "? AQL and Quality Standards",
                 content: `
                 <h3>Understanding Acceptable Quality Level (AQL)</h3>
                 <p>AQL is the maximum defect rate you're willing to accept most of the time (typically 95% acceptance probability).</p>
                 
                 <div class="highlight-box">
-                    <strong>🎯 AQL Concept:</strong>
+                    <strong>? AQL Concept:</strong>
                     <ul>
                         <li><strong>AQL 1.0%:</strong> You accept lots with 1% defects 95% of the time</li>
                         <li><strong>AQL 2.5%:</strong> You accept lots with 2.5% defects 95% of the time</li>
@@ -4368,7 +4112,7 @@
                 </div>
                 
                 <div class="example-box">
-                    <strong>📋 Industry Standards (ANSI/ASQ Z1.4):</strong>
+                    <strong>?? Industry Standards (ANSI/ASQ Z1.4):</strong>
                     <ul>
                         <li>Critical defects: AQL 0.15% or lower</li>
                         <li>Major defects: AQL 1.0% to 2.5%</li>
@@ -4381,13 +4125,13 @@
                 highlight: null
             },
             {
-                title: "🔄 Reverse Engineering Plans",
+                title: "?? Reverse Engineering Plans",
                 content: `
                 <h3>Working Backwards from Requirements</h3>
                 <p>Sometimes you know your quality requirements but need to find the right sampling plan parameters.</p>
                 
                 <div class="highlight-box">
-                    <strong>🔄 Reverse Query Scenarios:</strong>
+                    <strong>?? Reverse Query Scenarios:</strong>
                     <ul>
                         <li><strong>Find AQL:</strong> Given n, c, and target acceptance rate</li>
                         <li><strong>Find Sample Size:</strong> Given AQL, c, and target acceptance rate</li>
@@ -4397,9 +4141,9 @@
                 </div>
                 
                 <div class="example-box">
-                    <strong>🎯 Example Problem:</strong>
+                    <strong>? Example Problem:</strong>
                     <p>"I want to accept lots with 1% defects at least 95% of the time, and I can only inspect 100 items with c=2. What's my actual AQL?"</p>
-                    <p><strong>Solution:</strong> Use Reverse Query to calculate AQL ≈ 1.24%</p>
+                    <p><strong>Solution:</strong> Use Reverse Query to calculate AQL ??1.24%</p>
                 </div>
                 
                 <p>This is powerful for validating existing plans or designing custom ones!</p>
@@ -4407,39 +4151,39 @@
                 highlight: null
             },
             {
-                title: "📊 Comparing Multiple Plans",
+                title: "?? Comparing Multiple Plans",
                 content: `
                 <h3>Plan Comparison and Optimization</h3>
                 <p>Different sampling plans have different risk profiles. The Multiple Plan Comparison page helps you visualize and choose the best one.</p>
                 
                 <div class="highlight-box">
-                    <strong>⚠️ Important Statistical Concept:</strong>
+                    <strong>?? Important Statistical Concept:</strong>
                     <p>Plans from different pages may use different probability distributions (Hypergeometric/Binomial/Poisson). Even with the same n,c values, they can produce different OC curves!</p>
                 </div>
                 
                 <div class="example-box">
-                    <strong>🔍 Comparison Strategies:</strong>
+                    <strong>?? Comparison Strategies:</strong>
                     <ul>
-                        <li><strong>Risk Analysis:</strong> Compare producer's risk (α) and consumer's risk (β)</li>
+                        <li><strong>Risk Analysis:</strong> Compare producer's risk (帢) and consumer's risk (帣)</li>
                         <li><strong>Cost Analysis:</strong> Balance inspection costs vs. quality costs</li>
                         <li><strong>Discrimination:</strong> Choose plans with steeper OC curves</li>
                     </ul>
                 </div>
                 
                 <div class="warning-box">
-                    <strong>🎯 Pro Tip:</strong> Export plans from different pages to compare their performance under various statistical assumptions!
+                    <strong>? Pro Tip:</strong> Export plans from different pages to compare their performance under various statistical assumptions!
                 </div>
             `,
                 highlight: null
             },
             {
-                title: "📈 Advanced Curve Analysis: AOQ & ATI",
+                title: "?? Advanced Curve Analysis: AOQ & ATI",
                 content: `
                 <h3>Beyond OC Curves: Quality and Cost Analysis</h3>
                 <p>The Multiple Plan Comparison page now supports three types of curves for comprehensive plan evaluation:</p>
                 
                 <div class="highlight-box">
-                    <strong>📊 OC Curves (Operating Characteristic):</strong>
+                    <strong>?? OC Curves (Operating Characteristic):</strong>
                     <ul>
                         <li>Shows acceptance probability vs. defect rate</li>
                         <li>Primary tool for risk assessment</li>
@@ -4448,9 +4192,9 @@
                 </div>
                 
                 <div class="example-box">
-                    <strong>📈 AOQ Curves (Average Outgoing Quality):</strong>
+                    <strong>?? AOQ Curves (Average Outgoing Quality):</strong>
                     <ul>
-                        <li>Formula: AOQ = p × Pa × (N-n)/N</li>
+                        <li>Formula: AOQ = p ? Pa ? (N-n)/N</li>
                         <li>Shows average quality of accepted lots</li>
                         <li>Lower AOQ = better quality protection</li>
                         <li>Peak AOQ indicates maximum outgoing quality</li>
@@ -4458,37 +4202,37 @@
                 </div>
                 
                 <div class="warning-box">
-                    <strong>💰 ATI Curves (Average Total Inspection):</strong>
+                    <strong>? ATI Curves (Average Total Inspection):</strong>
                     <ul>
-                        <li>Formula: ATI = n + (1-Pa) × (N-n)</li>
+                        <li>Formula: ATI = n + (1-Pa) ? (N-n)</li>
                         <li>Shows average inspection cost per lot</li>
                         <li>Lower ATI = more cost-effective</li>
                         <li>Balances sample size vs. 100% inspection</li>
                     </ul>
                 </div>
                 
-                <p><strong>🎯 Usage:</strong> Click "Show AOQ Curves" or "Show ATI Curves" buttons to switch between different analysis modes!</p>
+                <p><strong>? Usage:</strong> Click "Show AOQ Curves" or "Show ATI Curves" buttons to switch between different analysis modes!</p>
             `,
                 highlight: null
             },
             {
-                title: "⚖️ AQL-LTPD Balanced Plans",
+                title: "?? AQL-LTPD Balanced Plans",
                 content: `
                 <h3>Advanced Optimization: Balancing Producer and Consumer Risks</h3>
                 <p>The AQL-LTPD Balanced Plan page uses mathematical optimization to design plans that balance both producer and consumer requirements.</p>
                 
                 <div class="highlight-box">
-                    <strong>🎯 Key Concepts:</strong>
+                    <strong>? Key Concepts:</strong>
                     <ul>
                         <li><strong>AQL (Acceptable Quality Level):</strong> Maximum defect rate you accept 95% of the time</li>
                         <li><strong>LTPD (Lot Tolerance Percent Defective):</strong> Maximum defect rate you accept 10% of the time</li>
-                        <li><strong>Producer's Risk (α):</strong> Probability of rejecting a good lot</li>
-                        <li><strong>Consumer's Risk (β):</strong> Probability of accepting a bad lot</li>
+                        <li><strong>Producer's Risk (帢):</strong> Probability of rejecting a good lot</li>
+                        <li><strong>Consumer's Risk (帣):</strong> Probability of accepting a bad lot</li>
                     </ul>
                 </div>
                 
                 <div class="example-box">
-                    <strong>🔧 Optimization Strategies:</strong>
+                    <strong>? Optimization Strategies:</strong>
                     <ul>
                         <li><strong>Minimize Sample Size:</strong> Find smallest n that meets constraints</li>
                         <li><strong>Balance AQL-LTPD:</strong> Equal weight to both requirements</li>
@@ -4498,17 +4242,17 @@
                 </div>
                 
                 <div class="warning-box">
-                    <strong>📊 Plan Efficiency Formula:</strong>
-                    <p>E = 1 - |Pa_AQL - (1-α)| - |Pa_LTPD - β| - penalty</p>
+                    <strong>?? Plan Efficiency Formula:</strong>
+                    <p>E = 1 - |Pa_AQL - (1-帢)| - |Pa_LTPD - 帣| - penalty</p>
                     <p>Higher efficiency = better balance of risks and requirements</p>
                 </div>
                 
-                <p><strong>🎯 Usage:</strong> Set your AQL, LTPD, lot size, and risk preferences, then choose optimization strategy!</p>
+                <p><strong>? Usage:</strong> Set your AQL, LTPD, lot size, and risk preferences, then choose optimization strategy!</p>
             `,
                 highlight: null
             },
             {
-                title: "🎓 Quiz: Test Your Knowledge!",
+                title: "?? Quiz: Test Your Knowledge!",
                 content: `
                 <h3>Quick Knowledge Check</h3>
                 <p>Randomly selected questions. Click the correct answer:</p>
@@ -4531,56 +4275,56 @@
             { q: 'On an OC curve, what does the y-axis represent?', options: ['Defect rate', 'Acceptance probability (Pa)', 'Sample size'], answer: 1 },
             { q: 'On an OC curve, what is usually on the x-axis?', options: ['Defect rate p (%)', 'Sample size n', 'AQL value'], answer: 0 },
             { q: 'What does AQL 1.0% typically mean?', options: ['Allow 1% defects', 'Lots with 1% defects are accepted about 95% of the time', 'Average defect rate equals 1%'], answer: 1 },
-            { q: 'Under the same distribution, increasing n tends to make the OC curve…', options: ['Steeper', 'Flatter', 'Unchanged'], answer: 0 },
-            { q: 'With the same n, increasing c tends to shift the curve…', options: ['To the right', 'To the left', 'No shift'], answer: 0 },
+            { q: 'Under the same distribution, increasing n tends to make the OC curve??, options: ['Steeper', 'Flatter', 'Unchanged'], answer: 0 },
+            { q: 'With the same n, increasing c tends to shift the curve??, options: ['To the right', 'To the left', 'No shift'], answer: 0 },
             { q: 'In a C=0 plan, what is c?', options: ['0', '1', '2'], answer: 0 },
             { q: 'In plan parameters (n, c), what does c denote?', options: ['Sample size', 'Acceptance number', 'Lot size'], answer: 1 },
             { q: 'Given N=500, n=50, without replacement, which distribution?', options: ['Binomial', 'Hypergeometric', 'Poisson'], answer: 1 },
-            { q: 'A smaller AQL indicates…', options: ['Looser control', 'Stricter control', 'No relation to strictness'], answer: 1 },
+            { q: 'A smaller AQL indicates??, options: ['Looser control', 'Stricter control', 'No relation to strictness'], answer: 1 },
             { q: 'Which pages can export a plan to Multiple Plan Comparison?', options: ['Reverse', 'AQL Lookup', 'Both'], answer: 2 },
             { q: 'Where do you set the x-axis maximum on the Comparison chart?', options: ['Left parameters panel', 'Chart toolbar (top-right)', 'Hidden setting'], answer: 1 },
             { q: 'In hypergeometric distribution, which extra parameter is required?', options: ['Lot size N', 'Lambda', 'Mean'], answer: 0 },
-            { q: 'The Poisson parameter is typically approximated as…', options: ['n·p', 'n/p', 'n+p'], answer: 0 },
-            { q: 'To display an AQL marker on the chart, you must provide…', options: ['AQL (%)', 'LTPD (%)', 'α and β risks'], answer: 0 },
-            { q: 'A steeper OC curve implies…', options: ['Better discrimination', 'Worse discrimination', 'Cannot tell'], answer: 0 },
-            { q: 'On the Reverse page you can solve for…', options: ['AQL', 'n', 'c', 'All of the above'], answer: 3 },
-            { q: 'A common use case of C=0 plans is…', options: ['High-risk critical defects', 'General inspection', 'Documentation'], answer: 0 },
-            { q: 'For Binomial, the acceptance probability uses CDF(c; n, p). Here p means…', options: ['Sample proportion', 'Defect rate', 'Pass rate'], answer: 1 },
-            { q: 'For Poisson in sampling, λ is often…', options: ['n·p', 'p/n', 'n/p'], answer: 0 },
-            { q: 'Across different distributions, OC curves for the same (n, c) can be…', options: ['Identical', 'Different', 'Not drawable'], answer: 1 },
-            { q: 'When N is very large, sampling without replacement can be approximated by…', options: ['Binomial', 'Hypergeometric', 'Poisson'], answer: 0 },
+            { q: 'The Poisson parameter is typically approximated as??, options: ['n繚p', 'n/p', 'n+p'], answer: 0 },
+            { q: 'To display an AQL marker on the chart, you must provide??, options: ['AQL (%)', 'LTPD (%)', '帢 and 帣 risks'], answer: 0 },
+            { q: 'A steeper OC curve implies??, options: ['Better discrimination', 'Worse discrimination', 'Cannot tell'], answer: 0 },
+            { q: 'On the Reverse page you can solve for??, options: ['AQL', 'n', 'c', 'All of the above'], answer: 3 },
+            { q: 'A common use case of C=0 plans is??, options: ['High-risk critical defects', 'General inspection', 'Documentation'], answer: 0 },
+            { q: 'For Binomial, the acceptance probability uses CDF(c; n, p). Here p means??, options: ['Sample proportion', 'Defect rate', 'Pass rate'], answer: 1 },
+            { q: 'For Poisson in sampling, 弇 is often??, options: ['n繚p', 'p/n', 'n/p'], answer: 0 },
+            { q: 'Across different distributions, OC curves for the same (n, c) can be??, options: ['Identical', 'Different', 'Not drawable'], answer: 1 },
+            { q: 'When N is very large, sampling without replacement can be approximated by??, options: ['Binomial', 'Hypergeometric', 'Poisson'], answer: 0 },
             { q: 'The AQL lookup page references which standard?', options: ['ANSI/ASQ Z1.4', 'MIL-STD-105E', 'ISO 9001'], answer: 0 },
-            { q: 'To compare plans, you should examine…', options: ['OC curve shape/shift', 'x-axis unit only', 'Chart background color'], answer: 0 },
-            { q: 'Increasing c typically affects producer’s risk (α) by…', options: ['Increasing', 'Decreasing', 'No change'], answer: 1 },
-            { q: 'Increasing n typically affects consumer’s risk (β) by…', options: ['Increasing', 'Decreasing', 'No change'], answer: 1 },
-            { q: 'In this tool, Pa ranges between…', options: ['0–100', '0–1', '1–100'], answer: 1 },
-            { q: 'The x-axis p values are expressed in…', options: ['Decimal fraction', 'Percent (%)', 'Per mille (‰)'], answer: 1 },
-            { q: 'If AQL=2.5%, a typical Pa at p=2.5% is…', options: ['≈95%', '≈50%', '≈5%'], answer: 0 },
-            { q: 'Poisson approximation is most suitable for…', options: ['Small n, high p', 'Large n, small p', 'Any case'], answer: 1 },
-            { q: 'Key parameters for Hypergeometric are…', options: ['N, n, c, p', 'n, c, p', 'N, p'], answer: 0 },
+            { q: 'To compare plans, you should examine??, options: ['OC curve shape/shift', 'x-axis unit only', 'Chart background color'], answer: 0 },
+            { q: 'Increasing c typically affects producer? risk (帢) by??, options: ['Increasing', 'Decreasing', 'No change'], answer: 1 },
+            { q: 'Increasing n typically affects consumer? risk (帣) by??, options: ['Increasing', 'Decreasing', 'No change'], answer: 1 },
+            { q: 'In this tool, Pa ranges between??, options: ['0??00', '0??', '1??00'], answer: 1 },
+            { q: 'The x-axis p values are expressed in??, options: ['Decimal fraction', 'Percent (%)', 'Per mille (??'], answer: 1 },
+            { q: 'If AQL=2.5%, a typical Pa at p=2.5% is??, options: ['??5%', '??0%', '??%'], answer: 0 },
+            { q: 'Poisson approximation is most suitable for??, options: ['Small n, high p', 'Large n, small p', 'Any case'], answer: 1 },
+            { q: 'Key parameters for Hypergeometric are??, options: ['N, n, c, p', 'n, c, p', 'N, p'], answer: 0 },
             { q: 'Are AQL dots shown in the legend on Comparison?', options: ['Shown', 'Hidden', 'Configurable'], answer: 1 },
-            { q: 'AQL marker tooltip shows…', options: ['p only', 'Pa only', 'p and Pa'], answer: 2 },
-            { q: 'Default unit for target Pa on Reverse page is…', options: ['%', 'Decimal', 'Not displayed'], answer: 0 },
-            { q: 'If n < c, the app will…', options: ['Show an error', 'Proceed normally', 'Auto-correct'], answer: 0 },
-            { q: 'Chart export buttons are located…', options: ['Left side', 'Chart toolbar', 'Footer'], answer: 1 },
-            { q: 'In Multiple Plan Comparison, newly added manual plans default to…', options: ['Hypergeometric', 'Binomial', 'Poisson'], answer: 1 },
+            { q: 'AQL marker tooltip shows??, options: ['p only', 'Pa only', 'p and Pa'], answer: 2 },
+            { q: 'Default unit for target Pa on Reverse page is??, options: ['%', 'Decimal', 'Not displayed'], answer: 0 },
+            { q: 'If n < c, the app will??, options: ['Show an error', 'Proceed normally', 'Auto-correct'], answer: 0 },
+            { q: 'Chart export buttons are located??, options: ['Left side', 'Chart toolbar', 'Footer'], answer: 1 },
+            { q: 'In Multiple Plan Comparison, newly added manual plans default to??, options: ['Hypergeometric', 'Binomial', 'Poisson'], answer: 1 },
             { q: 'Main difference between Binomial and Hypergeometric?', options: ['With/without replacement', 'Sample size only', 'Presence of AQL'], answer: 0 },
-            { q: 'To consider lot depletion effect, choose…', options: ['Binomial', 'Hypergeometric', 'Poisson'], answer: 1 },
+            { q: 'To consider lot depletion effect, choose??, options: ['Binomial', 'Hypergeometric', 'Poisson'], answer: 1 },
             { q: 'When comparing different (n, c) plans, recommended approach?', options: ['View one curve only', 'Visualize multiple curves together', 'Rely on text'], answer: 1 },
             { q: 'Typical acceptance probability at AQL?', options: ['50%', '80%', '95%'], answer: 2 },
-            { q: 'To tighten inspection stringency you could…', options: ['Lower n', 'Lower c or increase n', 'Do nothing'], answer: 1 },
-            { q: 'LTPD commonly describes…', options: ['A consumer-risk point for bad lots', 'Average defect rate', 'Best cost'], answer: 0 },
-            { q: 'Label on the randomize button should be…', options: ['Refresh questions', 'Refresh Quiz', 'Reset quiz'], answer: 1 },
-            { q: 'If distributions differ but (n, c) are the same, OC can be…', options: ['Exactly the same', 'Slightly different', 'Not drawable'], answer: 1 },
-            { q: 'An advantage of C=0 for high-risk defects is…', options: ['Looser acceptance threshold', 'Lower consumer risk', 'Higher producer risk'], answer: 1 },
-            { q: 'Position of the AQL marker is determined by…', options: ['AQL and Pa(AQL)', 'n and c', 'N and n'], answer: 0 },
-            { q: 'After changing x-axis max in Comparison, AQL dots…', options: ['Do not update', 'Update automatically', 'Require page reload'], answer: 1 },
+            { q: 'To tighten inspection stringency you could??, options: ['Lower n', 'Lower c or increase n', 'Do nothing'], answer: 1 },
+            { q: 'LTPD commonly describes??, options: ['A consumer-risk point for bad lots', 'Average defect rate', 'Best cost'], answer: 0 },
+            { q: 'Label on the randomize button should be??, options: ['Refresh questions', 'Refresh Quiz', 'Reset quiz'], answer: 1 },
+            { q: 'If distributions differ but (n, c) are the same, OC can be??, options: ['Exactly the same', 'Slightly different', 'Not drawable'], answer: 1 },
+            { q: 'An advantage of C=0 for high-risk defects is??, options: ['Looser acceptance threshold', 'Lower consumer risk', 'Higher producer risk'], answer: 1 },
+            { q: 'Position of the AQL marker is determined by??, options: ['AQL and Pa(AQL)', 'n and c', 'N and n'], answer: 0 },
+            { q: 'After changing x-axis max in Comparison, AQL dots??, options: ['Do not update', 'Update automatically', 'Require page reload'], answer: 1 },
             { q: 'Can the Reverse page export a plan to Comparison?', options: ['Yes', 'No', 'C=0 only'], answer: 0 },
             { q: 'Can the AQL Lookup page export a plan?', options: ['Yes', 'No', 'Hypergeometric only'], answer: 0 },
             { q: 'What does AOQ stand for?', options: ['Average Outgoing Quality', 'Acceptable Quality Level', 'Average Quality Output'], answer: 0 },
             { q: 'What does ATI stand for?', options: ['Average Total Inspection', 'Acceptable Total Inspection', 'Average Test Items'], answer: 0 },
-            { q: 'AOQ formula is: AOQ = p × Pa × (N-n)/N. What does p represent?', options: ['Sample size', 'Defect rate', 'Acceptance probability'], answer: 1 },
-            { q: 'ATI formula is: ATI = n + (1-Pa) × (N-n). What does (1-Pa) represent?', options: ['Acceptance probability', 'Rejection probability', 'Defect rate'], answer: 1 },
+            { q: 'AOQ formula is: AOQ = p ? Pa ? (N-n)/N. What does p represent?', options: ['Sample size', 'Defect rate', 'Acceptance probability'], answer: 1 },
+            { q: 'ATI formula is: ATI = n + (1-Pa) ? (N-n). What does (1-Pa) represent?', options: ['Acceptance probability', 'Rejection probability', 'Defect rate'], answer: 1 },
             { q: 'In the AQL-LTPD Balanced Plan page, what does "Minimize Sample Size" optimization do?', options: ['Find largest n', 'Find smallest n that meets constraints', 'Balance n and c'], answer: 1 },
             { q: 'Plan Efficiency formula includes which components?', options: ['Only AQL deviation', 'AQL deviation + LTPD deviation + penalty', 'Only LTPD deviation'], answer: 1 },
             { q: 'Which curve type shows inspection costs?', options: ['OC curves', 'AOQ curves', 'ATI curves'], answer: 2 },
@@ -4614,10 +4358,10 @@
                         this.classList.add(isCorrect ? 'correct' : 'incorrect');
                         const quiz = this.closest('.tutorial-quiz');
                         quiz.querySelectorAll('.tutorial-quiz-option').forEach(opt => { if (opt !== this) opt.style.pointerEvents = 'none'; });
-                        if (isCorrect) { this.innerHTML += ' ✅ Correct'; }
+                        if (isCorrect) { this.innerHTML += ' ??Correct'; }
                         else {
-                            this.innerHTML += ' ❌ Try again!';
-                            setTimeout(() => { const correct = quiz.querySelector('[data-correct="true"]'); if (correct) { correct.classList.add('correct'); correct.innerHTML += ' ✅ This is correct!'; } }, 600);
+                            this.innerHTML += ' ??Try again!';
+                            setTimeout(() => { const correct = quiz.querySelector('[data-correct="true"]'); if (correct) { correct.classList.add('correct'); correct.innerHTML += ' ??This is correct!'; } }, 600);
                         }
                     });
                 });
@@ -4696,7 +4440,7 @@
             } else {
                 // Tutorial completed
                 setTimeout(() => {
-                    alert('🎉 Congratulations! You\'ve completed the Sampling Plan Tutorial!\n\nYou\'re now ready to use all the advanced features of this analyzer. Happy sampling! 📊');
+                    alert('?? Congratulations! You\'ve completed the Sampling Plan Tutorial!\n\nYou\'re now ready to use all the advanced features of this analyzer. Happy sampling! ??');
                     closeTutorial();
                 }, 100);
             }
@@ -4735,7 +4479,7 @@
 
             // Update navigation buttons
             tutorialPrevBtn.style.display = currentTutorialStep > 0 ? 'block' : 'none';
-            tutorialNextBtn.textContent = currentTutorialStep === tutorialSteps.length - 1 ? 'Complete Tutorial! 🎉' : 'Next →';
+            tutorialNextBtn.textContent = currentTutorialStep === tutorialSteps.length - 1 ? 'Complete Tutorial! ??' : 'Next ??;
 
             // Handle highlighting
             if (step.highlight) {
@@ -4967,7 +4711,7 @@
 
             // For very small p, use more precise calculation to avoid numerical issues
             if (p < 1e-10) {
-                // When p is extremely small, P(X <= k) ≈ 1 for any reasonable k
+                // When p is extremely small, P(X <= k) ??1 for any reasonable k
                 return 1;
             }
 
@@ -5099,12 +4843,12 @@
 
         // Get efficiency rating based on efficiency score
         function getEfficiencyRating(efficiency) {
-            if (efficiency >= 0.95) return "🌟 Excellent (95%+)";
-            if (efficiency >= 0.85) return "✅ Very Good (85-95%)";
-            if (efficiency >= 0.75) return "👍 Good (75-85%)";
-            if (efficiency >= 0.65) return "⚠️ Fair (65-75%)";
-            if (efficiency >= 0.50) return "❌ Poor (50-65%)";
-            return "🚫 Very Poor (<50%)";
+            if (efficiency >= 0.95) return "?? Excellent (95%+)";
+            if (efficiency >= 0.85) return "??Very Good (85-95%)";
+            if (efficiency >= 0.75) return "?? Good (75-85%)";
+            if (efficiency >= 0.65) return "?? Fair (65-75%)";
+            if (efficiency >= 0.50) return "??Poor (50-65%)";
+            return "? Very Poor (<50%)";
         }
 
         // Generate improvement suggestions based on plan analysis
@@ -5113,23 +4857,23 @@
 
             // Sample size analysis
             if (plan.n > 200) {
-                suggestions.push("• Consider reducing sample size: Current n=" + plan.n + " is quite large. Try adjusting AQL/LTPD values or risk constraints.");
+                suggestions.push("??Consider reducing sample size: Current n=" + plan.n + " is quite large. Try adjusting AQL/LTPD values or risk constraints.");
             } else if (plan.n < 20) {
-                suggestions.push("• Sample size is very small (n=" + plan.n + "). Consider increasing for better statistical power.");
+                suggestions.push("??Sample size is very small (n=" + plan.n + "). Consider increasing for better statistical power.");
             }
 
             // Risk constraint analysis
             if (plan.actualAlpha > alpha * 1.2) {
-                suggestions.push("• Producer's risk is high (" + (plan.actualAlpha * 100).toFixed(1) + "% vs target " + (alpha * 100) + "%). Consider increasing sample size or adjusting AQL.");
+                suggestions.push("??Producer's risk is high (" + (plan.actualAlpha * 100).toFixed(1) + "% vs target " + (alpha * 100) + "%). Consider increasing sample size or adjusting AQL.");
             }
 
             if (plan.actualBeta > beta * 1.2) {
-                suggestions.push("• Consumer's risk is high (" + (plan.actualBeta * 100).toFixed(1) + "% vs target " + (beta * 100) + "%). Consider increasing sample size or adjusting LTPD.");
+                suggestions.push("??Consumer's risk is high (" + (plan.actualBeta * 100).toFixed(1) + "% vs target " + (beta * 100) + "%). Consider increasing sample size or adjusting LTPD.");
             }
 
             // Efficiency-based suggestions
             if (efficiency < 0.75) {
-                suggestions.push("• Plan efficiency is low. Consider:");
+                suggestions.push("??Plan efficiency is low. Consider:");
                 suggestions.push("  - Adjusting AQL/LTPD values for better balance");
                 suggestions.push("  - Using different optimization strategy");
                 suggestions.push("  - Considering double sampling plans for large lots");
@@ -5137,22 +4881,22 @@
 
             // Distribution-specific suggestions
             if (lotSize < 1000) {
-                suggestions.push("• For small lots (N=" + lotSize + "), consider using Hypergeometric distribution for more accurate results.");
+                suggestions.push("??For small lots (N=" + lotSize + "), consider using Hypergeometric distribution for more accurate results.");
             } else if (lotSize > 10000) {
-                suggestions.push("• For large lots (N=" + lotSize + "), Binomial or Poisson distributions are appropriate.");
+                suggestions.push("??For large lots (N=" + lotSize + "), Binomial or Poisson distributions are appropriate.");
             }
 
             // AQL-LTPD ratio analysis
             const ratio = ltpd / aql;
             if (ratio < 3) {
-                suggestions.push("• AQL-LTPD ratio is small (" + ratio.toFixed(1) + "). Consider wider separation for better discrimination.");
+                suggestions.push("??AQL-LTPD ratio is small (" + ratio.toFixed(1) + "). Consider wider separation for better discrimination.");
             } else if (ratio > 10) {
-                suggestions.push("• AQL-LTPD ratio is very large (" + ratio.toFixed(1) + "). This may require very large sample sizes.");
+                suggestions.push("??AQL-LTPD ratio is very large (" + ratio.toFixed(1) + "). This may require very large sample sizes.");
             }
 
             // General recommendations
             if (suggestions.length === 0) {
-                suggestions.push("• Plan appears well-balanced. Consider monitoring actual performance and adjusting as needed.");
+                suggestions.push("??Plan appears well-balanced. Consider monitoring actual performance and adjusting as needed.");
             }
 
             return suggestions.join('\n');
@@ -5192,21 +4936,6 @@
                     paValues.push(NaN);
                 }
             }
-
-            // Standardized theme color for AQL-LTPD curve
-            const colors = getEnhancedThemeColors();
-            const accentColor = colors.accent || '#e67e22';
-            
-            const datasets = [{
-                label: `OC Curve (n=${plan.n}, c=${plan.c})`,
-                data: paValues.map((pa, i) => ({ x: pValues[i], y: pa })),
-                borderColor: accentColor,
-                backgroundColor: accentColor + '40',
-                borderDash: [],
-                borderWidth: 2,
-                pointRadius: 0,
-                tension: 0.1
-            }];
 
             // Destroy existing chart
             if (aqlLtpdChart) {
@@ -5264,9 +4993,8 @@
                     datasets: [{
                         label: `Balanced Plan (n=${plan.n}, c=${plan.c})`,
                         data: pValues.map((p, i) => ({ x: p, y: paValues[i] })),
-                        borderColor: customColor,
-                        backgroundColor: customColor + '40',
-                        borderDash: customDash,
+                        borderColor: '#1783FF',
+                        backgroundColor: 'rgba(23, 131, 255, 0.1)',
                         borderWidth: 2,
                         pointRadius: 0,
                         tension: 0.1
@@ -5452,7 +5180,31 @@
         }
 
         // Export functionality
-        // AQL-LTPD exports handled by unified exportConfigs
+        if (aqlLtpdElements.exportPngBtn) {
+            aqlLtpdElements.exportPngBtn.addEventListener('click', function () {
+                if (aqlLtpdChart) {
+                    exportChartHiRes(aqlLtpdChart, 'aql_ltpd_balanced_plan');
+                }
+            });
+        }
+
+        if (aqlLtpdElements.exportCsvBtn) {
+            aqlLtpdElements.exportCsvBtn.addEventListener('click', function () {
+                if (aqlLtpdChart && aqlLtpdLastPlan) {
+                    let csv = 'x_defect_rate_percent,y_acceptance_prob,n,c,aql,ltpd,alpha,beta,distribution,optimization_target\n';
+                    aqlLtpdChart.data.datasets[0].data.forEach(point => {
+                        csv += `${point.x},${point.y},${aqlLtpdLastPlan.n},${aqlLtpdLastPlan.c},${aqlLtpdElements.aqlInput?.value || 1},${aqlLtpdElements.ltpdInput?.value || 5},${aqlLtpdElements.alphaInput?.value || 0.05},${aqlLtpdElements.betaInput?.value || 0.10},${aqlLtpdElements.distSelect?.value || 'binom'},${aqlLtpdElements.optimizationSelect?.value || 'minimize_n'}\n`;
+                    });
+                    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'aql_ltpd_balanced_plan.csv';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }
+            });
+        }
 
         if (aqlLtpdElements.exportPlanBtn) {
             aqlLtpdElements.exportPlanBtn.addEventListener('click', function () {
@@ -5463,10 +5215,7 @@
                 window.planComparisonQueue = window.planComparisonQueue || [];
                 const distName = aqlLtpdElements.distSelect?.value === 'hyper' ? 'Hypergeometric' :
                     (aqlLtpdElements.distSelect?.value === 'pois' ? 'Poisson' : 'Binomial');
-                
-                // Use custom label if provided, else generate default
-                const customLabel = document.getElementById('aql_ltpd_plan_label')?.value.trim();
-                const label = customLabel || `AQL-LTPD n=${aqlLtpdLastPlan.n}, c=${aqlLtpdLastPlan.c} (${distName})`;
+                const label = `AQL-LTPD n=${aqlLtpdLastPlan.n}, c=${aqlLtpdLastPlan.c} (${distName})`;
                 window.planComparisonQueue.push({
                     n: aqlLtpdLastPlan.n,
                     c: aqlLtpdLastPlan.c,
