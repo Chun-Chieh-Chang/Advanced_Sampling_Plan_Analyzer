@@ -2406,43 +2406,56 @@
                 tempChart.render();
                 tempChart.update();
                 
+                // Option A: Open in New Tab immediately to bypass popup blockers (User Gesture is preserved)
+                var newWin = window.open('about:blank', '_blank');
+                if (!newWin) {
+                    alert('⚠️ Popup blocked! Please allow popups for this site to use the export feature.');
+                    document.body.style.cursor = 'default';
+                    return;
+                }
+                
+                // Show a loading state in the new tab immediately
+                newWin.document.write('<html><head><title>Exporting Chart...</title></head><body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh; background-color:#1e293b; color:white; font-family:sans-serif;"><h2>Processing high-resolution image...</h2></body></html>');
+                newWin.document.close();
+
                 var filename = baseName + '.png'; 
                 try {
                     // Using toBlob for maximum resolution support and Chrome compatibility.
-                    // toDataURL (Base64) can hit string length limits in Chrome at 3x scale (~38MB raw data).
                     offCanvas.toBlob(function(blob) {
                         if (!blob) {
                             console.error('Blob generation failed.');
+                            if (newWin) newWin.close();
                             document.body.style.cursor = 'default';
                             alert('Image generation failed.');
                             return;
                         }
                         
-                        console.log('Export Blob created successfully. Size:', (blob.size / 1024).toFixed(2), 'KB');
-                        console.log('Filename to be used:', filename);
-                        
+                        console.log('Export Blob created successfully:', filename);
                         var url = URL.createObjectURL(blob);
-                        var a = document.createElement('a');
-                        a.download = filename;
-                        a.rel = 'noopener'; // safety 
-                        a.target = '_blank';
-                        a.href = url;
                         
-                        // Use native MouseEvent instead of a.click() to ensure Chrome does not strip the 
-                        // download attribute when triggering programmatically from async callbacks.
-                        setTimeout(function() {
-                            a.dispatchEvent(new MouseEvent('click'));
-                        }, 0);
+                        // Inject the final image into the newly opened tab
+                        newWin.document.open();
+                        newWin.document.write(`
+                            <html>
+                            <head>
+                                <title>Export - ${filename}</title>
+                            </head>
+                            <body style="margin: 0; padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif; background-color: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; min-height: 100vh;">
+                                <div style="text-align: center; margin-bottom: 20px;">
+                                    <h2 style="margin: 0 0 8px 0;">Chart Export Ready</h2>
+                                    <p style="margin: 0; color: #94a3b8; font-size: 14px;"><strong>Right-click</strong> the image below and select <strong>"Save image as..."</strong></p>
+                                </div>
+                                <img src="${url}" 
+                                     style="max-width: 95vw; max-height: 80vh; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; background-color: #ffffff;" 
+                                     alt="Exported Chart">
+                            </body>
+                            </html>
+                        `);
+                        newWin.document.close();
                         
-                        // FileSaver.js waits 40s to ensure the browser has fully registered the object URL and download
-                        setTimeout(function() {
-                            URL.revokeObjectURL(url);
-                        }, 40000);
-                        
-                        console.log('Export download triggered successfully via MouseEvent for:', filename);
-                        
-                        // Dispose properly
+                        // Dispose Chart instance
                         tempChart.destroy();
+                        document.body.style.cursor = 'default';
                         document.body.style.cursor = 'default';
                     }, 'image/png');
                 } catch (err) {
