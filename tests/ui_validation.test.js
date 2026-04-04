@@ -42,4 +42,9 @@ describe('UI Validation', () => {
         expect(html).toContain("Producer's Risk (alpha)");
         expect(html).not.toContain('??/button');
     });
+
+    it('should load Chart.js from a local asset instead of a third-party CDN', () => {
+        expect(html).toContain('<script src="../assets/vendor/chart.min.js"></script>');
+        expect(html).not.toContain('cdn.jsdelivr.net/npm/chart.js');
+    });
 });
