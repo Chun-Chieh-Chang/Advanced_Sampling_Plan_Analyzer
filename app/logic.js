@@ -103,9 +103,10 @@ export function poissonCDF(k, lambda) {
 }
 
 export function hypergeometricCDF(k, N, K, n) {
-    if (n > N || K > N || k > Math.min(n, K)) return 0;
     if (k < 0) return 0;
-    // Fix: if k is >= min(n, K), we've covered all possible defective outcomes
+    if (n > N || K > N) return 0;
+    // If the acceptance limit covers the full support of the distribution,
+    // the cumulative probability is exactly 1.
     if (k >= Math.min(n, K)) return 1;
 
     let sum = 0;

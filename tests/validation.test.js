@@ -38,6 +38,11 @@ describe('Statistical Distributions', () => {
             const result = hypergeometricCDF(2, 500, 10, 50);
             expect(result).toBeCloseTo(0.9317, 4);
         });
+
+        it('should stay at 100% acceptance when rounded defective count is still zero', () => {
+            const result = calculateAcceptanceProbability(124, 1, 0.0005, 500, 'hyper');
+            expect(result).toBe(1);
+        });
     });
 });
 
