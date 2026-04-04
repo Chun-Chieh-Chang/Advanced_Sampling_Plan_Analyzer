@@ -152,6 +152,26 @@ export function initDistributionPage(options) {
         return Array.from({ length: num }, (_, i) => +(i * step).toFixed(2));
     }
 
+    function generateHyperPlotPoints(N, n, c, maxXPercent) {
+        const points = [];
+        let currentPa = getPaHyper(N, n, c, 0);
+        points.push({ x: 0, y: currentPa });
+
+        const maxTransitionK = Math.min(N, Math.floor((maxXPercent * N) / 100 + 0.5));
+        for (let K = 1; K <= maxTransitionK; K++) {
+            const transitionX = +((((K - 0.5) * 100) / N).toFixed(4));
+            if (transitionX > maxXPercent) break;
+
+            // Duplicate the x-value to render the discrete jump explicitly.
+            points.push({ x: transitionX, y: currentPa });
+            currentPa = getPaHyper(N, n, c, K / N);
+            points.push({ x: transitionX, y: currentPa });
+        }
+
+        points.push({ x: maxXPercent, y: getPaHyper(N, n, c, maxXPercent / 100) });
+        return points;
+    }
+
     function getPaBinomial(n, c, p) {
         return calculateAcceptanceProbability(n, c, p, undefined, 'binom');
     }
@@ -183,13 +203,13 @@ export function initDistributionPage(options) {
         if (distState.hyper) {
             datasets.push({
                 label: 'Hypergeometric',
-                data: pValuesPercent.map(px => ({ x: px, y: getPaHyper(N, n, c, px / 100) })),
+                data: generateHyperPlotPoints(N, n, c, maxX),
                 borderColor: colors.hyper,
                 backgroundColor: 'rgba(241,196,15,0.25)',
                 borderDash: [],
                 borderWidth: 2,
                 pointRadius: 0,
-                tension: 0.1
+                tension: 0
             });
         }
 
