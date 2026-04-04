@@ -1,5 +1,5 @@
         // [新增] C=0 抽樣計畫資料表
-        const C0_SAMPLING_TABLE = [
+export const C0_SAMPLING_TABLE = [
             {'lot_range': [2, 8], 'samples': {'0.010': null, '0.015': null, '0.025': null, '0.040': null, '0.065': null, '0.10': null, '0.15': null, '0.25': null, '0.40': null, '0.65': null, '1.0': null, '1.5': null, '2.5': 5, '4.0': 3, '6.5': 2, '10.0': 2}},
             {'lot_range': [9, 15], 'samples': {'0.010': null, '0.015': null, '0.025': null, '0.040': null, '0.065': null, '0.10': null, '0.15': null, '0.25': null, '0.40': null, '0.65': null, '1.0': 13, '1.5': 8, '2.5': 5, '4.0': 3, '6.5': 2, '10.0': 2}},
             {'lot_range': [16, 25], 'samples': {'0.010': null, '0.015': null, '0.025': null, '0.040': null, '0.065': null, '0.10': null, '0.15': null, '0.25': null, '0.40': null, '0.65': 20, '1.0': 13, '1.5': 8, '2.5': 5, '4.0': 3, '6.5': 3, '10.0': 2}},

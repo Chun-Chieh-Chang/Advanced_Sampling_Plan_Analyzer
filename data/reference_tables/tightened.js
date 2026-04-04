@@ -1,10 +1,10 @@
 // ===== 加嚴檢驗 (Tightened Inspection) 數據庫 =====
 
-            const codeLettersOrder_tightened = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S'];
+export const codeLettersOrder_tightened = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S'];
 			
-            const tightened_sampleSizes = {'A': 2, 'B': 3, 'C': 5, 'D': 8, 'E': 13, 'F': 20, 'G': 32, 'H': 50, 'J': 80, 'K': 125, 'L': 200, 'M': 315, 'N': 500, 'P': 800, 'Q': 1250, 'R': 2000, 'S': 3150};
+export const tightened_sampleSizes = {'A': 2, 'B': 3, 'C': 5, 'D': 8, 'E': 13, 'F': 20, 'G': 32, 'H': 50, 'J': 80, 'K': 125, 'L': 200, 'M': 315, 'N': 500, 'P': 800, 'Q': 1250, 'R': 2000, 'S': 3150};
 			
-			const tightened_rawMasterTableData = {
+export const tightened_rawMasterTableData = {
 				'A': { '0.010': 'down', '0.015': 'down', '0.025': 'down', '0.040': 'down', '0.065': 'down', '0.10': 'down', '0.15': 'down', '0.25': 'down', '0.40': 'down', '0.65': 'down', '1.0': 'down', '1.5': 'down', '2.5': 'down', '4.0': 'down', '6.5': 'down', '10': 'down', '15': 'down', '25': 'down', '40':    1, '65':    2, '100':    3, '150':    5, '250':    8, '400':   12, '650':   18, '1000':   27 },
 				'B': { '0.010': 'down', '0.015': 'down', '0.025': 'down', '0.040': 'down', '0.065': 'down', '0.10': 'down', '0.15': 'down', '0.25': 'down', '0.40': 'down', '0.65': 'down', '1.0': 'down', '1.5': 'down', '2.5': 'down', '4.0': 'down', '6.5':      0, '10': 'down', '15': 'down', '25':      1, '40':    2, '65':    3, '100':    5, '150':    8, '250':   12, '400':   18, '650':   27, '1000':   41 },
 				'C': { '0.010': 'down', '0.015': 'down', '0.025': 'down', '0.040': 'down', '0.065': 'down', '0.10': 'down', '0.15': 'down', '0.25': 'down', '0.40': 'down', '0.65': 'down', '1.0': 'down', '1.5': 'down', '2.5': 'down', '4.0':      0, '6.5': 'down', '10': 'down', '15':      1, '25':      2, '40':    3, '65':    5, '100':    8, '150':   12, '250':   18, '400':   27, '650':   41, '1000': 'up' },

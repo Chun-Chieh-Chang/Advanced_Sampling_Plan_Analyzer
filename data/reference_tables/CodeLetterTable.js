@@ -1,5 +1,5 @@
     // ===== 數據庫 =====
-    const codeLetterTable = [
+export const codeLetterTable = [
         { min: 2, max: 8,     levels: { 'I': 'A', 'II': 'A', 'III': 'B', 'S-1': 'A', 'S-2': 'A', 'S-3': 'A', 'S-4': 'A' } },
         { min: 9, max: 15,    levels: { 'I': 'A', 'II': 'B', 'III': 'C', 'S-1': 'A', 'S-2': 'A', 'S-3': 'A', 'S-4': 'A' } },
         { min: 16, max: 25,   levels: { 'I': 'B', 'II': 'C', 'III': 'D', 'S-1': 'A', 'S-2': 'A', 'S-3': 'B', 'S-4': 'B' } },

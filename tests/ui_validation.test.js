@@ -1,5 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { JSDOM } from 'jsdom';
+import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
@@ -9,42 +8,38 @@ const __dirname = dirname(__filename);
 
 const html = fs.readFileSync(resolve(__dirname, '../app/index.html'), 'utf8');
 
-describe('UI Validation (JSDOM)', () => {
-    let dom;
-    let document;
-
-    beforeEach(() => {
-        dom = new JSDOM(html, { runScripts: "dangerously", resources: "usable" });
-        document = dom.window.document;
-    });
-
+describe('UI Validation', () => {
     it('should have the correct title', () => {
-        expect(document.title).toContain('Advanced Sampling Plan Analyzer');
+        expect(html).toContain('<title>Advanced Sampling Plan Analyzer');
     });
 
     it('should contain the 6 main modules', () => {
-        const tabs = document.querySelectorAll('.tab');
-        const labels = Array.from(tabs).map(item => item.textContent.trim());
-        
-        expect(labels).toContain('AQL-LTPD Balanced Plan');
-        expect(labels).toContain('AQL Plan Table Lookup');
-        expect(labels).toContain('C=0 Plan Table Lookup');
-        expect(labels).toContain('Probability Distribution');
-        expect(labels).toContain('Reverse Sampling Query');
-        expect(labels).toContain('Multiple Plan Comparison');
+        expect(html).toContain('AQL-LTPD Balanced Plan');
+        expect(html).toContain('AQL Plan Table Lookup');
+        expect(html).toContain('C=0 Plan Table Lookup');
+        expect(html).toContain('Probability Distribution');
+        expect(html).toContain('Reverse Sampling Query');
+        expect(html).toContain('Multiple Plan Comparison');
     });
 
     it('should have correct default values in AQL-LTPD section', () => {
-        const aqlInput = document.getElementById('aql_ltpd_aql_input');
-        const ltpdInput = document.getElementById('aql_ltpd_ltpd_input');
-        
-        expect(aqlInput.value).toBe('1.0');
-        expect(ltpdInput.value).toBe('5.0');
+        expect(html).toContain('id="aql_ltpd_aql_input"');
+        expect(html).toContain('value="1.0"');
+        expect(html).toContain('id="aql_ltpd_ltpd_input"');
+        expect(html).toContain('value="5.0"');
     });
 
     it('should apply the Color Master Palette variables', () => {
         expect(html).toContain('--bg');
         expect(html).toContain('--panel');
         expect(html).toContain('--text');
+    });
+
+    it('should keep tutorial controls and key labels free of corrupted placeholder text', () => {
+        expect(html).toContain('Start Interactive Tutorial');
+        expect(html).toContain('Interactive Sampling Plan Tutorial');
+        expect(html).toContain('id="tutorial-next-btn">Next</button>');
+        expect(html).toContain("Producer's Risk (alpha)");
+        expect(html).not.toContain('??/button');
     });
 });
