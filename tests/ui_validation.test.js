@@ -43,8 +43,13 @@ describe('UI Validation', () => {
         expect(html).not.toContain('??/button');
     });
 
-    it('should load Chart.js from a local asset instead of a third-party CDN', () => {
-        expect(html).toContain('<script src="../assets/vendor/chart.min.js"></script>');
+    it('should load deploy-safe local assets and the prebuilt app bundle', () => {
+        expect(html).toContain('<link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">');
+        expect(html).toContain('<link rel="apple-touch-icon" href="./assets/images/favicon.svg">');
+        expect(html).toContain('<script src="./assets/vendor/chart.min.js"></script>');
+        expect(html).toContain('<script src="./main.bundle.js"></script>');
         expect(html).not.toContain('cdn.jsdelivr.net/npm/chart.js');
+        expect(html).not.toContain('type="module" src="./main.js"');
+        expect(html).not.toContain('../assets/');
     });
 });

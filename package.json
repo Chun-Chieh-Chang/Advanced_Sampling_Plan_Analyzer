@@ -7,7 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "vitest run --pool=threads"
+    "test": "vitest run --pool=threads",
+    "build:bundle": "node node_modules/vite/bin/vite.js build --config vite.bundle.config.mjs"
   },
   "repository": {
     "type": "git",

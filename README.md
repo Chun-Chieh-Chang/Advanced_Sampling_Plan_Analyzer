@@ -29,7 +29,7 @@ A single-page front-end web app for designing, looking up, comparing, and export
 
 ### Run the app
 
-This is a static front-end app, so there is no build step required for the UI.
+This is a static front-end app, so there is no build step required for normal use. The checked-in `app/main.bundle.js` lets `app/index.html` run even when opened directly from disk, and the `app/` folder is self-contained for GitHub Pages deployment.
 
 1. Open `app/index.html` directly in a browser, or
 2. Serve the repository locally:
@@ -39,6 +39,19 @@ python -m http.server 8000
 ```
 
 Then open `http://localhost:8000/app/index.html`.
+
+If you edit source files under `app/main.js`, `app/core/`, or `app/pages/`, rebuild the browser bundle before testing by running:
+
+```bash
+npm run build:bundle
+```
+
+## GitHub Pages
+
+The GitHub Pages workflow publishes the contents of `app/` as the site root. That means:
+
+- `https://chun-chieh-chang.github.io/Advanced_Sampling_Plan_Analyzer/` serves `app/index.html`
+- Any runtime assets needed by the page must live under `app/`
 
 ### Run tests
 
