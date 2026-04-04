@@ -1,13 +1,13 @@
 {
   "name": "advanced_sampling_plan_analyzer",
   "version": "1.0.0",
-  "description": "A single‑page, front‑end web app for designing, looking up, and visualizing acceptance sampling plans.",
+  "description": "A single-page front-end web app for designing, looking up, and visualizing acceptance sampling plans.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run --pool=threads"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/Chun-Chieh-Chang/Advanced_Sampling_Plan_Analyzer#readme",
   "devDependencies": {
-    "jsdom": "^29.0.1",
     "vitest": "^4.1.2"
   },
   "dependencies": {

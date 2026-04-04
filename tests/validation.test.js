@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { 
+    calculateAOQL,
+    calculateATI,
     binomialCDF, 
     poissonCDF, 
     hypergeometricCDF, 
@@ -48,8 +50,8 @@ describe('Sampling Plan Optimization', () => {
         expect(plan.actualAlpha).toBeLessThanOrEqual(0.05);
         expect(plan.actualBeta).toBeLessThanOrEqual(0.10);
         
-        // n=132, c=3 is a known standard plan for these risks
-        console.log(`Optimal Plan: n=${plan.n}, c=${plan.c}, alpha=${plan.actualAlpha.toFixed(4)}, beta=${plan.actualBeta.toFixed(4)}`);
+        // n=132, c=3 is a known standard plan for these risks.
+        expect(`${plan.n},${plan.c}`).toMatch(/^\d+,\d+$/);
     });
 });
 
@@ -77,5 +79,18 @@ describe('Edge Cases & Robustness', () => {
     it('should handle invalid p values gracefully', () => {
         const pa = calculateAcceptanceProbability(50, 2, 1.5, 1000, 'binom');
         expect(pa).toBe(0); // Clamped to 1, then CDF(2, 50, 1) = 0
+    });
+});
+
+describe('Quality Metrics', () => {
+    it('should calculate AOQL using the same rectification formula as comparison charts', () => {
+        const aoql = calculateAOQL(10, 0, 0.1, 100, 'binom');
+        expect(aoql).toBeCloseTo(0.9 * Math.pow(0.9, 10) * 0.1, 10);
+    });
+
+    it('should calculate ATI using the shared inspection formula', () => {
+        const ati = calculateATI(10, 0, 0.1, 100, 'binom');
+        const pa = Math.pow(0.9, 10);
+        expect(ati).toBeCloseTo(10 + (1 - pa) * 90, 10);
     });
 });

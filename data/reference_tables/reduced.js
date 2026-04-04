@@ -1,10 +1,10 @@
 // ===== 減量檢驗 (Reduced Inspection) 數據庫 =====
 
-            const codeLettersOrder_reduced = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R'];
+export const codeLettersOrder_reduced = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R'];
 
-            const reduced_sampleSizes = {'A': 2, 'B': 2, 'C': 2, 'D': 3, 'E': 5, 'F': 8, 'G': 13, 'H': 20, 'J': 32, 'K': 50, 'L': 80, 'M': 125, 'N': 200, 'P': 315, 'Q': 500, 'R': 800};
+export const reduced_sampleSizes = {'A': 2, 'B': 2, 'C': 2, 'D': 3, 'E': 5, 'F': 8, 'G': 13, 'H': 20, 'J': 32, 'K': 50, 'L': 80, 'M': 125, 'N': 200, 'P': 315, 'Q': 500, 'R': 800};
 
-            const reduced_rawMasterTableData = {
+export const reduced_rawMasterTableData = {
                 'A': { '0.010': 'down', '0.015': 'down', '0.025': 'down', '0.040': 'down', '0.065': 'down', '0.10': 'down', '0.15': 'down', '0.25': 'down', '0.40': 'down', '0.65': 'down' , '1.0': 'down' , '1.5': 'down' , '2.5': 'down' , '4.0': 'down' , '6.5': { ac: 0, re: 1 } , '10': 'down' , '15': 'down' , '25': { ac: 1, re: 2 } , '40': { ac: 2, re: 3 } , '65': { ac: 3, re: 4 } , '100': { ac: 5, re: 6 } , '150': { ac: 7, re: 8 } , '250': { ac: 10, re: 11 } , '400': { ac: 14, re: 15 } , '650': { ac: 21, re: 22 } , '1000': { ac: 30, re: 31 } },
                 'B': { '0.010': 'down', '0.015': 'down', '0.025': 'down', '0.040': 'down', '0.065': 'down', '0.10': 'down', '0.15': 'down', '0.25': 'down', '0.40': 'down', '0.65': 'down' , '1.0': 'down' , '1.5': 'down' , '2.5': 'down' , '4.0': { ac: 0, re: 1 } , '6.5': 'up'   , '10': 'down' , '15': { ac: 0, re: 2 } , '25': { ac: 1, re: 3 } , '40': { ac: 2, re: 4 } , '65': { ac: 3, re: 5 } , '100': { ac: 5, re: 6 } , '150': { ac: 7, re: 8 } , '250': { ac: 10, re: 11 } , '400': { ac: 14, re: 15 } , '650': { ac: 21, re: 22 } , '1000': { ac: 30, re: 31 } },
                 'C': { '0.010': 'down', '0.015': 'down', '0.025': 'down', '0.040': 'down', '0.065': 'down', '0.10': 'down', '0.15': 'down', '0.25': 'down', '0.40': 'down', '0.65': 'down' , '1.0': 'down' , '1.5': 'down' , '2.5': { ac: 0, re: 1 } , '4.0': 'up'   , '6.5': 'down' , '10': { ac: 0, re: 2 } , '15': { ac: 1, re: 3 } , '25': { ac: 1, re: 4 } , '40': { ac: 2, re: 5 } , '65': { ac: 3, re: 6 } , '100': { ac: 5, re: 8 } , '150': { ac: 7, re: 10 } , '250': { ac: 10, re: 13 } , '400': { ac: 14, re: 17 } , '650': { ac: 21, re: 24 } , '1000': 'up'   },

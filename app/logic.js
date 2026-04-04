@@ -260,9 +260,31 @@ export function calculateOptimalAqlLtpdPlan(aql, ltpd, lotSize, distribution, op
     return bestPlan;
 }
 
-export function calculateAOQL(n, c, p, N, distribution) {
+function getRectificationFactor(n, N) {
+    if (!Number.isFinite(N) || N <= 0) {
+        return 1;
+    }
+
+    return Math.max(0, N - n) / N;
+}
+
+export function calculateAOQ(n, c, p, N, distribution) {
     const pa = calculateAcceptanceProbability(n, c, p, N, distribution);
-    return p * pa;
+    return p * pa * getRectificationFactor(n, N);
+}
+
+export function calculateAOQL(n, c, p, N, distribution) {
+    return calculateAOQ(n, c, p, N, distribution);
+}
+
+export function calculateATI(n, c, p, N, distribution) {
+    const pa = calculateAcceptanceProbability(n, c, p, N, distribution);
+
+    if (!Number.isFinite(N) || N <= 0) {
+        return n;
+    }
+
+    return n + (1 - pa) * Math.max(0, N - n);
 }
 
 export function calculateASN(n, c, p, N, distribution) {
