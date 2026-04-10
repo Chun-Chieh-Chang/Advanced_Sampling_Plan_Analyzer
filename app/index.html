@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,6 +10,11 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap"
         rel="stylesheet">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SamplingTool">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         :root {
             /* Default theme: Premium Dark (Slate 900) */
@@ -281,6 +286,11 @@
             color: var(--text);
             background: radial-gradient(1200px 800px at 30% -10%, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 60%);
             transition: background 0.3s ease, color 0.3s ease;
+            /* Safe area padding for PWA on notched devices */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
         .app {
@@ -312,6 +322,69 @@
             display: flex;
             gap: 16px;
             align-items: flex-start;
+        }
+
+        /* Mobile First Responsive Adjustments */
+        @media (max-width: 768px) {
+            .app {
+                padding: 12px;
+            }
+            .main-layout {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .sidebar {
+                width: 100%;
+                flex: none;
+                margin-top: 10px;
+                position: static; /* Force standard flow on mobile */
+                z-index: 10;
+                background: rgba(var(--primary-rgb), 0.05);
+                border-radius: 12px;
+                padding: 4px;
+            }
+            .tabs {
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 8px 4px;
+                gap: 8px;
+                scrollbar-width: none;
+                white-space: nowrap; /* Prevent wrapping if flex fails */
+            }
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+            .tab {
+                min-width: 120px;
+                flex: 0 0 auto;
+                font-size: 14px;
+                padding: 12px 10px;
+                white-space: nowrap;
+            }
+            .content {
+                flex-direction: column;
+            }
+            .left {
+                width: 100%;
+                height: auto;
+                max-height: none;
+                overflow: visible;
+            }
+            .chart-container {
+                aspect-ratio: 1 / 1; /* Squarer on mobile for better visibility */
+                max-height: 350px;
+            }
+            .parameters {
+                grid-template-columns: 1fr; /* Stack inputs on mobile */
+            }
+            header h1 {
+                font-size: 1.4rem;
+            }
+            .page-header {
+                padding: 12px;
+            }
         }
 
         .sidebar {
@@ -1860,6 +1933,15 @@
     <!-- Scripts -->
     <script src="./assets/vendor/chart.min.js"></script>
     <script src="./main.bundle.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(err => console.log('SW registration failed', err));
+            });
+        }
+    </script>
 </body>
 
 </html>
