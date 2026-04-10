@@ -7,6 +7,7 @@
     <title>Advanced Sampling Plan Analyzer - Unified Layout</title>
     <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
     <link rel="apple-touch-icon" href="./assets/images/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap"
         rel="stylesheet">
@@ -291,6 +292,7 @@
             padding-bottom: env(safe-area-inset-bottom);
             padding-left: env(safe-area-inset-left);
             padding-right: env(safe-area-inset-right);
+            overflow-x: hidden; /* Prevent horizontal scroll from drawer */
         }
 
         .app {
@@ -302,6 +304,49 @@
         header {
             text-align: center;
             margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 60px;
+            padding: 0 50px; /* Prevent text overlap with absolute menu button */
+        }
+
+        /* Hamburger Button */
+        .menu-toggle {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text);
+            padding: 12px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* Overlay */
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            display: block;
         }
 
         header h1 {
@@ -326,42 +371,45 @@
 
         /* Mobile First Responsive Adjustments */
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
             .app {
                 padding: 12px;
             }
-            .main-layout {
-                flex-direction: column;
-                gap: 20px;
-            }
             .sidebar {
-                width: 100%;
-                flex: none;
-                margin-top: 10px;
-                position: static; /* Force standard flow on mobile */
-                z-index: 10;
-                background: rgba(var(--primary-rgb), 0.05);
-                border-radius: 12px;
-                padding: 4px;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                height: 100vh !important;
+                width: 280px !important;
+                margin-top: 0 !important;
+                background: var(--panel) !important;
+                z-index: 2000 !important;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                display: flex !important;
+                flex-direction: column;
+                padding: 24px 16px !important;
+                box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+                overflow-y: auto;
+            }
+            .sidebar.active {
+                transform: translateX(0);
             }
             .tabs {
-                display: flex;
-                flex-direction: row;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                padding: 8px 4px;
-                gap: 8px;
-                scrollbar-width: none;
-                white-space: nowrap; /* Prevent wrapping if flex fails */
-            }
-            .tabs::-webkit-scrollbar {
-                display: none;
+                flex-direction: column !important;
+                overflow-x: visible !important;
+                padding: 0 !important;
+                gap: 12px !important;
+                width: 100% !important;
             }
             .tab {
-                min-width: 120px;
-                flex: 0 0 auto;
-                font-size: 14px;
-                padding: 12px 10px;
-                white-space: nowrap;
+                width: 100% !important;
+                text-align: left !important;
+                justify-content: flex-start !important;
+                padding: 16px 20px !important;
+                font-size: 16px !important;
             }
             .content {
                 flex-direction: column;
@@ -1294,8 +1342,12 @@
 </head>
 
 <body>
+    <div class="menu-overlay" id="menu-overlay"></div>
     <div class="app">
         <header>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Open Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
             <h1>Advanced Sampling Plan Analyzer</h1>
             <p>Developed by Chun-Chieh Chang (wesleychang2025@gmail.com). All Rights Reserved.</p>
         </header>
@@ -1934,6 +1986,7 @@
     <script src="./assets/vendor/chart.min.js"></script>
     <script src="./main.bundle.js"></script>
     <script>
+        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -1941,6 +1994,35 @@
                     .catch(err => console.log('SW registration failed', err));
             });
         }
+
+        // Mobile Drawer Logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const sidebar = document.querySelector('.sidebar');
+        const navTabs = document.querySelectorAll('.tab');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : 'auto';
+        }
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', toggleMenu);
+        }
+
+        if (menuOverlay) {
+            menuOverlay.addEventListener('click', toggleMenu);
+        }
+
+        // Close drawer when a tab is selected on mobile
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleMenu();
+                }
+            });
+        });
     </script>
 </body>
 

@@ -1,5 +1,23 @@
+## [2026-04-10] - Phase 17: Mobile Drawer Navigation & Screen Real Estate Recovery
+### Task: Eliminate UI Clutter on Mobile
+- **Objective**: Recover 100% of vertical screen space on mobile by moving static module buttons into a modern slide-out "Hamburger" drawer.
+- **Action Plan**:
+  - **Hamburger Toggle**: Add a menu icon to the header for mobile users.
+  - **Side Drawer**: Transform the mobile sidebar into a `fixed` position drawer with a smooth slide-in animation.
+  - **Overlay Implementation**: Add a semi-transparent overlay to handle click-outside-to-close behavior.
+  - **Theme Relocation**: Move Theme settings to the bottom of the drawer to further declutter the main view.
+- **Status**: Completed.
+- **Verification**:
+  - **Local Test**: Confirmed via `http-server` + Browser subagent.
+  - **Functionality**: Hamburger menu correctly toggles the Sidebar drawer on mobile.
+  - **UX**: Vertical space on mobile home screen now 100% focused on charts, as navigation is hidden by default.
+  - **Interactions**: Overlay implemented to close drawer on background click; tabs auto-close drawer after selection.
+
 ## [2026-04-10] - Phase 16: PWA Integration & Mobile-First UI Transformation
+
+
 ### Task: Mobile Optimization & Offline Experience
+
 - **Objective**: Transform the "Advanced Sampling Plan Analyzer" into a Progressive Web App (PWA) with a dedicated mobile-first interface, ensuring industrial-grade usability on smartphones.
 - **Action Plan**:
   - **PWA Assets**: Generated `manifest.json` and high-resolution icons (192, 512).
@@ -18,6 +36,7 @@
 ## [2026-04-10] - Phase 15: Repository Deep Cleanup & Synchronization
 
 ### Task: Environment Reset (Clear Folder & Pull)
+
 - **Objective**: Reset the local repository to a clean state matching the remote `origin/main` branch, removing all untracked files and local changes.
 - **Action**:
   - Executed `git fetch origin` to sync metadata.
@@ -33,6 +52,7 @@
 ## [2026-03-28] - Phase 14: PNG Export Shaded Area & Chrome Compatibility Restoration
 
 ### Task: Fix Missing "Continue (Pc)" Region & Chrome Download Failure
+
 - **RCA (Root Cause Analysis)**:
   - **Problem 1 (Shading)**: The "Continue (Pc)" shaded area was lost in exports because `animation: false` sometimes skips the `filler` plugin's initial draw.
   - **Problem 2 (Chrome/UUID Filenames)**: Chrome downloaded files as UUIDs with no extension. This occurred because Chrome's security model strictly restricts programmatic downloads (`a.click()`) triggered asynchronously (like inside a `canvas.toBlob` callback). Even if the Blob is valid, aggressive downloader extensions or internal Chrome security policies actively strip custom `download` attributes from programmatic `blob:` URL triggers to prevent drive-by malware naming.
@@ -43,7 +63,9 @@
 - **Verification**: User confirmed successful image rendering and retrieval, fully bypassing programmatic download restrictions.
 
 ## [2026-03-28] - Phase 13: Accessibility & Color Contrast Optimization
+
 ### Task: WCAG 2.1 AA Compliance Audit
+
 - **Action**:
   - Established a formal contrast ratio specification (Target 4.5:1 for normal text).
   - Audited all 7 themes (Premium Dark, Light, etc.) and all functional pages.
@@ -59,33 +81,38 @@
 
 ### RCA (Root Cause Analysis)
 
-- **Symptom**: 摰?迂撌脣祕?整???璅惜???????單??汗??雿祕????銝??詨?耨?寞?雿?嚗?銵刻? Plan Label ??*?∩遙雿???*??
+- **Symptom**: 摰?迂撌脣祕?整???璅惜???????單??汗??雿祕????銝??詨?耨?寞?雿?嚗?銵刻? Plan Label ??_?∩遙雿???_??
 - **隤踵??**:
-  1. 蝣箄?鈭辣???剁?`change`/`input`嚗Ⅱ撖血歇甇?Ⅱ蝬??啣?璅∠??????貉撓?亙?蝝???  2. 蝣箄? `doSsLookup`?doC0Lookup`?doReverseCalc`?doAqlLtpdLookup` ?賣?祈澈?摩甇?Ⅱ?∟炊??  3. ?潛?芋蝯? `lastPlan` 霈嚗ssLastPlan`?c0LastPlan`?revLastPlan`?aqlLtpdLastPlan`嚗???頛????`null`??
-- **?寞??**: **敺?瑁???閮?**??  - ?頛???芸?鈭?UI ????`populateInspectionLevels()`?buildC0AqlOptions()` 蝑?嚗?**敺?澆銝甈∟?蝞??*??  - ?芋蝯? `lastPlan = null`嚗?銵函征?賬?  - ? `change` 鈭辣?孛?潸?蝞?賂?雿蝙?刻?*?函洵銝甈⊥??????????唬遙雿撓??*嚗???????⊥????航死??  - 鈭??潛?典?璅∠?嚗? `doSsLookup`嚗 `lastPlan === null` ???賣迤撣詨銵?銝?鞈?lastPlan ?瑁?嚗?雿??箏?憪?銵冽蝛箇?嚗蝙?刻???AQL 銝??詨?Ⅱ撖行?閰脫?????*???冽?典? change 鈭辣鋡怠?銝???disable/enable ??listener ???芸?銵?撠?啗情銝剜?????*??甇???渡????臬?蒂摮?蝻箏?????+ AQL 銝?????listener ??銵銝閬箝?
+  1. 蝣箄?鈭辣???剁?`change`/`input`嚗Ⅱ撖血歇甇?Ⅱ蝬??啣?璅∠??????貉撓?亙?蝝??? 2. 蝣箄? `doSsLookup`?doC0Lookup`?doReverseCalc`?doAqlLtpdLookup`?賣?祈澈?摩甇?Ⅱ?∟炊??  3. ?潛?芋蝯?`lastPlan` 霈嚗ssLastPlan`?c0LastPlan`?revLastPlan`?aqlLtpdLastPlan`嚗???頛????`null`??
+- **?寞??**: **敺?瑁???閮?**?? - ?頛???芸?鈭?UI ????`populateInspectionLevels()`?buildC0AqlOptions()`蝑?嚗?**敺?澆銝甈∟?蝞??*??  - ?芋蝯?`lastPlan = null`嚗?銵函征?賬?  - ? `change`鈭辣?孛?潸?蝞?賂?雿蝙?刻?*?函洵銝甈⊥??????????唬遙雿撓??*嚗???????⊥????航死??  - 鈭??潛?典?璅∠?嚗?`doSsLookup`嚗 `lastPlan === null` ???賣迤撣詨銵?銝?鞈?lastPlan ?瑁?嚗?雿??箏?憪?銵冽蝛箇?嚗蝙?刻???AQL 銝??詨?Ⅱ撖行?閰脫?????_???冽?典? change 鈭辣鋡怠?銝???disable/enable ??listener ???芸?銵?撠?啗情銝剜?????_??甇???渡????臬?蒂摮?蝻箏?????+ AQL 銝?????listener ??銵銝閬箝?
+
 ### CAPA (Corrective Action & Preventive Action)
 
 - **?舀迤?芣**:
-  ?冽???隞嗥?賢蝬?摰?敺?蝡隞?`setTimeout` ?澆?芋蝯?閮??賣嚗撥?嗅銵?*??閮?**嚗?
-  | 璅∠?          | 閫貊蝔?蝣?                        | 撱園  |
+  ?冽???隞嗥?賢蝬?摰?敺?蝡隞?`setTimeout` ?澆?芋蝯?閮??賣嚗撥?嗅銵?\*??閮?\*\*嚗?
+  | 璅∠? | 閫貊蝔?蝣? | 撱園 |
   | ------------- | ---------------------------------- | ----- |
-  | Reverse Query | `setTimeout(doReverseCalc, 80)`    | 80ms  |
-  | AQL Lookup    | `setTimeout(doSsLookup, 100)`      | 100ms |
-  | C=0 Lookup    | `setTimeout(doC0Lookup, 120)`      | 120ms |
-  | AQL-LTPD      | `setTimeout(doAqlLtpdLookup, 150)` | 150ms |
+  | Reverse Query | `setTimeout(doReverseCalc, 80)` | 80ms |
+  | AQL Lookup | `setTimeout(doSsLookup, 100)` | 100ms |
+  | C=0 Lookup | `setTimeout(doC0Lookup, 120)` | 120ms |
+  | AQL-LTPD | `setTimeout(doAqlLtpdLookup, 150)` | 150ms |
 
   嚗?辣?脫?箔??踹?憭?蝞??銵?皜脫?蝡嗥嚗?
+
 - **撽?**:
-  - ?瑟?敺???Tab ?”隞仿?閮剖潸?鼓鋆踝?Plan Label ?芸?憛怠??  - 隞餅?靽格?嚗???柴摮撓?伐?嚗?銵刻? Label ?單??湔嚗???????  - ??靽格 Label 敺?敺?????*銝?**閬?雿輻??摰Ｚˊ?撓?伐??? `__lastAutoLabel` 餈質馱璈靽風嚗?  - `node` ?單撽? 12/12 ???嚗S 隤??園隤扎?
+  - ?瑟?敺???Tab ?”隞仿?閮剖潸?鼓鋆踝?Plan Label ?芸?憛怠?? - 隞餅?靽格?嚗???柴摮撓?伐?嚗?銵刻? Label ?單??湔嚗??????? - ??靽格 Label 敺?敺?????\*銝?\*\*閬?雿輻??摰Ｚˊ?撓?伐??? `__lastAutoLabel` 餈質馱璈靽風嚗? - `node` ?單撽? 12/12 ???嚗S 隤??園隤扎?
 - **??芣**:
 
   > **?皞??啣?**: 隞颱??啣?????芋蝯?敹??其?隞嗥?賢蝬?摰?敺???`setTimeout(doXxxCalc, N)` ??憪孛?潘?蝣箔??頛敺蝙?刻??喟??啣??渡?閮?蝯???銵剁???蝛箇???
+
 - **Status**: ??撌脤?霅?嚗蝙?刻Ⅱ隤?OK嚗?
+
 ---
 
 ## [2026-03-28] - Phase 10: UI Layout Optimization & AQL Marker Removal
 
 ### Task: Theme Relocation & Comparison Cleanup
+
 - **Action**:
   - Relocated the "Theme Selection" card from the "Probability Distribution" page to the global sidebar (positioned above the "Probability Distribution" tab).
   - Removed AQL/LTPD scatter marker points from "AQL-LTPD Balanced Plan" and ensure they are not present in "Multiple Plan Comparison" charts for a cleaner visual representation.
@@ -104,6 +131,7 @@
 ## [2026-03-28] - Phase 11: Font Refinement & Information Density Optimization
 
 ### Task: UI Typography Audit & Scaling
+
 - **Action**:
   - Normalized global font base to `14px` (previously browser default ~16px) to improve information density.
   - Enforced a strict `14px` floor for all UI text (Tabs, Labels, Buttons, Inputs) to align with SOP readability standards.
@@ -117,6 +145,7 @@
 ## [2026-03-28] - Phase 12: Chart Color Palette & Sequential Loop Optimization
 
 ### Task: Multi-Plan Comparison Color Enhancement
+
 - **Action**:
   - Reorganized `planColors` array to follow the user-requested sequence: **Red, Orange, Yellow, Green, Blue, Purple**.
   - Updated hex colors to Tailwind-inspired vibrant hues (`#EF4444`, `#F97316`, `#FACC15`, `#22C55E`, `#3B82F6`, `#A855F7`, `#06B6D4`, `#EC4899`) for maximum contrast and professional polish.
@@ -395,8 +424,8 @@
 - **Failures/Fixes**:
   - A PowerShell script attempt to fix "corrupted" characters caused extensive file corruption; immediately rolled back to a stable state using `git checkout`.
   - Successfully re-applied all translations using surgical `multi_replace_file_content` calls to maintain UTF-8 integrity.
--   * * P r o b l e m   3   ( C S V   U U I D s   &   E v e n t   R e c u r s i o n ) * * :   T h e   C S V   E x p o r t   s u f f e r e d   f r o m   r e c u r s i v e   e v e n t   t r i g g e r i n g   w h e r e   8   l i s t e n e r s   s t a c k e d   u p   d u e   t o   t h e   p a g e ' s   r e a c t i v e   l i f e c y c l e   r e l o a d i n g   e l e m e n t s .   T h i s   c a u s e d   t h e   n e w   t a b / m o d a l   t o   b e   d e s t r o y e d   m i c r o - s e c o n d s   a f t e r   t h e   b l o b   U R L   w a s   b o u n d ,   t r i g g e r i n g   C h r o m e ' s   m a l i c i o u s - d o w n l o a d   d e t e c t i o n   ( d o w n l o a d   a t t r i b u t e   s t r i p p i n g ) . 
- -   * * F i x   3   ( I d e m p o t e n t   M o d a l   &   D a t a   U R L s ) * * :   S w i t c h e d   t h e   C S V   t a r g e t   f r o m   o b j e c t   B l o b s   t o   r o b u s t   D a t a   U R L s .   E n f o r c e d   a n   i d e m p o t e n t   l i s t e n e r   p a t t e r n   ( \ i f   ( ! w i n d o w . e x p o r t H a n d l e r s A t t a c h e d ) \ )   t o   c a p   e x p o r t   l i s t e n e r s   s t r i c t l y   a t   1 .   F i n a l l y ,   h a r d e n e d   t h e   d o w n l o a d   b u t t o n   w i t h   \ s t o p P r o p a g a t i o n ( ) \   a n d   \ p r e v e n t D e f a u l t ( ) \   t o   c l e a n l y   i s o l a t e   t h e   f i n a l   i n t e r a c t i o n   f r o m   p a r e n t   e l e m e n t s . 
- -   * * S t a t u s * * :   C o m p l e t e d   &   V e r i f i e d . 
- 
- 
+    -   * * P r o b l e m   3   ( C S V   U U I D s   &   E v e n t   R e c u r s i o n ) * * :   T h e   C S V   E x p o r t   s u f f e r e d   f r o m   r e c u r s i v e   e v e n t   t r i g g e r i n g   w h e r e   8   l i s t e n e r s   s t a c k e d   u p   d u e   t o   t h e   p a g e ' s   r e a c t i v e   l i f e c y c l e   r e l o a d i n g   e l e m e n t s .   T h i s   c a u s e d   t h e   n e w   t a b / m o d a l   t o   b e   d e s t r o y e d   m i c r o - s e c o n d s   a f t e r   t h e   b l o b   U R L   w a s   b o u n d ,   t r i g g e r i n g   C h r o m e ' s   m a l i c i o u s - d o w n l o a d   d e t e c t i o n   ( d o w n l o a d   a t t r i b u t e   s t r i p p i n g ) . 
+     -   * * F i x   3   ( I d e m p o t e n t   M o d a l   &   D a t a   U R L s ) * * :   S w i t c h e d   t h e   C S V   t a r g e t   f r o m   o b j e c t   B l o b s   t o   r o b u s t   D a t a   U R L s .   E n f o r c e d   a n   i d e m p o t e n t   l i s t e n e r   p a t t e r n   ( \ i f   ( ! w i n d o w . e x p o r t H a n d l e r s A t t a c h e d ) \ )   t o   c a p   e x p o r t   l i s t e n e r s   s t r i c t l y   a t   1 .   F i n a l l y ,   h a r d e n e d   t h e   d o w n l o a d   b u t t o n   w i t h   \ s t o p P r o p a g a t i o n ( ) \   a n d   \ p r e v e n t D e f a u l t ( ) \   t o   c l e a n l y   i s o l a t e   t h e   f i n a l   i n t e r a c t i o n   f r o m   p a r e n t   e l e m e n t s . 
+     -   * * S t a t u s * * :   C o m p l e t e d   &   V e r i f i e d . 
+     
+     
